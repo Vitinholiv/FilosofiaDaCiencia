@@ -13,11 +13,11 @@ def hex_to_rgba(hex_color, alpha):
 
 @app.route('/')
 def index():
-    nodes = [
-        ("Comida", -600, -300, "#88CC88"),
-        ("Bacon", -290, 600, "#ddcc44"),
-        ("Calabresa", -280, 610, "#cc4466") 
-    ]
+    nodes = {
+        "Comida": (-600, -300, "#88CC88"),
+        "Bacon": (-290, 600, "#ddcc44"),
+        "Calabresa": (-280, 610, "#cc4466")
+    }
 
     bifurcations = [
         ("Comida", "Bacon"),

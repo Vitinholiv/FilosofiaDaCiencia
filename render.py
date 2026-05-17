@@ -6,8 +6,9 @@ def hex_to_rgba(hex_color, alpha):
     return f"rgba({r}, {g}, {b}, {alpha})"
 
 def build_timeline_elements(nodes, bifurcations, y_tracks):
-    color_map = {node[0]: node[3] for node in nodes}
-    node_metrics = {}
+    color_map = {}; node_metrics = {}
+    for name in nodes.keys():
+        color_map[name] = nodes[name][2]
 
     epsilon = 200
     min_year = -700 - epsilon
@@ -20,7 +21,8 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
     gap_px = -3
     
     # Nós (Linhas de Pensamento)
-    for name, start_y, end_y, color in nodes:
+    for name in nodes.keys():
+        start_y, end_y, color = nodes[name]
         duration = end_y - start_y
         mid_year = start_y + (duration / 2)
         x_pos = (mid_year - min_year) * scale_x
