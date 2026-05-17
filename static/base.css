@@ -1,0 +1,60 @@
+/* Estilos da Página */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ccc;
+    font-family: sans-serif;
+    overflow-y: hidden;
+}
+.scroll-wrapper {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: auto;
+    position: relative;
+}
+.epoch-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 1px dashed rgba(255, 255, 255, 0.15);
+    z-index: 0;
+    pointer-events: none;
+}
+.epoch-label {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 0;
+    pointer-events: none;
+}
+#instrucoes {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    z-index: 10;
+    color: #8ab4f8;
+}
+
+/* Container da Biblioteca */
+
+#cy {
+    height: 100vh;
+    width: {{ total_width }} px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
