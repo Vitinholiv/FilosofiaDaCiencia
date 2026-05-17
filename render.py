@@ -17,7 +17,7 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
     base_y = 400
 
     elements = []
-    gap_px = 16 
+    gap_px = -3
     
     # Nós (Linhas de Pensamento)
     for name, start_y, end_y, color in nodes:
@@ -30,10 +30,12 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
             width_px = 150
 
         y_pos = base_y + y_tracks.get(name, 0)
+        
         node_metrics[name] = {
             'start_y': start_y,
             'end_y': end_y,
-            'x_pos': x_pos
+            'x_pos': x_pos,
+            'y_pos': y_pos 
         }
         
         elements.append({
@@ -56,22 +58,45 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
         src_info = node_metrics.get(src)
         tgt_info = node_metrics.get(tgt)
         
-        taxi_turn_px = 0
-        if src_info and tgt_info:
-            turn_year = tgt_info['start_y'] - 20
-            if turn_year <= src_info['end_y']:
-                turn_year = src_info['end_y'] + 5 
-            turn_x = (turn_year - min_year) * scale_x
-            taxi_turn_px = turn_x - src_info['x_pos']
+        if not (src_info and tgt_info):
+            return
+            
+        branch_year = tgt_info['start_y'] - 50
+        branch_x = (branch_year - min_year) * scale_x
+        branch_y = src_info['y_pos']
+        inv_src_id = f"anchor_{src}_to_{tgt}"
+        
+        elements.append({
+            "data": {"id": inv_src_id},
+            "position": {"x": branch_x, "y": branch_y},
+            "style": {
+                "width": 1,
+                "height": 1,
+                "opacity": 0,
+                "events": "no"
+            }
+        })
+        
+        tgt_start_x = (tgt_info['start_y'] - min_year) * scale_x
+        tgt_start_y = tgt_info['y_pos']
+        inv_tgt_id = f"anchor_{tgt}_from_{src}"
+        
+        elements.append({
+            "data": {"id": inv_tgt_id},
+            "position": {"x": tgt_start_x, "y": tgt_start_y},
+            "style": {
+                "width": 1,
+                "height": 1,
+                "opacity": 0,
+                "events": "no"
+            }
+        })
 
         edge_element = {
             "data": {
-                "source": src, 
-                "target": tgt,
+                "source": inv_src_id, 
+                "target": inv_tgt_id,
                 "targetColor": tgt_color
-            },
-            "style": {
-                "taxi-turn": f"{taxi_turn_px}px"
             }
         }
         elements.append(edge_element)

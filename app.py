@@ -28,9 +28,9 @@ def index():
         "Comida": 0, "Bacon": -120, "Calabresa": 120
     }
 
-    philosophers = {
+    philosophers = [
         ("Francis Bacon", -69, "bacon.png")
-    }
+    ]
 
     historical_epochs = [
         {"year": -600, "label": "Período Pré-Socrático"},

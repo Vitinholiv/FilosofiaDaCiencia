@@ -37,9 +37,7 @@ var cy = cytoscape({
                 'line-color': 'data(targetColor)',
                 'target-arrow-color': 'data(targetColor)',
                 'target-arrow-shape': 'none',
-                'curve-style': 'taxi', 
-                'taxi-direction': 'rightward',
-                'taxi-radius': 90, 
+                'curve-style': 'bezier',
                 'edge-distances': 'node-position'
             }
         }
