@@ -86,6 +86,8 @@ HTML_TEMPLATE = """
             zoomingEnabled: false,
             panningEnabled: false,
             boxSelectionEnabled: false,
+            autoungrabify: true,
+            autounselectify: true,
 
             style: [
                 {
