@@ -2,3 +2,4 @@ flask
 numpy
 pandas
 py2cytoscape
+gunicorn
