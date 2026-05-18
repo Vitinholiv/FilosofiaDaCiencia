@@ -1,15 +1,8 @@
 from flask import Flask, render_template
-from render import build_timeline_elements
+from render import build_timeline_elements, hex_to_rgba
 import json
 
 app = Flask(__name__)
-
-def hex_to_rgba(hex_color, alpha):
-    hex_color = hex_color.lstrip('#')
-    r = int(hex_color[0:2], 16)
-    g = int(hex_color[2:4], 16)
-    b = int(hex_color[4:6], 16)
-    return f"rgba({r}, {g}, {b}, {alpha})"
 
 @app.route('/')
 def index():
@@ -32,6 +25,17 @@ def index():
         ("Francis Bacon", -69, "bacon.png")
     ]
 
+    """ 
+    Visualização de trabalhos publicados no canto inferior da tela.
+    Inspirado em https://pt.mathigon.org/timeline
+    """
+    # Formato: (ano, texto do balão, cor)
+    bottom_events = [
+        (-400, "-400: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#cc0066"),
+        (-300, "-300: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#008800"),
+        (-200, "-200: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#cc0000")
+    ]
+
     historical_epochs = [
         {"year": -600, "label": "Período Pré-Socrático"},
         {"year": -400, "label": "Grécia Clássica"},
@@ -43,7 +47,8 @@ def index():
         {"year": 2000, "label": "Séc XXI"}
     ]
 
-    elements, total_width, min_year, scale_x = build_timeline_elements(nodes, bifurcations, y_tracks)
+    # Agora build_timeline_elements também recebe bottom_events como argumento
+    elements, total_width, min_year, scale_x = build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events)
 
     for epoch in historical_epochs:
         epoch['x'] = (epoch['year'] - min_year) * scale_x
