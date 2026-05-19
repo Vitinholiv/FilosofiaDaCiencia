@@ -40,9 +40,52 @@ var cy = cytoscape({
                 'curve-style': 'bezier',
                 'edge-distances': 'node-position'
             }
+        },
+        {   // Style dos eventos históricos/trabalhos
+            selector: 'node.bottom-event',
+            style: {
+                'label': '',
+                'shape': 'ellipse',
+                'width': 20,
+                'height': 20,
+                'background-color': 'data(background-color)',
+                'border-width': 2,
+                'border-color': 'rgba(255, 255, 255, 0.4)'
+            }
         }
     ],
     layout: {
         name: 'preset' 
     }
+});
+
+// Cria o elemento HTML do tooltip
+var tooltip = document.createElement('div');
+tooltip.id = 'custom-tooltip';
+document.body.appendChild(tooltip);
+
+// Quando o mouse passar por cima da bolinha
+cy.on('mouseover', 'node.bottom-event', function(evt){
+    var node = evt.target;
+    var text = node.data('tooltip');
+    
+    if (!text) return;
+
+    tooltip.innerHTML = text;
+    tooltip.style.display = 'block';
+
+    var pos = node.renderedPosition();
+    var cyContainer = cy.container().getBoundingClientRect();
+    
+    // Centraliza o balão e posiciona acima do nó
+    var leftPos = cyContainer.left + pos.x - (tooltip.offsetWidth / 2);
+    var topPos = cyContainer.top + pos.y - tooltip.offsetHeight - 15;
+
+    tooltip.style.left = leftPos + 'px';
+    tooltip.style.top = topPos + 'px';
+});
+
+// Quando o mouse sair da bolinha
+cy.on('mouseout', 'node.bottom-event', function(evt){
+    tooltip.style.display = 'none';
 });

@@ -5,7 +5,7 @@ def hex_to_rgba(hex_color, alpha):
     b = int(hex_color[4:6], 16)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
-def build_timeline_elements(nodes, bifurcations, y_tracks):
+def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[]):
     color_map = {}; node_metrics = {}
     for name in nodes.keys():
         color_map[name] = nodes[name][2]
@@ -16,6 +16,7 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
     scale_x = 1.5
     total_width = (max_year - min_year) * scale_x
     base_y = 400
+    bottom_y = base_y + 200 # Posição dos círculos 
 
     elements = []
     gap_px = -3
@@ -105,5 +106,24 @@ def build_timeline_elements(nodes, bifurcations, y_tracks):
 
     for src, tgt in bifurcations:
         new_edge(src, tgt)
+
+    # Eventos Históricos e Trabalhos
+    for i, (year, text, color) in enumerate(bottom_events):
+        x_pos = (year - min_year) * scale_x
+        # row_offset = (i % 3) * 25 # Teste, ano com vários acontecimentos
+        row_offset = 0
+        y_pos = bottom_y + row_offset
+
+        elements.append({
+            "classes": "bottom-event",
+            "data": {
+                "id": f"bottom_evt_{i}",
+                "tooltip": text
+            },
+            "position": {"x": x_pos, "y": y_pos},
+            "style": {
+                "background-color": color
+            }
+        })
 
     return elements, total_width, min_year, scale_x
