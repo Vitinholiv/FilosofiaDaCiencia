@@ -16,13 +16,13 @@ var cy = cytoscape({
             style: {
                 'shape': 'round-rectangle',
                 'width': 'data(width)',
-                'height': 5,
+                'height': 3,
                 'background-color': 'rgba(138, 180, 248, 0.05)',
                 'border-width': 1,
                 'border-color': 'rgba(138, 180, 248, 0.4)',
                 'label': 'data(id)',
                 'color': '#8ab4f8', 
-                'font-size': '25px',
+                'font-size': '16px',
                 'text-margin-y': '10px',
                 'text-valign': 'bottom',
                 'text-halign': 'center',
@@ -33,7 +33,7 @@ var cy = cytoscape({
         {
             selector: 'edge',
             style: {
-                'width': 5,
+                'width': 4,
                 'line-color': 'data(targetColor)',
                 'target-arrow-color': 'data(targetColor)',
                 'target-arrow-shape': 'none',

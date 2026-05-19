@@ -7,18 +7,22 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     nodes = {
-        "Comida": (-600, -300, "#88CC88"),
-        "Bacon": (-290, 600, "#ddcc44"),
-        "Calabresa": (-280, 610, "#cc4466")
+        "Comida": (-700, 2026, "#88CC88"),
+        "Bacon": (-290, 350, "#ddcc44"),
+        "Calabresa": (-350, 800, "#cc4466"),
+        "Salada": (-625, -100, "#22EE32"),
+        "Carne": (400, 1100, "#7E2135")
     }
 
     bifurcations = [
         ("Comida", "Bacon"),
-        ("Comida", "Calabresa")
+        ("Comida", "Calabresa"),
+        ("Comida", "Salada"),
+        ("Comida", "Carne")
     ]
 
     y_tracks = {
-        "Comida": 0, "Bacon": -120, "Calabresa": 120
+        "Comida": 0, "Bacon": -60, "Calabresa": 60, "Salada": -120, "Carne": -60
     }
 
     philosophers = [
