@@ -1,8 +1,14 @@
-def hex_to_rgba(hex_color, alpha):
+# Adição do argumento factor com defalt 1
+# factor < 1 são usados na borda dos círculos de bottom_events, a cor fica levemente mais escura que hex_color
+def hex_to_rgba(hex_color, alpha, factor=1):
     hex_color = hex_color.lstrip('#')
     r = int(hex_color[0:2], 16)
     g = int(hex_color[2:4], 16)
     b = int(hex_color[4:6], 16)
+
+    r = int(r * factor)
+    g = int(g * factor)
+    b = int(b * factor)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
 def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[]):
@@ -108,10 +114,8 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[]):
         new_edge(src, tgt)
 
     # Eventos Históricos e Trabalhos
-    for i, (year, text, color) in enumerate(bottom_events):
+    for i, (year, text, color, row_offset) in enumerate(bottom_events):
         x_pos = (year - min_year) * scale_x
-        # row_offset = (i % 3) * 25 # Teste, ano com vários acontecimentos
-        row_offset = 0
         y_pos = bottom_y + row_offset
 
         elements.append({
@@ -122,7 +126,8 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[]):
             },
             "position": {"x": x_pos, "y": y_pos},
             "style": {
-                "background-color": color
+                "background-color": hex_to_rgba(hex_color=color, alpha=1, factor=1),
+                "border-color": hex_to_rgba(hex_color=color, alpha=1, factor=0.5)   # A borda dos círculos é 50% mais escura que a cor do interior
             }
         })
 
