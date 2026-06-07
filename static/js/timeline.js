@@ -58,6 +58,12 @@ var cy = cytoscape({
                 'height': 26,
                 'border-width': 2
             }
+        },
+        {
+            selector: '.phil-detail',
+            style: {
+                'display': 'none'
+            }
         }
     ],
     layout: {
@@ -97,4 +103,23 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
 cy.on('mouseout', 'node.bottom-event', function(evt){
     evt.target.removeClass('hover'); 
     tooltip.style.display = 'none';
+});
+
+
+// Alternar visibilidade ao clicar na foto do filósofo
+cy.on('tap', 'node.phil-portrait', function(evt){
+    var node = evt.target;
+    var philName = node.data('phil_name');
+    
+    var detailSelector = '.details_' + philName.replace(/ /g, '_');
+    var detailsElements = cy.elements(detailSelector);
+    
+    if (detailsElements.length > 0) {
+        // Se o estilo computado atual for 'none', muda para 'element' (visível), senão esconde
+        if (detailsElements.style('display') === 'none') {
+            detailsElements.style('display', 'element');
+        } else {
+            detailsElements.style('display', 'none');
+        }
+    }
 });
