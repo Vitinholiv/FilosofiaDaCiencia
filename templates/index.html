@@ -19,6 +19,31 @@
         {{ elements_json | safe }}
     </script>
 
+    <div id="philosopher-card" class="info-card" style="display: none;">
+        <button class="close-btn" onclick="closeCard()">×</button>
+        
+        <div class="card-header">
+            <h2 id="card-name">Nome do Filósofo</h2>
+        </div>
+
+        <div class="card-tabs">
+            <button id="btn-agreements" class="tab-btn active" onclick="switchTab('agreements')">Concordâncias</button>
+            <button id="btn-criticisms" class="tab-btn" onclick="switchTab('criticisms')">Discordâncias</button>
+        </div>
+
+        <div class="card-body">
+            <div class="column left-col">
+                <h3>Quem concorda com ele:</h3>
+                <ul id="list-origin"></ul>
+            </div>
+            
+            <div class="column right-col">
+                <h3>De quem ele concorda:</h3>
+                <ul id="list-target"></ul>
+            </div>
+        </div>
+    </div>
+
     <script>
         var rawData = document.getElementById('elements-data').textContent;
         var elements = JSON.parse(rawData);
@@ -64,12 +89,125 @@
                         'taxi-radius': 30, 
                         'edge-distances': 'node-position'
                     }
+                },
+
+                {
+                    selector: 'node.philosopher',
+                    style: {
+                        'shape': 'ellipse', 
+                        'width': 80,        
+                        'height': 80,       
+                        'background-color': '#ffffff',
+                        'background-image': 'data(image)', 
+                        'background-fit': 'cover', 
+                        'border-width': 5,
+                        'label': 'data(id)',
+                        'font-size': '18px',
+                        'font-family': 'monospace',
+                        'color': '#333333',
+                        'text-valign': 'bottom',
+                        'text-margin-y': '8px',
+                        'text-background-color': 'rgba(255,255,255,0.8)', 
+                        'text-background-opacity': 1,
+                        'text-background-padding': '4px'
+                    }
                 }
+
             ],
             layout: {
                 name: 'preset' 
             }
         });
+
+
+        var activePhilosopherData = null;
+
+        cy.on('tap', 'node.philosopher', function(evt){
+            var node = evt.target;
+            
+            activePhilosopherData = {
+                name: node.id(),
+                criticism_t: node.data('criticism_t'),
+                criticism_o: node.data('criticism_o'),
+                agreement_t: node.data('agreement_t'),
+                agreement_o: node.data('agreement_o')
+            };
+
+            document.getElementById('card-name').innerText = activePhilosopherData.name;
+            
+            // Mostra o card na tela
+            document.getElementById('philosopher-card').style.display = 'block';
+
+            // Abre por padrão na aba de Concordâncias
+            switchTab('agreements');
+        });
+
+        // Função para fechar o card
+        function closeCard() {
+            document.getElementById('philosopher-card').style.display = 'none';
+        }
+
+        // Função que gerencia a troca de abas e popula a Esquerda e a Direita
+        function switchTab(type) {
+            if (!activePhilosopherData) return;
+
+            // Atualiza o visual dos botões das abas
+            document.getElementById('btn-agreements').classList.toggle('active', type === 'agreements');
+            document.getElementById('btn-criticisms').classList.toggle('active', type === 'criticisms');
+
+            var originList = document.getElementById('list-origin');
+            var targetList = document.getElementById('list-target');
+            var leftTitle = document.querySelector('.left-col h3');
+            var rightTitle = document.querySelector('.right-col h3');
+
+            // Limpa as listas antigas antes de renderizar
+            originList.innerHTML = '';
+            targetList.innerHTML = '';
+
+            if (type === 'agreements') {
+                leftTitle.innerText = "Quem concorda com ele:";
+                rightTitle.innerText = "De quem ele concorda:";
+
+                // Direita (Alvo): Quem o filósofo atual apoia
+                renderDataInList(activePhilosopherData.agreement_t, targetList);
+                // Esquerda (Origem): Quem apoia o filósofo atual
+                renderDataInList(activePhilosopherData.agreement_o, originList);
+
+            } else if (type === 'criticisms') {
+                leftTitle.innerText = "Quem o critica:";
+                rightTitle.innerText = "Quem ele critica:";
+
+                // Direita (Alvo): Quem o filósofo atual ataca
+                renderDataInList(activePhilosopherData.criticism_t, targetList);
+                // Esquerda (Origem): Quem ataca o filósofo atual
+                renderDataInList(activePhilosopherData.criticism_o, originList);
+            }
+        }
+
+        // Auxiliar para tratar os dados (seja uma tupla/lista ou string única) e colocar no HTML
+        function renderDataInList(data, targetElement) {
+            if (!data) {
+                targetElement.innerHTML = '<li>Nenhum registro</li>';
+                return;
+            }
+
+            // Se o dado vier como Array/Lista (ex: do Python), processamos item por item
+            if (Array.isArray(data)) {
+                // Se for uma estrutura complexa tipo ('Ação', 'Nome', 'Texto')
+                if (data.length === 3) {
+                    targetElement.innerHTML = `<li><strong>${data[1]}:</strong> "${data[2]}"</li>`;
+                } else {
+                    data.forEach(item => {
+                        targetElement.innerHTML += `<li>${item}</li>`;
+                    });
+                }
+            } else {
+                // Caso seja apenas uma string direta
+                targetElement.innerHTML = `<li>${data}</li>`;
+            }
+        }
+
+
     </script>
 </body>
 </html>

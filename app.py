@@ -12,11 +12,14 @@ def hex_to_rgba(hex_color, alpha):
 
 @app.route('/')
 def index():
-    nodes = [
-        ("Comida", -600, -300, "#88CC88"),
-        ("Bacon", -290, 600, "#ddcc44"),
-        ("Calabresa", -280, 610, "#cc4466") 
-    ]
+    
+    # Nome, ano inicial, ano final, cor
+    
+    nodes = {
+        "Comida": (-600, -300, "#88CC88"),
+        "Bacon":(-290, 600, "#ddcc44"),
+        "Calabresa": (-280, 610, "#cc4466") 
+    }
 
     bifurcations = [
         ("Comida", "Bacon"),
@@ -26,9 +29,38 @@ def index():
     y_tracks = {
         "Comida": 0, "Bacon": -120, "Calabresa": 120
     }
+    
+    # nodes[2][3]
+    
+    # Nome, ano, ofsetY, img, linha de pensamento
 
-    philosophers = {
-        ("Francis Bacon", -69, "bacon.png")
+    philosophers = [
+        ("Francis Bacon", 350, -200, 'Bacon.png', "Bacon"), 
+        ("Francis Calabresa", 400, 200, "Calabresa.png", "Calabresa"),
+        ('Francis Brioche', -560, 75, 'Brioche.png', 'Comida'),
+        ('Francis Pretzel', -370, 150, 'Pretzel.png', 'Comida') 
+    ]
+    
+    # Origem, Destino, Descrição
+    
+    # A criticou B
+    
+    criticism_target = {
+        'Francis Bacon': ('Francis Calabresa', 'Bacon é melhor do que Calabresa!'),
+        'Francis Calabresa': ('Francis Bacon', 'Bacon faz mal a saúde!'),
+    }
+    
+    # B foi criticado por A
+    
+    criticism_origin = {
+        'Francis Bacon': ('Francis Calabresa', 'Bacon tem muita gordura!'),
+        'Francis Calabresa': ('Francis Bacon', 'Calabresa mata a alma!'),
+    }
+    
+    agreement_target = {
+    }
+    
+    agreement_origin = {
     }
 
     historical_epochs = [
@@ -43,8 +75,10 @@ def index():
     ]
 
     # Renderização
-    color_map = {node[0]: node[3] for node in nodes}
-    node_metrics = {}
+    
+    color_map = {}; node_metrics = {}
+    for name in nodes.keys():
+        color_map[name] = nodes[name][2]
 
     epsilon = 200
     min_year = -700 - epsilon
@@ -55,7 +89,8 @@ def index():
 
     elements = []
     gap_px = 16 
-    for name, start_y, end_y, color in nodes:
+    for name in nodes.keys():
+        start_y, end_y, color = nodes[name]
         duration = end_y - start_y
         mid_year = start_y + (duration / 2)
         x_pos = (mid_year - min_year) * scale_x
@@ -74,7 +109,8 @@ def index():
         elements.append({
             "data": {
                 "id": name, 
-                "width": width_px
+                "width": width_px,
+                
             },
             "position": {"x": x_pos, "y": y_pos},
             "style": {
@@ -84,6 +120,33 @@ def index():
                 "text-color": color       
             }
         })
+        
+        
+    # Filósofos
+    
+    def add_philosopher(name, year_x, offset_y, img_file, idea):
+        x_pos = (year_x - min_year) * scale_x
+        
+        y_pos = base_y + offset_y
+
+        elements.append({
+            "data": {
+                "id": name,
+                "image": f"/static/img/{img_file}",
+                "criticism_t": criticism_target.get(name, None),
+                "criticism_o": criticism_origin.get(name, None),
+                "agreement_t": agreement_target.get(name, None),
+                "agreement_o": agreement_origin.get(name, None),
+            },
+            'style':{
+                'border-color': hex_to_rgba(nodes[idea][2], 1),
+            },
+            "position": {"x": x_pos, "y": y_pos},
+            "classes": "philosopher"
+        })
+
+    for name, year_x, offset_y, img_file, idea in philosophers:
+        add_philosopher(name, year_x, offset_y, img_file, idea)
         
     def new_edge(src, tgt):
         tgt_color = color_map.get(tgt, '#555')
