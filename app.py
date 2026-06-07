@@ -51,8 +51,8 @@ def index():
         {"year": 2000, "label": "Séc XXI"}
     ]
 
-    # Agora build_timeline_elements também recebe bottom_events como argumento
-    elements, total_width, min_year, scale_x = build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events)
+    # Aqui passamos a lista philosophers como último argumento
+    elements, total_width, min_year, scale_x = build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events, philosophers)
 
     for epoch in historical_epochs:
         epoch['x'] = (epoch['year'] - min_year) * scale_x
