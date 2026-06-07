@@ -48,9 +48,15 @@ var cy = cytoscape({
                 'shape': 'ellipse',
                 'width': 20,
                 'height': 20,
-                'background-color': 'data(background-color)',
-                'border-width': 2,
-                'border-color': 'rgba(255, 255, 255, 0.4)'
+                'border-width': 1
+            }
+        },
+        {   // Style para o zoom
+            selector: 'node.bottom-event.hover',
+            style: {
+                'width': 26,
+                'height': 26,
+                'border-width': 2
             }
         }
     ],
@@ -68,7 +74,9 @@ document.body.appendChild(tooltip);
 cy.on('mouseover', 'node.bottom-event', function(evt){
     var node = evt.target;
     var text = node.data('tooltip');
-    
+
+    node.addClass('hover');
+
     if (!text) return;
 
     tooltip.innerHTML = text;
@@ -87,5 +95,6 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
 
 // Quando o mouse sair da bolinha
 cy.on('mouseout', 'node.bottom-event', function(evt){
+    evt.target.removeClass('hover'); 
     tooltip.style.display = 'none';
 });

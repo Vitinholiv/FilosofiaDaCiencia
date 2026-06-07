@@ -64,7 +64,7 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     pointer-events: none;
     z-index: 1000;
-    text-align: center;
+    text-align: justify;
     max-width: 300px; /* Garante que o texto longo quebre em várias linhas */
     line-height: 1.4;
 }
