@@ -21,7 +21,7 @@ var cy = cytoscape({
                 'border-width': 1,
                 'border-color': 'rgba(138, 180, 248, 0.4)',
                 'label': 'data(id)',
-                'color': '#8ab4f8', 
+                'color': '#8ab4f8',
                 'font-size': '16px',
                 'text-margin-y': '10px',
                 'text-valign': 'bottom',
@@ -41,7 +41,7 @@ var cy = cytoscape({
                 'edge-distances': 'node-position'
             }
         },
-        {   // Style dos eventos históricos/trabalhos
+        {
             selector: 'node.bottom-event',
             style: {
                 'label': '',
@@ -51,75 +51,61 @@ var cy = cytoscape({
                 'border-width': 1
             }
         },
-        {   // Style para o zoom
+        {
             selector: 'node.bottom-event.hover',
-            style: {
-                'width': 26,
-                'height': 26,
-                'border-width': 2
-            }
+            style: { 'width': 26, 'height': 26, 'border-width': 2 }
         },
         {
+            // Todos os detalhes ficam ocultos por padrão
             selector: '.phil-detail',
-            style: {
-                'display': 'none'
-            }
+            style: { 'display': 'none' }
         }
     ],
-    layout: {
-        name: 'preset' 
-    }
+    layout: { name: 'preset' }
 });
 
-// Cria o elemento HTML do tooltip
+// ─── Tooltip para bottom-events ────────────────────────────────────────────
 var tooltip = document.createElement('div');
 tooltip.id = 'custom-tooltip';
 document.body.appendChild(tooltip);
 
-// Quando o mouse passar por cima da bolinha
-cy.on('mouseover', 'node.bottom-event', function(evt){
+cy.on('mouseover', 'node.bottom-event', function(evt) {
     var node = evt.target;
     var text = node.data('tooltip');
-
     node.addClass('hover');
-
     if (!text) return;
 
     tooltip.innerHTML = text;
     tooltip.style.display = 'block';
 
     var pos = node.renderedPosition();
-    var cyContainer = cy.container().getBoundingClientRect();
-    
-    // Centraliza o balão e posiciona acima do nó
-    var leftPos = cyContainer.left + pos.x - (tooltip.offsetWidth / 2);
-    var topPos = cyContainer.top + pos.y - tooltip.offsetHeight - 15;
-
-    tooltip.style.left = leftPos + 'px';
-    tooltip.style.top = topPos + 'px';
+    var rect = cy.container().getBoundingClientRect();
+    tooltip.style.left = (rect.left + pos.x - tooltip.offsetWidth / 2) + 'px';
+    tooltip.style.top  = (rect.top  + pos.y - tooltip.offsetHeight - 15) + 'px';
 });
 
-// Quando o mouse sair da bolinha
-cy.on('mouseout', 'node.bottom-event', function(evt){
-    evt.target.removeClass('hover'); 
+cy.on('mouseout', 'node.bottom-event', function(evt) {
+    evt.target.removeClass('hover');
     tooltip.style.display = 'none';
 });
 
-
-// Alternar visibilidade ao clicar na foto do filósofo
-cy.on('tap', 'node.phil-portrait', function(evt){
-    var node = evt.target;
+// ─── Clique no retrato: mostra/oculta TODOS os detalhes do filósofo ────────
+cy.on('tap', 'node.phil-portrait', function(evt) {
+    var node     = evt.target;
     var philName = node.data('phil_name');
-    
-    var detailSelector = '.details_' + philName.replace(/ /g, '_');
-    var detailsElements = cy.elements(detailSelector);
-    
-    if (detailsElements.length > 0) {
-        // Se o estilo computado atual for 'none', muda para 'element' (visível), senão esconde
-        if (detailsElements.style('display') === 'none') {
-            detailsElements.style('display', 'element');
-        } else {
-            detailsElements.style('display', 'none');
-        }
+    var philX    = node.position('x');
+
+    var selector = '.details_' + philName.replace(/ /g, '_');
+    var details  = cy.elements(selector);
+
+    if (details.length > 0) {
+        var isHidden = details.style('display') === 'none';
+        details.style('display', isHidden ? 'element' : 'none');
     }
+
+});
+
+// ─── Fechar tooltip ao clicar no fundo ─────────────────────────────────────
+cy.on('tap', function(evt) {
+    if (evt.target === cy) tooltip.style.display = 'none';
 });
