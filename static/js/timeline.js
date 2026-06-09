@@ -77,6 +77,8 @@ tooltip.id = 'custom-tooltip';
 document.body.appendChild(tooltip);
 
 // Quando o mouse passar por cima da bolinha
+var activeNode = null;
+var isOverTooltip = false;
 cy.on('mouseover', 'node.bottom-event', function(evt){
     var node = evt.target;
     var text = node.data('tooltip');
@@ -124,8 +126,28 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
 
 // Quando o mouse sair da bolinha
 cy.on('mouseout', 'node.bottom-event', function(evt){
-    evt.target.removeClass('hover'); 
+    setTimeout(function() {
+        if (!isOverTooltip) {
+            tooltip.style.display = 'none';
+            if (activeNode) {
+                activeNode.removeClass('hover');
+                activeNode = null;
+            }
+        }
+    }, 80);
+});
+
+tooltip.addEventListener('mouseenter', function() {
+    isOverTooltip = true;
+});
+
+tooltip.addEventListener('mouseleave', function() {
+    isOverTooltip = false;
     tooltip.style.display = 'none';
+    if (activeNode) {
+        activeNode.removeClass('hover');
+        activeNode = null;
+    }
 });
 
 // Esconde o tooltip após scroll 
