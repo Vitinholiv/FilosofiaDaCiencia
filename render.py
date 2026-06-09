@@ -243,7 +243,7 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
 
 
     # Eventos Históricos e Trabalhos
-    for i, (year, text, color, row_offset) in enumerate(bottom_events):
+    for i, (year, row_offset, text, color) in enumerate(bottom_events):
         x_pos = (year - min_year) * scale_x
         y_pos = bottom_y + row_offset
 
