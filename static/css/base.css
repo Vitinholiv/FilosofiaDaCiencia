@@ -70,6 +70,11 @@ body {
     overflow: hidden;
 }
 
+/* Suporte a links */
+#custom-tooltip.has-links:hover {
+    pointer-events: auto;
+}
+
 /* Cria a setinha do balão nos eventos históricos e trabalhos */
 #custom-tooltip::after {
     content: '';

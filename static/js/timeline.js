@@ -98,6 +98,20 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
     tooltip.innerHTML = content;
     tooltip.style.display = 'block';
 
+    // Ativa pointer-events se houver links clicáveis
+    if (tooltip.querySelector('a')) {
+        tooltip.classList.add('has-links');
+    } else {
+        tooltip.classList.remove('has-links');
+    }
+
+    tooltip.querySelectorAll('a').forEach(function(a) {
+        a.style.color = '#0066cc';
+        a.style.wordBreak = 'break-word';
+        a.target = '_blank'; 
+        a.rel = 'noopener';
+    });
+
     var pos = node.renderedPosition();
     var cyContainer = cy.container().getBoundingClientRect();
 
