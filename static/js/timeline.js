@@ -105,6 +105,11 @@ cy.on('mouseout', 'node.bottom-event', function(evt){
     tooltip.style.display = 'none';
 });
 
+// Esconde o tooltip após scroll 
+document.querySelector('.scroll-wrapper').addEventListener('scroll', function(){
+    tooltip.style.display = 'none';
+    cy.nodes('.bottom-event.hover').removeClass('hover');
+});
 
 // Alternar visibilidade ao clicar na foto do filósofo
 cy.on('tap', 'node.phil-portrait', function(evt){
