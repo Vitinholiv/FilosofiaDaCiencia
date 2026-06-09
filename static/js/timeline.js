@@ -80,18 +80,27 @@ document.body.appendChild(tooltip);
 cy.on('mouseover', 'node.bottom-event', function(evt){
     var node = evt.target;
     var text = node.data('tooltip');
+    var imgUrls = node.data('img_urls') || [];
 
     node.addClass('hover');
 
     if (!text) return;
 
-    tooltip.innerHTML = text;
+    // Monta o conteúdo do balão com imagem opcional
+    var content = '';
+    if (imgUrls.length > 0) {
+        imgUrls.forEach(function(url) {
+            content += '<img src="' + url + '" style="width:100%;max-height:140px;object-fit:cover;border-radius:3px;margin-bottom:8px;display:block;">';
+        });
+    }
+    content += '<span>' + text + '</span>';
+
+    tooltip.innerHTML = content;
     tooltip.style.display = 'block';
 
     var pos = node.renderedPosition();
     var cyContainer = cy.container().getBoundingClientRect();
-    
-    // Centraliza o balão e posiciona acima do nó
+
     var leftPos = cyContainer.left + pos.x - (tooltip.offsetWidth / 2);
     var topPos = cyContainer.top + pos.y - tooltip.offsetHeight - 15;
 

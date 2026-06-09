@@ -65,8 +65,9 @@ body {
     pointer-events: none;
     z-index: 1000;
     text-align: justify;
-    max-width: 300px; /* Garante que o texto longo quebre em várias linhas */
+    max-width: 280px;
     line-height: 1.4;
+    overflow: hidden;
 }
 
 /* Cria a setinha do balão nos eventos históricos e trabalhos */

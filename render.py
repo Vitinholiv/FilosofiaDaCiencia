@@ -243,16 +243,21 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
 
 
     # Eventos Históricos e Trabalhos
-    for i, (year, row_offset, text, color) in enumerate(bottom_events):
+    for i, (year, row_offset, img_url, text, color) in enumerate(bottom_events):
         x_pos = (year - min_year) * scale_x
         y_pos = bottom_y + row_offset
 
+        node_data = {
+            "id": f"bottom_event_{i}",
+            "tooltip": text
+        }
+
+        if img_url:
+            node_data["img_urls"] = img_url
+
         elements.append({
             "classes": "bottom-event",
-            "data": {
-                "id": f"bottom_evt_{i}",
-                "tooltip": text
-            },
+            "data": node_data,
             "position": {"x": x_pos, "y": y_pos},
             "style": {
                 "background-color": hex_to_rgba(hex_color=color, alpha=1, factor=1),
