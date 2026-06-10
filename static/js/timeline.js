@@ -79,7 +79,10 @@ document.body.appendChild(tooltip);
 // Quando o mouse passar por cima da bolinha
 var activeNode = null;
 var isOverTooltip = false;
+var closeTimer = null;
 cy.on('mouseover', 'node.bottom-event', function(evt){
+    clearTimeout(closeTimer);
+
     var node = evt.target;
     var text = node.data('tooltip');
     var imgUrls = node.data('img_urls') || [];
@@ -128,7 +131,7 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
 cy.on('mouseout', 'node.bottom-event', function(evt){
     var node = evt.target;
     node.removeClass('hover');
-    setTimeout(function() {
+    closeTimer = setTimeout(function() {
         if (!isOverTooltip) {
             tooltip.style.display = 'none';
             if (activeNode) {
@@ -140,6 +143,7 @@ cy.on('mouseout', 'node.bottom-event', function(evt){
 });
 
 tooltip.addEventListener('mouseenter', function() {
+    clearTimeout(closeTimer);
     isOverTooltip = true;
 });
 
