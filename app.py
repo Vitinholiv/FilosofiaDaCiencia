@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    
     nodes = {
         "Comida": (-700, 2026, "#88CC88"),
         "Bacon": (-290, 350, "#ddcc44"),
