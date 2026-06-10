@@ -126,6 +126,8 @@ cy.on('mouseover', 'node.bottom-event', function(evt){
 
 // Quando o mouse sair da bolinha
 cy.on('mouseout', 'node.bottom-event', function(evt){
+    var node = evt.target;
+    node.removeClass('hover');
     setTimeout(function() {
         if (!isOverTooltip) {
             tooltip.style.display = 'none';
