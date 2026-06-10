@@ -114,25 +114,29 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
         new_edge(src, tgt)
 
 
-
-
-
-
-
-
-
-
-
-
-# ==========================================
+    # ==========================================
     # NOVO CÓDIGO: CARD DOS FILÓSOFOS
     # ==========================================
-    for name, year, img in philosophers:
+    
+    for name, year, offset, img, info, btn_data in philosophers:
+        
+        card_offset = 85
+        btn_offset = 55
+        btn_up = 32
+
+        # Para que as caixas fiquem na tela
+        
+        if offset > 120:
+            card_offset = -85
+            btn_offset = -55
+            btn_up = -32
+
+        
         line_info = node_metrics.get("Bacon")
         if not line_info: continue
         
         x_pos = (year - min_year) * scale_x
-        y_pos_line = line_info['y_pos']
+        y_pos_line = line_info['y_pos'] + offset
         
         # Criamos as classes para o JS controlar
         detail_class = f"phil-detail details_{name.replace(' ', '_')}"
@@ -147,12 +151,13 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
                 "shape": "ellipse",
                 "width": 55,
                 "height": 55,
+                "z-index": 8,
                 "background-color": "#fff",
                 "border-width": 3,
                 "border-color": "#ddcc44",
                 "background-image": img,
                 "background-fit": "cover",
-                "label": "Clicar no filósofo Uchiha Bacon...\n" + name,
+                "label": "Clicar no filósofo " + name,
                 "text-valign": "bottom",
                 "text-margin-y": 8,
                 "font-size": 11,
@@ -163,8 +168,8 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
         })
         
         # B) Caixa de Resumo
-        card_y = y_pos_line + 85
-        info_id = f"info_{name}"
+        card_y = y_pos_line + card_offset
+        info_id = info 
         elements.append({
             "classes": detail_class,
             "data": {
@@ -176,6 +181,7 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
                 "shape": "round-rectangle",
                 "width": 260,
                 "height": 70,
+                "z-index": 9,
                 "background-color": "#d9d9d9",
                 "color": "#000",
                 "text-valign": "center",
@@ -200,39 +206,57 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
             }
         })
         
+        btn_y = card_y + btn_offset
+        
+        # Background preto atrás dos botões
+        elements.append({
+            "classes": detail_class,
+            "position": {"x": x_pos, "y": btn_y + (btn_up * 1.5)}, 
+            "data": {"id": f"btn_bg_{name}", "label": "",},
+            "style": {
+                "shape": "round-rectangle",
+                "width": 260,
+                "height": abs(btn_up) * 4 + 20,  
+                "background-color": "#000000",
+                "border-width": 2,
+                "border-color": "#888888",
+                "z-index": 10,  
+                "label": "",
+                "color": "transparent"
+            }
+        })
+        
         # C) Botões Coloridos
+        
         buttons = [
-            ("Filósofos contrários", "#ff6666"),
-            ("Filósofos adeptos", "#66cc66"),
-            ("Influenciados", "#6688ff"),
-            ("Principais obras", "#aa88cc")
+            ("Filósofos contrários", "#ff6666", btn_data.get("Contrários", [])),
+            ("Filósofos adeptos",    "#66cc66", btn_data.get("Adeptos", [])),
+            ("Influenciados",        "#6688ff", btn_data.get("Influenciados", {"Concorda": [], "Discorda": []})),
+            ("Principais obras",     "#aa88cc", btn_data.get("Obras", []))
         ]
         
-        btn_y = card_y + 55
-        for i, (btn_text, btn_color) in enumerate(buttons):
+        
+        for i, (btn_text, btn_color, btn_items) in enumerate(buttons):
             elements.append({
                 "classes": detail_class,
-                "data": {"id": f"btn_{name}_{i}", "label": btn_text},
+                "data": {"id": f"btn_{name}_{i}", "label": btn_text, 'items': btn_items}, 
                 "position": {"x": x_pos, "y": btn_y},
                 "style": {
                     "shape": "round-rectangle",
                     "width": 240,
                     "height": 26,
+                    "z-index": 11,
                     "background-color": btn_color,
                     "color": "#000",
                     "text-valign": "center",
                     "text-halign": "center",
                     "font-size": 11,
-                    "font-weight": "bold"
+                    "font-weight": "bold",
+                    "label": btn_text,  
                 }
             })
-            btn_y += 32
-
-
-
-
-
-
+            
+            btn_y += btn_up
 
 
 

@@ -25,9 +25,91 @@ def index():
     y_tracks = {
         "Comida": 0, "Bacon": -60, "Calabresa": 60, "Salada": -120, "Carne": -60
     }
-
+    
+    
+    # Formato: (nome, ano, offset, imagem, resumo, btn_data)
+    #
+    # btn_data aceita:
+    #   'Contrários':  [ [nome, descricao], ... ]
+    #   'Adeptos':     [ [nome, descricao], ... ]
+    #   'Influenciado': {
+    #       'Concorda': [ [nome, descricao], ... ],
+    #       'Discorda': [ [nome, descricao], ... ]
+    #   }
+    #   'Obras':       [ [titulo, descricao], ... ]
+ 
     philosophers = [
-        ("Francis Bacon", -69, "bacon.png")
+        ("Francis Bacon", -69, 150, "static/img/bacon.png", 'Barriga de porco defumada', {
+            'Contrários': [
+                ('Calabresa', 'Calabresa tem muito sal!'),
+                ('Salada',    'Salada é muito ruim!')
+            ],
+            'Adeptos': [
+                ['Variedades', 'Variedades é o futuro!']
+            ],
+            'Influenciado': {
+                'Concorda': [['Pepino', 'Pepino é bom demais!']],
+                'Discorda': [['Alface', 'Alface é ruim demais!']]
+            },
+            'Obras': [
+                ['Rubrica',    'Ano 1 - Falava sobre a Rubrica'],
+                ['Kopesh',     'Ano 2 - Falava sobre um machado'],
+                ['Fogueteiro', 'Ano 3 - Falava sobre um foguete']
+            ],
+        }),
+        ("Francis Calabresa", 142, 150, "static/img/calabresa.png", 'Embutido feito com carne', {
+            'Contrários':   [['Bacon', 'Bacon é gorduroso demais!']],
+            'Adeptos':      [['Carne', 'Carne é nossa origem!']],
+            'Influenciado': {
+                'Concorda': [['Carne', 'Compartilhamos a origem animal.']],
+                'Discorda': [['Salada', 'Vegetais não têm sabor.']]
+            },
+            'Obras': [
+                ['Defumados', 'Ano 1 - Tratado sobre defumação']
+            ],
+        }),
+        ("Francis Pepino", -500, -60, "static/img/pepino.png", 'Vegetal', {
+            'Contrários':   [['Bacon', 'Carne é desnecessária!']],
+            'Adeptos':      [['Alface', 'Juntos somos mais verdes!']],
+            'Influenciado': {
+                'Concorda': [['Alface', 'Partilhamos a leveza.']],
+                'Discorda': [['Calabresa', 'Embutidos são nocivos.']]
+            },
+            'Obras': [
+                ['Verde Vivo', 'Ano 1 - Manifesto vegetal']
+            ],
+        }),
+        ("Francis Alface", -132, 50, "static/img/alface.png", 'Outro vegetal', {
+            'Contrários':   [['Calabresa', 'Processados são o mal!']],
+            'Adeptos':      [['Pepino', 'Unidos pelo verde!']],
+            'Influenciado': {
+                'Concorda': [['Pepino', 'Somos ambos refrescantes.']],
+                'Discorda': [['Bacon', 'Gordura em excesso é ruim.']]
+            },
+            'Obras': [],
+        }),
+        ("Francis Alcatra", 290, -100, "static/img/alcatra.png", 'Bovinae', {
+            'Contrários':   [['Salada', 'Salada não sustenta!']],
+            'Adeptos':      [['Calabresa', 'Ambos somos proteína!']],
+            'Influenciado': {
+                'Concorda': [['Carne', 'Mesma família, mesmo propósito.']],
+                'Discorda': [['Pepino', 'Vegetais são insuficientes.']]
+            },
+            'Obras': [
+                ['Cortes Nobres', 'Ano 1 - Guia de cortes bovinos']
+            ],
+        }),
+        ("Francis Variedades", -700, 0, "static/img/variedades.png", 'Cortes de vários animais', {
+            'Contrários':   [],
+            'Adeptos':      [['Bacon', 'Bacon abraça a variedade!']],
+            'Influenciado': {
+                'Concorda': [['Calabresa', 'Diversidade é riqueza.']],
+                'Discorda': []
+            },
+            'Obras': [
+                ['Pluralidade', 'Ano 1 - Sobre a diversidade animal']
+            ],
+        }),
     ]
 
     """ 
