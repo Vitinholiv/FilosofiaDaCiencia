@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-from render import build_timeline_elements, hex_to_rgba
+from render import build_timeline_elements
 
 app = Flask(__name__)
 
