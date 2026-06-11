@@ -1,9 +1,55 @@
 /* Estilos Base da Página */
 
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ccc;
+    font-family: sans-serif;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 #scroll-wrapper {
-    width: 100%; 
+    width: 100vw;
     height: 100vh;
-    overflow-x: auto; 
-    overflow-y: hidden; 
-    -webkit-overflow-scrolling: touch; 
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Container do Cytoscape */
+
+#cy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Marcadores de Época */
+
+.epoch-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 1px dashed rgba(255, 255, 255, 0.15);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.epoch-label {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 0;
+    pointer-events: none;
 }

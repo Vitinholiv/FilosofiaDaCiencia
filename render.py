@@ -34,7 +34,7 @@ def general_metrics(philosophies):
         
         x_pos = (mid_year - min_year) * scale_x
         height_px = 3; gap_px = 3
-        width_px = max(150, (duration * scale_x) - gap_px)        
+        width_px = max(150, (duration * scale_x) + gap_px)        
         y_pos = timeline_center + y_offset
         
         philosophy_metrics[name] = {
@@ -57,10 +57,11 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
     for name, metric in philosophy_metrics.items():
         color = metric['color']
         elements.append({
+            "classes": "philosophy",
             "data": {
                 "id": name, 
                 "width": metric['width_px'],
-                "height": metric['height_px']  
+                "height": metric['height_px']
             },
             "position": {"x": metric['x_pos'], "y": metric['y_pos']},
             "style": {
@@ -78,7 +79,7 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
         tgt_color = tgt_info['color']
         
         # Vértice Invisível em Source
-        delta_year = 50
+        delta_year = 40
         branch_year = tgt_info['start_year'] - delta_year
         branch_x = (branch_year - min_year) * scale_x
         branch_y = src_info['y_pos']
@@ -103,6 +104,7 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
 
         # Aresta ligando as correntes filosóficas
         elements.append({
+            "classes": "philosophy",
             "data": {
                 "source": inv_src_id, 
                 "target": inv_tgt_id,
