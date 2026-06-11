@@ -20,6 +20,28 @@ export const cyStyles = [
         }
     },
     {
+        selector: 'node[img]',
+        style: {
+            'background-image': 'data(img)',
+            'background-fit': 'cover',
+            'background-color': '#ffffff'
+        }
+    },
+    {
+        selector: '.circle-node',
+        style: {
+            'shape': 'ellipse',
+            'z-index': 8,
+            'label': 'data(label)',
+            'text-valign': 'bottom',
+            'text-margin-y': 8,
+            'font-size': 11,
+            'font-weight': 'bold',
+            'color': '#ccc',
+            'text-wrap': 'wrap'
+        }
+    },
+    {
         selector: 'edge.philosophy',
         style: {
             'width': 4,

@@ -125,14 +125,73 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
         
     return elements
 
+def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, label="", border_width=2):
+    """Abstração de um nó circular. Serve tanto para filósofos quanto eventos."""
+    # Propriedades Gerais Dinâmicas
+    final_classes = f"circle-node {classes}".strip()
+    data_dict = {
+        "id": node_id, 
+        "label": label
+    }
+    style = {
+        "width": size,
+        "height": size,
+        "border-width": border_width,
+        "border-color": color
+    }
+
+    # Visibilidade por Cor ou Imagem
+    if img_url:
+        data_dict["img"] = img_url 
+    else:
+        style["background-color"] = hex_to_rgba(color, 1) if color.startswith('#') else color
+
+    return {
+        "classes": final_classes,
+        "data": data_dict, 
+        "position": {"x": x, "y": y},
+        "style": style
+    }
+
+def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x):
+    """Constroi a informação completa dos nós que representam os filósofos"""
+    elements = []
+    for name, philosophy, year, offset, img, info in philosophers:
+        # Informação da Corrente Filosófica
+        line_info = philosophy_metrics.get(philosophy) 
+        if not line_info: 
+            continue
+        x_pos = (year - min_year)*scale_x
+        y_pos_line = line_info['y_pos'] + offset
+
+        # Criação de vértice circular correspondente
+        safe_name = name.lower().replace(' ', '_')
+        phil_id = f"phil_{safe_name}"
+        phil_node = build_circle_node(
+            node_id=phil_id,
+            x=x_pos,
+            y=y_pos_line,
+            size=55,
+            color=line_info['color'],
+            classes="phil-portrait",
+            img_url=img,
+            label=name,
+            border_width=3
+        )
+        phil_node["data"]["phil_name"] = name
+
+        elements.append(phil_node)
+    return elements
+
 def build_timeline_elements(data):
     """Função principal de construção da timeline."""
 
     # Extração de Dados
+    epochs = data.get('epochs', [])
     philosophies = data.get('philosophies', {})
     bifurcations = data.get('bifurcations', [])
-    epochs = data.get('epochs', [])
-    
+    philosophers = data.get('philosophers', [])
+
     # Métricas Base
     min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies)
 
@@ -142,6 +201,7 @@ def build_timeline_elements(data):
     # Construção dos Elementos
     elements = []
     elements.extend(build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x))
+    elements.extend(build_philosophers(philosophers, philosophy_metrics, min_year, scale_x))
 
     return {
         "elements": elements,

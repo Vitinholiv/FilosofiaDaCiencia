@@ -31,12 +31,12 @@ def visualization_data():
     ]
 
     philosophers = [
-        ("Francis Bacon", -69, 150, "static/img/bacon.png", 'Barriga de porco defumada'),
-        ("Francis Calabresa", 142, 150, "static/img/calabresa.png", 'Embutido feito com carne'),
-        ("Francis Pepino", -500, -60, "static/img/pepino.png", 'Vegetal'),
-        ("Francis Alface", -132, 50, "static/img/alface.png", 'Outro vegetal'),
-        ("Francis Alcatra", 290, -100, "static/img/alcatra.png", 'Bovinae'),
-        ("Francis Variedades", -700, 0, "static/img/variedades.png", 'Cortes de vários animais')
+        ("Francis Bacon", "Bacon", -69, 150, "static/img/bacon.png", 'Barriga de porco defumada'),
+        ("Francis Calabresa", "Calabresa", 142, 150, "static/img/calabresa.png", 'Embutido feito com carne'),
+        ("Francis Pepino", "Salada", -500, -60, "static/img/pepino.png", 'Vegetal'),
+        ("Francis Alface", "Salada", -132, 50, "static/img/alface.png", 'Outro vegetal'),
+        ("Francis Alcatra", "Carne", 290, -100, "static/img/alcatra.png", 'Bovinae'),
+        ("Francis Variedades", "Carne", -700, 0, "static/img/variedades.png", 'Cortes de vários animais')
     ]
 
     works = {
