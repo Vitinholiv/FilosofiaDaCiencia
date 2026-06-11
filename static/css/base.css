@@ -52,4 +52,6 @@ body {
     text-transform: uppercase;
     z-index: 0;
     pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
 }

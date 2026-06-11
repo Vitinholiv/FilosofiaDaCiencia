@@ -22,12 +22,12 @@ def visualization_data():
     epochs = [
         (-600, "Período Pré-Socrático"),
         (-400, "Grécia Clássica"),
-        (0,    "Início da Era Comum"),
+        (1,    "Início da Era Comum"),
         (500,  "Alta Idade Média"),
         (1200, "Baixa Idade Média"),
-        (1500, "Renascimento / Idade Moderna"),
-        (1800, "Séc XIX / Contemp."),
-        (2000, "Séc XXI")
+        (1500, "Idade Moderna"),
+        (1800, "Idade Contemporânea"),
+        (2000, "Globalização")
     ]
 
     philosophers = [

@@ -12,7 +12,6 @@ def hex_to_rgba(hex_color, alpha, factor=1):
 
 def general_metrics(philosophies):
     """Calcula o grid básico, posições e metadados das correntes filosóficas"""
-
     # Eixo X
     epsilon = 200
     min_year = -700 - epsilon
@@ -46,8 +45,20 @@ def general_metrics(philosophies):
             'height_px': height_px,
             'color': color
         }
-        
     return min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics
+
+def build_epochs(epochs, min_year, scale_x):
+    """Calcula a posição X (em pixels) para as marcações de época."""
+    epoch_markers = []
+    
+    for year, label in epochs:
+        x_pos = (year - min_year) * scale_x
+        epoch_markers.append({
+            "year": year,
+            "label": label,
+            "x_pos": x_pos
+        })
+    return epoch_markers
 
 def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
     """Gera os elementos das correntes principais (nós) e suas ramificações (arestas)."""
@@ -120,9 +131,13 @@ def build_timeline_elements(data):
     # Extração de Dados
     philosophies = data.get('philosophies', {})
     bifurcations = data.get('bifurcations', [])
+    epochs = data.get('epochs', [])
     
     # Métricas Base
     min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies)
+
+    # Marcação de Épocas
+    epoch_markers = build_epochs(epochs, min_year, scale_x)
     
     # Construção dos Elementos
     elements = []
@@ -130,6 +145,7 @@ def build_timeline_elements(data):
 
     return {
         "elements": elements,
+        "epochs": epoch_markers,
         "total_width": total_width,
         "total_height": total_height,
         "min_year": min_year,
