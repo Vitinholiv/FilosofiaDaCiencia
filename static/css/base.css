@@ -1,22 +1,35 @@
-/* Estilos da Página */
+/* Estilos Base da Página */
 
 body {
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
-    overflow-x: hidden;
     background-color: #121212;
     color: #ccc;
     font-family: sans-serif;
+    overflow-x: hidden;
     overflow-y: hidden;
 }
-.scroll-wrapper {
+
+#scroll-wrapper {
     width: 100vw;
     height: 100vh;
     overflow-x: auto;
     overflow-y: hidden;
     position: relative;
+    -webkit-overflow-scrolling: touch;
 }
+
+/* Container do Cytoscape */
+
+#cy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Marcadores de Época */
+
 .epoch-line {
     position: absolute;
     top: 0;
@@ -27,6 +40,7 @@ body {
     z-index: 0;
     pointer-events: none;
 }
+
 .epoch-label {
     position: absolute;
     top: 20px;
@@ -38,56 +52,6 @@ body {
     text-transform: uppercase;
     z-index: 0;
     pointer-events: none;
-}
-#instrucoes {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(0,0,0,0.8);
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    z-index: 10;
-    color: #8ab4f8;
-}
-
-#custom-tooltip {
-    position: absolute;
-    display: none;
-    background: #f4f4f4;
-    border: 1px solid #ccc;
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-family: sans-serif;
-    font-size: 13px;
-    color: #333;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    pointer-events: none;
-    z-index: 1000;
-    text-align: justify;
-    max-width: 300px; /* Garante que o texto longo quebre em várias linhas */
-    line-height: 1.4;
-}
-
-/* Cria a setinha do balão nos eventos históricos e trabalhos */
-#custom-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -6px;
-    border-width: 6px;
-    border-style: solid;
-    border-color: #f4f4f4 transparent transparent transparent;
-}
-
-/* Container da Biblioteca */
-
-#cy {
-    height: 100vh;
-    width: {{ total_width }}px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
+    text-align: center;
+    white-space: nowrap;
 }

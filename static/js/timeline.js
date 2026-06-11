@@ -1,125 +1,137 @@
-var rawData = document.getElementById('elements-data').textContent;
-var elements = JSON.parse(rawData);
+import { cyStyles } from '../css/cy_styles.js';
+export const TimelineApp = {
+    cy: null,
+    wrapper: null,
 
-var cy = cytoscape({
-    container: document.getElementById('cy'),
-    elements: elements,
-    zoomingEnabled: false,
-    panningEnabled: false,
-    boxSelectionEnabled: false,
-    autoungrabify: true,
-    autounselectify: true,
+    /** Inicializa a timeline. */
+    init(){
+        this.wrapper = document.querySelector('#scroll-wrapper');
+        this.loadData();
+    },
 
-    style: [
-        {
-            selector: 'node',
-            style: {
-                'shape': 'round-rectangle',
-                'width': 'data(width)',
-                'height': 3,
-                'background-color': 'rgba(138, 180, 248, 0.05)',
-                'border-width': 1,
-                'border-color': 'rgba(138, 180, 248, 0.4)',
-                'label': 'data(id)',
-                'color': '#8ab4f8', 
-                'font-size': '16px',
-                'text-margin-y': '10px',
-                'text-valign': 'bottom',
-                'text-halign': 'center',
-                'font-family': 'monospace',
-                'text-color': '#000000'
+    /** Faz uma chamada para a API da aplicação, retornando os dados já processados para uso. */
+    loadData(){
+        fetch('/timeline')
+            .then(response => {
+                if(!response.ok) throw new Error("Erro ao buscar /timeline");
+                return response.json();
+            })
+            .then(data => this.buildGraph(data))
+            .catch(error => console.error("Erro no TimelineApp:", error));
+    },
+
+    /** Ativa a interatividade dos componentes do grafo. */
+    bindInteractivity(){
+        // Detecção de Cliques
+        this.cy.on('tap', (evt) => {
+            const target = evt.target;
+            const allUI = '.phil-detail, .clickable-button, .event-detail';
+
+            // Clique Arbitrário
+            if (target === this.cy) {
+                this.cy.elements(allUI).style('display', 'none');
+                return;
             }
-        },
-        {
-            selector: 'edge',
-            style: {
-                'width': 4,
-                'line-color': 'data(targetColor)',
-                'target-arrow-color': 'data(targetColor)',
-                'target-arrow-shape': 'none',
-                'curve-style': 'bezier',
-                'edge-distances': 'node-position'
+
+            // Filósofo
+            if(target.hasClass('phil-portrait')){
+                const philName = target.data('phil_name');
+                if(!philName) return;
+
+                const safeName = philName.toLowerCase().replace(/ /g, '_');
+                const selector = '.details_' + safeName;
+                const details = this.cy.elements(selector);
+
+                const isHidden = details.style('display') === 'none';
+                this.cy.elements(allUI).style('display', 'none');
+
+                if(isHidden && details.length > 0){
+                    details.style('display', 'element');
+                }
+                return;
             }
-        },
-        {   // Style dos eventos históricos/trabalhos
-            selector: 'node.bottom-event',
-            style: {
-                'label': '',
-                'shape': 'ellipse',
-                'width': 20,
-                'height': 20,
-                'border-width': 1
+
+            // Evento
+            if (target.hasClass('event')) {
+                const eventId = target.data('event_id');
+                if (!eventId) return;
+
+                const selector = '.details_' + eventId;
+                const details = this.cy.elements(selector);
+                const isHidden = details.style('display') === 'none';
+
+                this.cy.elements(allUI).style('display', 'none');
+
+                if (isHidden && details.length > 0) {
+                    details.style('display', 'element');
+                }
+                return;
             }
-        },
-        {   // Style para o zoom
-            selector: 'node.bottom-event.hover',
-            style: {
-                'width': 26,
-                'height': 26,
-                'border-width': 2
+
+            // Coisas não interativas mas que não devem desativar nada
+            if(target.hasClass('phil-detail','event-detail')){
+                return;
             }
-        },
-        {
-            selector: '.phil-detail',
-            style: {
-                'display': 'none'
+
+            // Coisas futuramente clicáveis
+            if(target.hasClass('clickable-button')){
+                return;
             }
+
+            this.cy.elements(allUI).style('display', 'none');
+        });
+    },
+
+    /** Cria o grafo que representa a timeline. Qualquer abstração de qualquer tipo de grafo interage com esse grafo geral criado. */
+    buildGraph(data){
+        const realHeightPx = window.innerHeight;
+        const scaleY = realHeightPx / data.total_height;
+
+        // Escala de elementos
+        data.elements.forEach(el => {
+            if(el.position && el.position.y){
+                el.position.y = el.position.y * scaleY;
+            }
+        });
+
+        // Plotagem da épocas no fundo
+        if(data.epochs){
+            data.epochs.forEach(ep => {
+                const line = document.createElement('div');
+                line.className = 'epoch-line';
+                line.style.left = `${ep.x_pos}px`;
+
+                const label = document.createElement('div');
+                label.className = 'epoch-label';
+                label.style.left = `${ep.x_pos}px`;
+                label.innerText = ep.label;
+
+                this.wrapper.appendChild(line);
+                this.wrapper.appendChild(label);
+            });
         }
-    ],
-    layout: {
-        name: 'preset' 
+
+        // Criação do grafo com passagem dos elementos já processados
+        const cyContainer = document.createElement('div');
+        cyContainer.id = 'cy';
+        cyContainer.style.width = `${data.total_width}px`;
+        cyContainer.style.height = `100vh`;
+        this.wrapper.appendChild(cyContainer);
+
+        cytoscape.warnings(false);
+        this.cy = cytoscape({
+            container: cyContainer,
+            elements: data.elements,
+            zoomingEnabled: false,
+            panningEnabled: false,
+            boxSelectionEnabled: false,
+            autoungrabify: true,
+            autounselectify: true,
+            style: cyStyles,
+            layout: { name: 'preset' }
+        });
+
+        // Ativa Interatividade
+        this.bindInteractivity();
     }
-});
-
-// Cria o elemento HTML do tooltip
-var tooltip = document.createElement('div');
-tooltip.id = 'custom-tooltip';
-document.body.appendChild(tooltip);
-
-// Quando o mouse passar por cima da bolinha
-cy.on('mouseover', 'node.bottom-event', function(evt){
-    var node = evt.target;
-    var text = node.data('tooltip');
-
-    node.addClass('hover');
-
-    if (!text) return;
-
-    tooltip.innerHTML = text;
-    tooltip.style.display = 'block';
-
-    var pos = node.renderedPosition();
-    var cyContainer = cy.container().getBoundingClientRect();
-    
-    // Centraliza o balão e posiciona acima do nó
-    var leftPos = cyContainer.left + pos.x - (tooltip.offsetWidth / 2);
-    var topPos = cyContainer.top + pos.y - tooltip.offsetHeight - 15;
-
-    tooltip.style.left = leftPos + 'px';
-    tooltip.style.top = topPos + 'px';
-});
-
-// Quando o mouse sair da bolinha
-cy.on('mouseout', 'node.bottom-event', function(evt){
-    evt.target.removeClass('hover'); 
-    tooltip.style.display = 'none';
-});
-
-
-// Alternar visibilidade ao clicar na foto do filósofo
-cy.on('tap', 'node.phil-portrait', function(evt){
-    var node = evt.target;
-    var philName = node.data('phil_name');
-    
-    var detailSelector = '.details_' + philName.replace(/ /g, '_');
-    var detailsElements = cy.elements(detailSelector);
-    
-    if (detailsElements.length > 0) {
-        // Se o estilo computado atual for 'none', muda para 'element' (visível), senão esconde
-        if (detailsElements.style('display') === 'none') {
-            detailsElements.style('display', 'element');
-        } else {
-            detailsElements.style('display', 'none');
-        }
-    }
-});
+};

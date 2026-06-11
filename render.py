@@ -1,6 +1,5 @@
-# Adição do argumento factor com defalt 1
-# factor < 1 são usados na borda dos círculos de bottom_events, a cor fica levemente mais escura que hex_color
 def hex_to_rgba(hex_color, alpha, factor=1):
+    """Conversão de Hex para RGBA com argumento adicional factor de clareamento"""
     hex_color = hex_color.lstrip('#')
     r = int(hex_color[0:2], 16)
     g = int(hex_color[2:4], 16)
@@ -11,66 +10,87 @@ def hex_to_rgba(hex_color, alpha, factor=1):
     b = int(b * factor)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
-def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], philosophers=[]):
-    color_map = {}; node_metrics = {}
-    for name in nodes.keys():
-        color_map[name] = nodes[name][2]
-
+def general_metrics(philosophies):
+    """Calcula o grid básico, posições e metadados das correntes filosóficas"""
+    # Eixo X
     epsilon = 200
     min_year = -700 - epsilon
     max_year = 2026 + epsilon
     scale_x = 1.5
     total_width = (max_year - min_year) * scale_x
-    base_y = 400
-    bottom_y = base_y + 200 # Posição dos círculos 
-
-    elements = []
-    gap_px = -3
     
-    # Nós (Linhas de Pensamento)
-    for name in nodes.keys():
-        start_y, end_y, color = nodes[name]
-        duration = end_y - start_y
-        mid_year = start_y + (duration / 2)
+    # Eixo Y
+    total_height = 1000 
+    timeline_center = total_height * 0.4
+    events_center = total_height * 0.9
+    
+    philosophy_metrics = {}
+    for name, values in philosophies.items():
+        start_year, end_year, y_offset, color = values
+        
+        duration = end_year - start_year
+        mid_year = start_year + (duration / 2)
+        
         x_pos = (mid_year - min_year) * scale_x
-        width_px = (duration * scale_x) - gap_px
+        height_px = 3; gap_px = 3
+        width_px = max(150, (duration * scale_x) + gap_px)        
+        y_pos = timeline_center + y_offset
         
-        if width_px < 150: 
-            width_px = 150
-
-        y_pos = base_y + y_tracks.get(name, 0)
-        
-        node_metrics[name] = {
-            'start_y': start_y,
-            'end_y': end_y,
+        philosophy_metrics[name] = {
+            'start_year': start_year, 
+            'end_year': end_year,
             'x_pos': x_pos,
-            'y_pos': y_pos 
+            'y_pos': y_pos,
+            'width_px': width_px,
+            'height_px': height_px,
+            'color': color
         }
-        
+    return min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics
+
+def build_epochs(epochs, min_year, scale_x):
+    """Calcula a posição X (em pixels) para as marcações de época."""
+    epoch_markers = []
+    
+    for year, label in epochs:
+        x_pos = (year - min_year) * scale_x
+        epoch_markers.append({
+            "year": year,
+            "label": label,
+            "x_pos": x_pos
+        })
+    return epoch_markers
+
+def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
+    """Gera os elementos das correntes principais (nós) e suas ramificações (arestas)."""
+    elements = []
+    
+    # Construção das Correntes Filosóficas
+    for name, metric in philosophy_metrics.items():
+        color = metric['color']
         elements.append({
+            "classes": "philosophy",
             "data": {
                 "id": name, 
-                "width": width_px
+                "width": metric['width_px'],
+                "height": metric['height_px']
             },
-            "position": {"x": x_pos, "y": y_pos},
+            "position": {"x": metric['x_pos'], "y": metric['y_pos']},
             "style": {
                 "background-color": hex_to_rgba(color, 0.12),
                 "border-color": hex_to_rgba(color, 0.6),
-                "color": color,           
-                "text-color": color       
+                "color": color   
             }
         })
         
-    # Arestas (Ligações entre Nós)
-    def new_edge(src, tgt):
-        tgt_color = color_map.get(tgt, '#555')
-        src_info = node_metrics.get(src)
-        tgt_info = node_metrics.get(tgt)
+    # Construção das Bifurcações
+    for src, tgt in bifurcations:
+        src_info = philosophy_metrics.get(src)
+        tgt_info = philosophy_metrics.get(tgt)
+        tgt_color = tgt_info['color']
         
-        if not (src_info and tgt_info):
-            return
-            
-        branch_year = tgt_info['start_y'] - 50
+        # Vértice Invisível em Source
+        delta_year = 40
+        branch_year = tgt_info['start_year'] - delta_year
         branch_x = (branch_year - min_year) * scale_x
         branch_y = src_info['y_pos']
         inv_src_id = f"anchor_{src}_to_{tgt}"
@@ -78,186 +98,280 @@ def build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events=[], phi
         elements.append({
             "data": {"id": inv_src_id},
             "position": {"x": branch_x, "y": branch_y},
-            "style": {
-                "width": 1,
-                "height": 1,
-                "opacity": 0,
-                "events": "no"
-            }
+            "style": {"width": 1, "height": 1, "opacity": 0, "events": "no"}
         })
         
-        tgt_start_x = (tgt_info['start_y'] - min_year) * scale_x
-        tgt_start_y = tgt_info['y_pos']
+        # Vértice Invisível em Target
+        arrival_x = (tgt_info['start_year'] - min_year) * scale_x
+        arrival_y = tgt_info['y_pos']
         inv_tgt_id = f"anchor_{tgt}_from_{src}"
         
         elements.append({
             "data": {"id": inv_tgt_id},
-            "position": {"x": tgt_start_x, "y": tgt_start_y},
-            "style": {
-                "width": 1,
-                "height": 1,
-                "opacity": 0,
-                "events": "no"
-            }
+            "position": {"x": arrival_x, "y": arrival_y},
+            "style": {"width": 1, "height": 1, "opacity": 0, "events": "no"}
         })
 
-        edge_element = {
+        # Aresta ligando as correntes filosóficas
+        elements.append({
+            "classes": "philosophy",
             "data": {
+                "id": f"edge_branch_{src}_{tgt}",
                 "source": inv_src_id, 
                 "target": inv_tgt_id,
                 "targetColor": tgt_color
             }
+        })
+    return elements
+
+def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, label="", border_width=2):
+    """Abstração de um nó circular. Serve tanto para filósofos quanto eventos."""
+
+    # Propriedades Gerais Dinâmicas
+    final_classes = f"circle-node {classes}".strip()
+    data_dict = {
+        "id": node_id, 
+        "label": label
+    }
+    style = {
+        "width": size,
+        "height": size,
+        "border-width": border_width,
+        "border-color": color
+    }
+
+    # Visibilidade por Cor ou Imagem
+    if img_url:
+        data_dict["img"] = img_url 
+    else:
+        style["background-color"] = hex_to_rgba(color, 1) if color.startswith('#') else color
+
+    return {
+        "classes": final_classes,
+        "data": data_dict, 
+        "position": {"x": x, "y": y},
+        "style": style
+    }
+
+def build_rect_node(node_id, x, y, width, height, color, classes="", label="", border_width=0, z_index=9, font_size=11, font_color="#000000", font_family="sans-serif"):
+    """Abstração dos elementos retangulares da UI."""
+
+    final_classes = f"rect-node {classes}".strip()
+    return {
+        "classes": final_classes,
+        "data": {"id": node_id, "label": label},
+        "position": {"x": x, "y": y},
+        "style": {
+            "width": width,
+            "height": height,
+            "background-color": color,
+            "border-width": border_width,
+            "z-index": z_index,
+            "font-size": font_size,
+            "color": font_color,
+            "font-family": font_family,
+            "text-wrap": "wrap",
+            "text-max-width": width - 16,
+            "padding": 2
         }
-        elements.append(edge_element)
+    }
 
-    for src, tgt in bifurcations:
-        new_edge(src, tgt)
+def build_events(events, min_year, scale_x, events_center):
+    """Constroi os eventos históricos da linha do tempo."""
+    
+    elements = []
+    SHOW_NAMES = False
+    CARD_WIDTH = 260
+    SUMMARY_HEIGHT = 70
 
-
-
-
-
-
-
-
-
-
-
-
-# ==========================================
-    # NOVO CÓDIGO: CARD DOS FILÓSOFOS
-    # ==========================================
-    for name, year, img in philosophers:
-        line_info = node_metrics.get("Bacon")
-        if not line_info: continue
-        
+    for i, (year, y_offset, img, label, tooltip, color) in enumerate(events):
+        # Evento
         x_pos = (year - min_year) * scale_x
-        y_pos_line = line_info['y_pos']
+        y_pos = events_center + y_offset
         
-        # Criamos as classes para o JS controlar
-        detail_class = f"phil-detail details_{name.replace(' ', '_')}"
-        
-        # A) Retrato do Filósofo (na linha principal)
-        portrait_id = f"phil_{name}"
+        event_id = f"event_{i}"
+        event_node = build_circle_node(
+            node_id=event_id,
+            x=x_pos,
+            y=y_pos,
+            size=30,
+            color=color,
+            classes="event",
+            img_url=img,
+            label=label if SHOW_NAMES else "",
+            border_width=2
+        )
+        event_node["data"]["event_id"] = event_id
+        event_node["data"]["tooltip"] = tooltip
+        if img:
+            event_node["data"]["imgUrls"] = [img]
+            
+        elements.append(event_node)
+
+        # Interface
+        detail_class = f"event-detail details_{event_id}"
+        card_y = y_pos - 75
+        summary_id = f"summary_{event_id}"
+        summary_node = build_rect_node(
+            node_id=summary_id,
+            x=x_pos, y=card_y,
+            width=CARD_WIDTH, 
+            height="label",
+            color="#d9d9d9", 
+            classes=detail_class,
+            label=f"{label}\n\n{tooltip}",
+            border_width=4,
+            font_size=12,
+            font_color="#222222", 
+            font_family="monospace"
+        )
+        summary_node["style"]["border-color"] = color
+        elements.append(summary_node)
+
+        # Ligação
         elements.append({
-            "classes": "phil-portrait",
-            "data": {"id": portrait_id, "label": name, "phil_name": name},
-            "position": {"x": x_pos, "y": y_pos_line},
-            "style": {
-                "shape": "ellipse",
-                "width": 55,
-                "height": 55,
-                "background-color": "#fff",
-                "border-width": 3,
-                "border-color": "#ddcc44",
-                "background-image": img,
-                "background-fit": "cover",
-                "label": "Clicar no filósofo Uchiha Bacon...\n" + name,
-                "text-valign": "bottom",
-                "text-margin-y": 8,
-                "font-size": 11,
-                "font-weight": "bold",
-                "color": "#333",
-                "text-wrap": "wrap"
-            }
-        })
-        
-        # B) Caixa de Resumo
-        card_y = y_pos_line + 85
-        info_id = f"info_{name}"
-        elements.append({
-            "classes": detail_class,
+            "classes": detail_class + " dashed-link",
             "data": {
-                "id": info_id, 
-                "label": f"{name} (1561–1626)\n\nFilósofo empirista."
-            },
-            "position": {"x": x_pos, "y": card_y},
-            "style": {
-                "shape": "round-rectangle",
-                "width": 260,
-                "height": 70,
-                "background-color": "#d9d9d9",
-                "color": "#000",
-                "text-valign": "center",
-                "text-halign": "center",
-                "text-wrap": "wrap",
-                "font-size": 11,
-                "border-width": 0,
-                "border-top-width": 20,
-                "border-color": "#ddcc44"
+                "id": f"edge_{event_id}_{summary_id}", 
+                "source": event_id, 
+                "target": summary_id
             }
         })
-        
-        # Linha pontilhada
+    return elements
+
+def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x):
+    """Constroi a informação completa dos nós que representam os filósofos"""
+
+    elements = []
+    SHOW_NAMES = True
+    CARD_WIDTH = 260
+    BUTTON_HEIGHT = 26
+    GAP_SUMMARY = 0
+    GAP_BUTTONS = 12
+    PORTRAIT_RADIUS = 27.5
+    GAP_TO_CARD = 30
+    
+    def get_direction_sign(y_position):
+        return 1 if y_position <= 500 else -1
+
+    for name, philosophy, year, offset, img, info in philosophers:
+        line_info = philosophy_metrics.get(philosophy) 
+        if not line_info: 
+            continue
+            
+        x_pos = (year - min_year)*scale_x
+        y_pos_line = line_info['y_pos'] + offset
+        sign = get_direction_sign(y_pos_line)
+
+        # Botão Geral do Filósofo
+        safe_name = name.lower().replace(' ', '_')
+        phil_id = f"phil_{safe_name}"
+        phil_node = build_circle_node(
+            node_id=phil_id,
+            x=x_pos,
+            y=y_pos_line,
+            size=55,
+            color=line_info['color'],
+            classes="phil-portrait",
+            img_url=img,
+            label=name if SHOW_NAMES else "",
+            border_width=3
+        )
+        phil_node["data"]["phil_name"] = name
+        elements.append(phil_node)
+
+        text_content = f"{name}\n\n{info}"
+        chars_per_line = 34
+        lines = 0
+        for paragraph in text_content.split('\n'):
+            if paragraph == "":
+                lines += 1
+            else:
+                lines += (len(paragraph) + chars_per_line - 1) // chars_per_line
+        estimated_card_height = max(70, (lines * 15) + 20) 
+
+        # Variáveis para Stacking dos Botões
+        dist_to_card_center = PORTRAIT_RADIUS + GAP_TO_CARD + (estimated_card_height / 2)
+        card_y = y_pos_line + (sign * dist_to_card_center)
+
+        detail_class = f"phil-detail details_{safe_name}"
+        button_class = f"clickable-button details_{safe_name}"
+        summary_id = f"summary_{safe_name}"
+
+        # Resumo
+        summary_node = build_rect_node(
+            node_id=summary_id,
+            x=x_pos, y=card_y,
+            width=CARD_WIDTH, height="label",
+            color="#d9d9d9", 
+            classes=detail_class,
+            label=text_content,
+            border_width=4,
+            font_size=12,
+            font_color="#222222", 
+            font_family="monospace" 
+        )
+        summary_node["style"]["border-color"] = line_info['color']
+        elements.append(summary_node)
+
+        # Ligação
         elements.append({
-            "classes": detail_class,
-            "data": {"source": portrait_id, "target": info_id},
-            "style": {
-                "width": 2,
-                "line-color": "#b3b3b3",
-                "line-style": "dashed",
-                "target-arrow-shape": "none"
-            }
+            "classes": detail_class + " dashed-link",
+            "data": {"source": phil_id, "target": summary_id}
         })
-        
-        # C) Botões Coloridos
-        buttons = [
+
+        # Botões
+        dist_to_first_btn = (estimated_card_height / 2) + GAP_SUMMARY + (BUTTON_HEIGHT / 2)
+        current_btn_y = card_y + (sign * dist_to_first_btn)
+
+        btn_labels = [
             ("Filósofos contrários", "#ff6666"),
             ("Filósofos adeptos", "#66cc66"),
             ("Influenciados", "#6688ff"),
             ("Principais obras", "#aa88cc")
         ]
-        
-        btn_y = card_y + 55
-        for i, (btn_text, btn_color) in enumerate(buttons):
-            elements.append({
-                "classes": detail_class,
-                "data": {"id": f"btn_{name}_{i}", "label": btn_text},
-                "position": {"x": x_pos, "y": btn_y},
-                "style": {
-                    "shape": "round-rectangle",
-                    "width": 240,
-                    "height": 26,
-                    "background-color": btn_color,
-                    "color": "#000",
-                    "text-valign": "center",
-                    "text-halign": "center",
-                    "font-size": 11,
-                    "font-weight": "bold"
-                }
-            })
-            btn_y += 32
 
+        for i, (btn_text, btn_color) in enumerate(btn_labels):
+            elements.append(build_rect_node(
+                node_id=f"btn_{safe_name}_{i}",
+                x=x_pos, y=current_btn_y,
+                width=CARD_WIDTH, height=BUTTON_HEIGHT,
+                color=btn_color,
+                classes=button_class,
+                label=btn_text,
+                z_index=11
+            ))
+            current_btn_y += sign * (BUTTON_HEIGHT + GAP_BUTTONS)
+            
+    return elements
 
+def build_timeline_elements(data):
+    """Função principal de construção da timeline."""
 
+    # Extração de Dados
+    epochs = data.get('epochs', [])
+    events = data.get('events', [])
+    philosophies = data.get('philosophies', {})
+    bifurcations = data.get('bifurcations', [])
+    philosophers = data.get('philosophers', [])
 
+    # Métricas Base
+    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies)
 
+    # Marcação de Épocas
+    epoch_markers = build_epochs(epochs, min_year, scale_x)
+    
+    # Construção dos Elementos
+    elements = []
+    elements.extend(build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x))
+    elements.extend(build_philosophers(philosophers, philosophy_metrics, min_year, scale_x))
+    elements.extend(build_events(events, min_year, scale_x, events_center))
 
-
-
-
-
-
-
-
-
-
-    # Eventos Históricos e Trabalhos
-    for i, (year, text, color, row_offset) in enumerate(bottom_events):
-        x_pos = (year - min_year) * scale_x
-        y_pos = bottom_y + row_offset
-
-        elements.append({
-            "classes": "bottom-event",
-            "data": {
-                "id": f"bottom_evt_{i}",
-                "tooltip": text
-            },
-            "position": {"x": x_pos, "y": y_pos},
-            "style": {
-                "background-color": hex_to_rgba(hex_color=color, alpha=1, factor=1),
-                "border-color": hex_to_rgba(hex_color=color, alpha=1, factor=0.5)   # A borda dos círculos é 50% mais escura que a cor do interior
-            }
-        })
-
-    return elements, total_width, min_year, scale_x
+    return {
+        "elements": elements,
+        "epochs": epoch_markers,
+        "total_width": total_width,
+        "total_height": total_height,
+        "min_year": min_year,
+        "scale_x": scale_x
+    }

@@ -1,17 +1,15 @@
-from flask import Flask, render_template
-from render import build_timeline_elements, hex_to_rgba
-import json
+from flask import Flask, render_template, jsonify
+from render import build_timeline_elements
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    nodes = {
-        "Comida": (-700, 2026, "#88CC88"),
-        "Bacon": (-290, 350, "#ddcc44"),
-        "Calabresa": (-350, 800, "#cc4466"),
-        "Salada": (-625, -100, "#22EE32"),
-        "Carne": (400, 1100, "#7E2135")
+def visualization_data():
+    philosophies  = {
+        "Comida": (-700, 2026, 0, "#88CC88"),
+        "Bacon": (-290, 350, 60, "#ddcc44"),
+        "Calabresa": (-350, 800, 120, "#cc4466"),
+        "Salada": (-625, -100, -120, "#22EE32"),
+        "Carne": (400, 1100, -60, "#7E2135")
     }
 
     bifurcations = [
@@ -21,60 +19,137 @@ def index():
         ("Comida", "Carne")
     ]
 
-    y_tracks = {
-        "Comida": 0, "Bacon": -60, "Calabresa": 60, "Salada": -120, "Carne": -60
-    }
+    epochs = [
+        (-600, "Período Pré-Socrático"),
+        (-400, "Grécia Clássica"),
+        (1,    "Início da Era Comum"),
+        (500,  "Alta Idade Média"),
+        (1200, "Baixa Idade Média"),
+        (1500, "Idade Moderna"),
+        (1800, "Idade Contemporânea"),
+        (2000, "Globalização")
+    ]
 
     philosophers = [
-        ("Francis Bacon", -69, "bacon.png")
+        ("Francis Bacon", "Bacon", -240, 0, "static/img/bacon.png", 'Barriga de porco defumada'),
+        ("Francis Calabresa", "Calabresa", -297, 0, "static/img/calabresa.png", 'Embutido feito com carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne '),
+        ("Francis Pepino", "Salada", -180, 0, "static/img/pepino.png", 'Vegetal'),
+        ("Francis Alface", "Salada", -590, 0, "static/img/alface.png", 'Outro vegetal'),
+        ("Francis Alcatra", "Carne", 450, 0, "static/img/alcatra.png", 'Bovinae'),
+        ("Francis Variedades", "Carne", 800, 0, "static/img/variedades.png", 'Cortes de vários animais')
     ]
 
-    """ 
-    Visualização de trabalhos publicados no canto inferior da tela.
-    Inspirado em https://pt.mathigon.org/timeline
-    """
-    # Formato: (ano, texto do balão, cor, offset_y)
-    # Exemplo: Se bottom_y = 300 e offset_y = 80, o cículo terá seu centro com coordenada y bottom_y + offset_y = 380
-    # Recall que y "cresce" para baixo na tela
+    works = {
+        "Francis Bacon": [
+            ('Rubrica',    'Ano 1 - Falava sobre a Rubrica'),
+            ('Kopesh',     'Ano 2 - Falava sobre um machado'),
+            ('Fogueteiro', 'Ano 3 - Falava sobre um foguete')
+        ],
+        "Francis Calabresa": [
+            ('Defumados', 'Ano 1 - Tratado sobre defumação')
+        ],
+        "Francis Pepino": [
+            ('Verde Vivo', 'Ano 1 - Manifesto vegetal')
+        ],
+        "Francis Alcatra": [
+            ('Cortes Nobres', 'Ano 1 - Guia de cortes bovinos')
+        ],
+        "Francis Variedades": [
+            ('Pluralidade', 'Ano 1 - Sobre a diversidade animal')
+        ]
+    }
 
-    bottom_events = [
-        (-400, "-400: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#cc0066", 0),
-        (-380, "-400: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ff9100", 10),
-        (-360, "-400: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#00ffff", 20),
-        (-340, "-400: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#6f00ff", 30),
-        (-320, "-300: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#008800", 0),
-        (-300, "-200: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ffffff", 10),
-        (-280, "50: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ffee07", 20),
-        (-260, "50: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ff0883", 30),
-        (-200, "50: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ff0000", 0),
-        (-200, "50: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#ffee00", 30),
-        (-200, "50: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", "#7afd00", 60),
-        (2004, "2004: Nasce o proeminente matemático Vitor Hugo de Souza.", "#60ff03", 0)
+    influences = {
+        "Francis Bacon": [
+            ("Pepino", "Pepino é bom demais!", "Concorda"),
+            ("Alface", "Alface é ruim demais!", "Discorda")
+        ],
+        "Francis Calabresa": [
+            ("Carne", "Compartilhamos a origem animal.", "Concorda"),
+            ("Salada", "Vegetais não têm sabor.", "Discorda")
+        ],
+        "Francis Pepino": [
+            ("Alface", "Partilhamos a leveza.", "Concorda"),
+            ("Calabresa", "Embutidos são nocivos.", "Discorda")
+        ],
+        "Francis Alface": [
+            ("Pepino", "Somos ambos refrescantes.", "Concorda"),
+            ("Bacon", "Gordura em excesso é ruim.", "Discorda")
+        ],
+        "Francis Alcatra": [
+            ("Carne", "Mesma família, mesmo propósito.", "Concorda"),
+            ("Pepino", "Vegetais são insuficientes.", "Discorda")
+        ],
+        "Francis Variedades": [
+            ("Calabresa", "Diversidade é riqueza.", "Concorda")
+        ]
+    }
+
+    adepts = {
+        "Francis Bacon": [
+            ("Variedades", "Variedades é o futuro!")
+        ],
+        "Francis Calabresa": [
+            ("Carne", "Carne é nossa origem!")
+        ],
+        "Francis Pepino": [
+            ("Alface", "Juntos somos mais verdes!")
+        ],
+        "Francis Alface": [
+            ("Pepino", "Unidos pelo verde!")
+        ],
+        "Francis Alcatra": [
+            ("Calabresa", "Ambos somos proteína!")
+        ],
+        "Francis Variedades": [
+            ("Bacon", "Bacon abraça a variedade!")
+        ]
+    }
+
+    oppositions = {
+        "Francis Bacon": [
+            ("Calabresa", "Calabresa tem muito sal!"),
+            ("Salada", "Salada é muito ruim!")
+        ],
+        "Francis Calabresa": [
+            ("Bacon", "Bacon é gorduroso demais!")
+        ],
+        "Francis Pepino": [
+            ("Bacon", "Carne é desnecessária!")
+        ],
+        "Francis Alface": [
+            ("Calabresa", "Processados são o mal!")
+        ],
+        "Francis Alcatra": [
+            ("Salada", "Salada não sustenta!")
+        ]
+    }
+
+    events = [
+        (-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
     ]
 
-    historical_epochs = [
-        {"year": -600, "label": "Período Pré-Socrático"},
-        {"year": -400, "label": "Grécia Clássica"},
-        {"year": 0,    "label": "Início da Era Comum"},
-        {"year": 500,  "label": "Alta Idade Média"},
-        {"year": 1200, "label": "Baixa Idade Média"},
-        {"year": 1500, "label": "Renascimento / Idade Moderna"},
-        {"year": 1800, "label": "Séc XIX / Contemp."},
-        {"year": 2000, "label": "Séc XXI"}
-    ]
+    return {
+        "philosophies": philosophies,
+        "bifurcations": bifurcations,
+        "epochs": epochs,
+        "philosophers": philosophers,
+        "works": works,
+        "influences": influences,
+        "adepts": adepts,
+        "oppositions": oppositions,
+        "events": events
+    }
 
-    # Aqui passamos a lista philosophers como último argumento
-    elements, total_width, min_year, scale_x = build_timeline_elements(nodes, bifurcations, y_tracks, bottom_events, philosophers)
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    for epoch in historical_epochs:
-        epoch['x'] = (epoch['year'] - min_year) * scale_x
-
-    return render_template(
-        'index.html', 
-        elements_json=json.dumps(elements),
-        epochs=historical_epochs,
-        total_width=total_width
-    )
+@app.route('/timeline')
+def timeline_api():
+    data = visualization_data()
+    resultado = build_timeline_elements(data)
+    return jsonify(resultado)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=True)

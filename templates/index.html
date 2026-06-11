@@ -3,22 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>Linha do Tempo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.26.0/cytoscape.min.js"></script>
-    <link rel="stylesheet" href="./static/css/base.css">
 </head>
 <body>
-    <div class="scroll-wrapper">
-        {% for epoch in epochs %}
-        <div class="epoch-line" style="left: {{ epoch.x }}px;"></div>
-        <div class="epoch-label" style="left: {{ epoch.x }}px;">{{ epoch.label }} ({{ epoch.year }})</div>
-        {% endfor %}
-        <div id="cy" style="width: {{ total_width }}px;"></div>
+    <div id="scroll-wrapper">
     </div>
-
-    <script id="elements-data" type="application/json">
-        {{ elements_json | safe }}
-    </script>
-    <script src="./static/js/scroller.js"></script>
-    <script src="./static/js/timeline.js"></script>
+    <script type="module" src="{{ url_for('static', filename='js/base.js') }}"></script>
 </body>
 </html>
