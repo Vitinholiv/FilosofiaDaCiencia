@@ -15,8 +15,7 @@ export const cyStyles = [
             'text-margin-y': '10px',
             'text-valign': 'bottom',
             'text-halign': 'center',
-            'font-family': 'monospace',
-            'text-color': '#000000'
+            'font-family': 'monospace'
         }
     },
     {
@@ -53,6 +52,19 @@ export const cyStyles = [
         }
     },
     {
+        selector: '.rect-node',
+        style: {
+            'shape': 'round-rectangle',
+            'label': 'data(label)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'text-wrap': 'wrap',
+            'font-size': 11,
+            'color': '#000',
+            'border-color': '#888'
+        }
+    },
+    {
         selector: 'node.event',
         style: { 'label': '', 'shape': 'ellipse', 'width': 20, 'height': 20, 'border-width': 1 }
     },
@@ -61,7 +73,21 @@ export const cyStyles = [
         style: { 'width': 26, 'height': 26, 'border-width': 2 }
     },
     {
-        selector: '.phil-detail',
+        selector: '.phil-detail, .event-detail',
         style: { 'display': 'none' }
-    }
+    },
+    {
+        selector: '.clickable-button',
+        style: { 'display': 'none' }
+    },
+    {
+        selector: '.dashed-link',
+        style: {
+            'width': 2,
+            'line-color': '#b3b3b3',
+            'line-style': 'dashed',
+            'target-arrow-shape': 'none',
+            'curve-style': 'straight'
+        }
+    },
 ];

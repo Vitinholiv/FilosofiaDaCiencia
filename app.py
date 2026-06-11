@@ -6,8 +6,8 @@ app = Flask(__name__)
 def visualization_data():
     philosophies  = {
         "Comida": (-700, 2026, 0, "#88CC88"),
-        "Bacon": (-290, 350, -60, "#ddcc44"),
-        "Calabresa": (-350, 800, 60, "#cc4466"),
+        "Bacon": (-290, 350, 60, "#ddcc44"),
+        "Calabresa": (-350, 800, 120, "#cc4466"),
         "Salada": (-625, -100, -120, "#22EE32"),
         "Carne": (400, 1100, -60, "#7E2135")
     }
@@ -31,12 +31,12 @@ def visualization_data():
     ]
 
     philosophers = [
-        ("Francis Bacon", "Bacon", -69, 150, "static/img/bacon.png", 'Barriga de porco defumada'),
-        ("Francis Calabresa", "Calabresa", 142, 150, "static/img/calabresa.png", 'Embutido feito com carne'),
-        ("Francis Pepino", "Salada", -500, -60, "static/img/pepino.png", 'Vegetal'),
-        ("Francis Alface", "Salada", -132, 50, "static/img/alface.png", 'Outro vegetal'),
-        ("Francis Alcatra", "Carne", 290, -100, "static/img/alcatra.png", 'Bovinae'),
-        ("Francis Variedades", "Carne", -700, 0, "static/img/variedades.png", 'Cortes de vários animais')
+        ("Francis Bacon", "Bacon", -240, 0, "static/img/bacon.png", 'Barriga de porco defumada'),
+        ("Francis Calabresa", "Calabresa", -297, 0, "static/img/calabresa.png", 'Embutido feito com carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne '),
+        ("Francis Pepino", "Salada", -180, 0, "static/img/pepino.png", 'Vegetal'),
+        ("Francis Alface", "Salada", -590, 0, "static/img/alface.png", 'Outro vegetal'),
+        ("Francis Alcatra", "Carne", 450, 0, "static/img/alcatra.png", 'Bovinae'),
+        ("Francis Variedades", "Carne", 800, 0, "static/img/variedades.png", 'Cortes de vários animais')
     ]
 
     works = {
