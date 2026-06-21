@@ -25,7 +25,7 @@ export const TimelineApp = {
         // Detecção de Cliques
         this.cy.on('tap', (evt) => {
             const target = evt.target;
-            const allUI = '.phil-detail, .clickable-button, .event-detail';
+            const allUI = '.phil-detail, .clickable-button, .event-detail, .btn-cards';
 
             // Clique Arbitrário
             if (target === this.cy) {
@@ -69,12 +69,23 @@ export const TimelineApp = {
             }
 
             // Coisas não interativas mas que não devem desativar nada
-            if(target.hasClass('phil-detail','event-detail')){
+            if(target.hasClass('phil-detail', 'event-detail')){
                 return;
             }
 
-            // Coisas futuramente clicáveis
+            // Botões de ação do filósofo
             if(target.hasClass('clickable-button')){
+                const safeName = target.data('safe_phil_name');
+                const btnKey   = target.data('btn_type');
+
+                const allPhilCards = this.cy.elements(`.cards-${safeName}`);
+                const thisGroup    = this.cy.elements(`.cards-${safeName}-${btnKey}`);
+                const isHidden     = thisGroup.length === 0 || thisGroup.first().style('display') === 'none';
+
+                allPhilCards.style('display', 'none');
+                if(isHidden && thisGroup.length > 0){
+                    thisGroup.style('display', 'element');
+                }
                 return;
             }
 
