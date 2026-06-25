@@ -81,6 +81,23 @@ export const cyStyles = [
         style: { 'display': 'none' }
     },
     {
+        selector: '.btn-cards',
+        style: { 'display': 'none' }
+    },
+    {
+        selector: 'node.card-header',
+        style: { 'font-weight': 'bold', 'text-valign': 'center' }
+    },
+    {
+        selector: 'edge.btn-cards',
+        style: {
+            'width': 2,
+            'line-color': 'data(lineColor)',
+            'target-arrow-shape': 'none',
+            'curve-style': 'bezier'
+        }
+    },
+    {
         selector: '.dashed-link',
         style: {
             'width': 2,
