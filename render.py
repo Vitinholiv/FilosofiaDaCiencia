@@ -13,7 +13,7 @@ def hex_to_rgba(hex_color, alpha, factor=1):
 def general_metrics(philosophies):
     """Calcula o grid básico, posições e metadados das correntes filosóficas"""
     # Eixo X
-    epsilon = 50
+    epsilon = 20
     min_year = 1600 - epsilon
     max_year = 2026 + epsilon
     scale_x = 10

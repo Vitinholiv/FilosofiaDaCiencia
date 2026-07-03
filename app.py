@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def visualization_data():
     philosophies = {
-        "Raízes de Euclides": (1550, 1625, 0, "#00FF44"),
+        "Raízes de Euclides": (1580, 1625, 0, "#00FF44"),
 
         "Empirismo": (1640, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
@@ -27,14 +27,14 @@ def visualization_data():
         "Confirmacionismo": (1945, 1969, 350, "#C10E47"),
         "Falsificacionismo": (1934, 1973, 200, "#C1003A"),
         "Naturalismo Epistemológico": (1951, 1975, 300, "#DB081D"),
-        "Tradições de Pesquisa": (1977, 2027, 200, "#D7032A"),
+        "Tradições de Pesquisa": (1977, 2026, 200, "#D7032A"),
         "Programa Forte": (1976, 2026, 50, "#E80A49"),
-        "Racionalismo Crítico": (1980, 2020, 350, "#D80229"),
-        "Programas de Pesquisa": (1970, 2020, 100, "#C00C4E"),
-        "Historicismo": (1968, 2012, 250, "#FF2453"),
-        "Anarquismo Epistemológico": (1982, 2025, 300, "#FF0026"),
-        "Demarcação Comportamental": (1978, 2028, 150, "#FF2121"),
-        "Empirismo Construtivo": (1980, 2030, 400, "#FF0048"),
+        "Racionalismo Crítico": (1980, 2026, 350, "#D80229"),
+        "Programas de Pesquisa": (1970, 2026, 100, "#C00C4E"),
+        "Historicismo": (1968, 2026, 250, "#FF2453"),
+        "Anarquismo Epistemológico": (1982, 2026, 300, "#FF0026"),
+        "Demarcação Comportamental": (1978, 2026, 150, "#FF2121"),
+        "Empirismo Construtivo": (1980, 2026, 400, "#FF0048"),
 
         "Racionalismo": (1630, 1709, -220, "#00FFDD"),
         "Monismo Panteísta": (1677, 1727, -270, "#00EECC"),
@@ -48,13 +48,13 @@ def visualization_data():
         "Neo-kantismo": (1870, 1955, -50, "#114EF4"),
         "Fenomenologia": (1900, 1941, -200, "#2525FF"),
         "Hermenêutica Filosófica": (1927, 1952, -250, "#2929FA"),
-        "Existencialismo": (1946, 1993, -150, "#540BCA"),
+        "Existencialismo": (1946, 2026, -150, "#540BCA"),
         "Logicismo": (1879, 1958, 0, "#6418FC"),
         "Estruturalismo Epistemológico": (1923, 1973, -100, "#711EF7"),
-        "Racionalismo Contemporâneo": (1957, 2007, -200, "#7B0ECF"),
-        "Problema de Gettier": (1963, 2013, -50, "#801EDC"),
-        "Confiabilismo": (1986, 2036, -100, "#7E1BE1"),
-        "Epistemologia de Virtudes": (1991, 2041, -250, "#7A0CB9"),
+        "Racionalismo Contemporâneo": (1957, 2026, -200, "#7B0ECF"),
+        "Problema de Gettier": (1963, 2026, -50, "#801EDC"),
+        "Confiabilismo": (1986, 2026, -100, "#7E1BE1"),
+        "Epistemologia de Virtudes": (1991, 2026, -250, "#7A0CB9"),
     }
 
     bifurcations = [
@@ -111,14 +111,11 @@ def visualization_data():
     ]
 
     epochs = [
-        (-600, "Período Pré-Socrático"),
-        (-400, "Grécia Clássica"),
-        (1,    "Início da Era Comum"),
-        (500,  "Alta Idade Média"),
-        (1200, "Baixa Idade Média"),
-        (1500, "Idade Moderna"),
-        (1800, "Idade Contemporânea"),
-        (2000, "Globalização")
+        (1600, "1600"), (1620, "1620"), (1640, "1640"), (1660, "1660"), (1680, "1680"),
+        (1700, "1700"), (1720, "1720"), (1740, "1740"), (1760, "1760"), (1780, "1780"),
+        (1800, "1800"), (1820, "1820"), (1840, "1840"), (1860, "1860"), (1880, "1880"),
+        (1900, "1900"), (1920, "1920"), (1940, "1940"), (1960, "1960"), (1980, "1980"),
+        (2000, "2000"), (2026, "2026")
     ]
     '''("Francis Bacon", "Bacon", -240, 0, "static/img/bacon.png", 'Barriga de porco defumada'),
         ("Francis Calabresa", "Calabresa", -297, 0, "static/img/calabresa.png", 'Embutido feito com carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne '),
