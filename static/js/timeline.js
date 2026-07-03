@@ -105,9 +105,6 @@ export const TimelineApp = {
 
     /** Cria o grafo que representa a timeline. Qualquer abstração de qualquer tipo de grafo interage com esse grafo geral criado. */
     buildGraph(data){
-        const realHeightPx = window.innerHeight;
-        const scaleY = realHeightPx / data.total_height;
-
         // Escala de elementos
 
 
@@ -133,9 +130,13 @@ export const TimelineApp = {
         if(typeof data.events_center === 'number'){
             const bandColor  = data.events_band_color      || '#cc0066';
             const bandHeight = data.events_band_height      || 70;
+            const bandOpacity = data.events_band_opacity !== undefined ? data.events_band_opacity : 0.08;
+            const bandBorderOpacity = data.events_band_border_opacity !== undefined ? data.events_band_border_opacity : 0.3;
             const textColor  = data.events_band_text_color  || bandColor;
             const textFont   = data.events_band_font        || 'monospace';
-            const bandY = data.events_center * scaleY;
+            // Mesma unidade de coordenadas usada pelos eventos (y_pos = events_center + y_offset,
+            // sem nenhuma escala extra) - o container do cytoscape já é dimensionado 1:1 em px.
+            const bandY = data.events_center;
  
             // Faixa preenchida, levemente transparente, sem interceptar cliques
             const band = document.createElement('div');
@@ -143,14 +144,16 @@ export const TimelineApp = {
             band.style.top = `${bandY - bandHeight / 2}px`;
             band.style.height = `${bandHeight}px`;
             band.style.width = `${data.total_width}px`;
-            band.style.backgroundColor = hexToRgba(bandColor, 0.08);
-            band.style.borderTop = `1px solid ${hexToRgba(bandColor, 0.3)}`;
-            band.style.borderBottom = `1px solid ${hexToRgba(bandColor, 0.3)}`;
+            band.style.backgroundColor = hexToRgba(bandColor, bandOpacity);
+            band.style.borderTop = `1px solid ${hexToRgba(bandColor, bandBorderOpacity)}`;
+            band.style.borderBottom = `1px solid ${hexToRgba(bandColor, bandBorderOpacity)}`;
  
-            // Rótulo: sempre centralizado na tela, translúcido; cor e fonte modularizadas via CSS vars
+            // Rótulo: acompanha o scroll junto com o resto do conteúdo (posição absoluta,
+            // centralizado horizontalmente ao longo de toda a largura da timeline)
             const label = document.createElement('div');
             label.className = 'events-band-label';
             label.style.top = `${bandY}px`;
+            label.style.left = `${data.total_width / 2}px`;
             label.style.setProperty('--events-band-label-color', hexToRgba(textColor, 0.6));
             label.style.setProperty('--events-band-label-font', textFont);
             label.innerText = 'Eventos Históricos e Científicos Importantes';
@@ -161,6 +164,8 @@ export const TimelineApp = {
             // Aspecto de partitura (opcional): linhas horizontais suaves dentro da faixa
             if(data.events_band_staff){
                 const staffLines = data.events_band_staff_lines || 5;
+                const staffOpacity = data.events_band_staff_opacity !== undefined ? data.events_band_staff_opacity : 0.15;
+                const staffColor = data.events_band_staff_color || bandColor;
                 const spacing = bandHeight / (staffLines + 1);
  
                 for(let i = 1; i <= staffLines; i++){
@@ -168,7 +173,7 @@ export const TimelineApp = {
                     staffLine.className = 'events-band-staff-line';
                     staffLine.style.top = `${bandY - bandHeight / 2 + spacing * i}px`;
                     staffLine.style.width = `${data.total_width}px`;
-                    staffLine.style.backgroundColor = hexToRgba(bandColor, 0.15);
+                    staffLine.style.backgroundColor = hexToRgba(staffColor, staffOpacity);
                     this.wrapper.appendChild(staffLine);
                 }
             }

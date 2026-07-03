@@ -10,7 +10,7 @@ def hex_to_rgba(hex_color, alpha, factor=1):
     b = int(b * factor)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
-def general_metrics(philosophies):
+def general_metrics(philosophies, events_band_height=70):
     """Calcula o grid básico, posições e metadados das correntes filosóficas"""
     # Eixo X
     epsilon = 20
@@ -22,7 +22,10 @@ def general_metrics(philosophies):
     # Eixo Y
     total_height = 1000
     timeline_center = total_height * 0.4
-    events_center = total_height * 0.9
+    # A faixa fica com metade da sua altura acima e metade abaixo de events_center;
+    # para colar exatamente na borda inferior da página, o centro precisa ficar
+    # deslocado de total_height por meia altura da faixa.
+    events_center = total_height - (events_band_height / 2)
 
     philosophy_metrics = {}
     for name, values in philosophies.items():
@@ -503,7 +506,8 @@ def build_timeline_elements(data):
     oppositions   = data.get('oppositions', {})
 
     # Métricas Base
-    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies)
+    events_band_height = data.get('events_band_height', 70)
+    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies, events_band_height)
 
     # Marcação de Épocas
     epoch_markers = build_epochs(epochs, min_year, scale_x)
@@ -524,8 +528,12 @@ def build_timeline_elements(data):
         "events_center": events_center,
         "events_band_color": data.get("events_band_color", "#cc0066"),
         "events_band_height": data.get("events_band_height", 70),
+        "events_band_opacity": data.get("events_band_opacity", 0.08),
+        "events_band_border_opacity": data.get("events_band_border_opacity", 0.3),
         "events_band_text_color": data.get("events_band_text_color", "#e0669c"),
         "events_band_font": data.get("events_band_font", "monospace"),
         "events_band_staff": data.get("events_band_staff", False),
-        "events_band_staff_lines": data.get("events_band_staff_lines", 5)
+        "events_band_staff_lines": data.get("events_band_staff_lines", 5),
+        "events_band_staff_opacity": data.get("events_band_staff_opacity", 0.15),
+        "events_band_staff_color": data.get("events_band_staff_color")
     }

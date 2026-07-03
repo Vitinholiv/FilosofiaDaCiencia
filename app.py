@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def visualization_data():
     philosophies = {
-        "Raízes de Euclides": (1550, 1605, 0, "#00FF44"),
+        "Raízes de Euclides": (1580, 1605, 0, "#00FF44"),
 
         "Empirismo": (1620, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
@@ -23,7 +23,7 @@ def visualization_data():
         "Verificacionismo Estrito (Waismann)": (1929, 1964, 150, "#FF1100"),
         "Verificacionismo Estrito (Ayer)": (1936, 1966, 100, "#FF0000"),
         "Coerentismo": (1931, 1971, 400, "#DD0022"),
-        "Fundacionalismo": (1928, 1984, 450, "#BB0044"),
+        "Fundacionalismo": (1928, 2026, 450, "#BB0044"),
         "Confirmacionismo": (1945, 1969, 350, "#C10E47"),
         "Falsificacionismo": (1934, 1973, 200, "#C1003A"),
         "Naturalismo Epistemológico": (1951, 1975, 300, "#DB081D"),
@@ -55,13 +55,14 @@ def visualization_data():
         "Problema de Gettier": (1963, 2026, -50, "#801EDC"),
         "Confiabilismo": (1986, 2026, -100, "#7E1BE1"),
         "Epistemologia de Virtudes": (1991, 2026, -250, "#7A0CB9"),
+
+        "Futuro": (2031, 2046, 25, "#AA0AB9")
     }
 
     bifurcations = [
         ("Raízes de Euclides", "Racionalismo"),
         ("Racionalismo", "Empirismo"),
         ("Empirismo", "Empirismo Materialista"),
-
         ("Empirismo", "Empirismo Moderado"),
         ("Empirismo", "Idealismo Empírico"),
         ("Empirismo", "Empirismo Cético"),
@@ -107,7 +108,21 @@ def visualization_data():
         ("Programas de Pesquisa", "Programa Forte"),
         ("Problema de Gettier", "Confiabilismo"),
         ("Materialismo Dialético", "Epistemologia de Virtudes"),
-        ("Hermenêutica Filosófica", "Racionalismo Contemporâneo")
+        ("Hermenêutica Filosófica", "Racionalismo Contemporâneo"),
+        ("Epistemologia de Virtudes","Futuro"),
+        ("Racionalismo Contemporâneo","Futuro"),
+        ("Existencialismo","Futuro"),
+        ("Confiabilismo","Futuro"),
+        ("Problema de Gettier","Futuro"),
+        ("Programa Forte","Futuro"),
+        ("Programas de Pesquisa","Futuro"),
+        ("Demarcação Comportamental","Futuro"),
+        ("Tradições de Pesquisa","Futuro"),
+        ("Historicismo","Futuro"),
+        ("Anarquismo Epistemológico","Futuro"),
+        ("Racionalismo Crítico","Futuro"),
+        ("Empirismo Construtivo","Futuro"),
+        ("Fundacionalismo","Futuro"),
     ]
 
     epochs = [
@@ -239,20 +254,24 @@ def visualization_data():
         ]'''
 
     events = [
-        (1550, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
-        (1710, -25, "static/img/bacon.png", "CEO Do Bacon 2", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1700, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1710, -33, "static/img/bacon.png", "CEO Do Bacon 2", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
         (1720, 0, "static/img/bacon.png", "CEO Do Bacon 3", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
-        (1730, 25, "static/img/bacon.png", "CEO Do Bacon 3", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
-        (2076, 0, "static/img/bacon.png", "CEO Do Bacon 4", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1730, 33, "static/img/bacon.png", "CEO Do Bacon 4", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (2026, 0, "static/img/bacon.png", "CEO Do Bacon 5", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
     ]
     #(-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
 
-    events_band_color = "#cc0066" 
+    events_band_color = "#34003d" 
     events_band_height = 100
-    events_band_text_color = "#e0669c"
+    events_band_opacity = 0.45
+    events_band_border_opacity = 0.45
+    events_band_text_color = "#be41d4"
     events_band_font = "monospace"
-    events_band_staff = True        # opcional: aspecto de partitura (linhas horizontais suaves)
-    events_band_staff_lines = 3     # opcional: quantidade de linhas da "partitura"
+    events_band_staff = True
+    events_band_staff_lines = 2
+    events_band_staff_opacity = 0.45
+    events_band_staff_color = "#630c72"
 
     return {
         "philosophies": philosophies,
@@ -266,10 +285,14 @@ def visualization_data():
         "events": events,
         "events_band_color": events_band_color,
         "events_band_height": events_band_height,
+        "events_band_opacity": events_band_opacity,
+        "events_band_border_opacity": events_band_border_opacity,
         "events_band_text_color": events_band_text_color,
         "events_band_font": events_band_font,
         "events_band_staff": events_band_staff,
-        "events_band_staff_lines": events_band_staff_lines
+        "events_band_staff_lines": events_band_staff_lines,
+        "events_band_staff_opacity": events_band_staff_opacity,
+        "events_band_staff_color": events_band_staff_color
     }
 
 @app.route('/')
