@@ -17,6 +17,15 @@ body {
     overflow-y: auto;
     position: relative;
     -webkit-overflow-scrolling: touch;
+
+    /* Esconde a barra de rolagem visualmente, mas mantém o scroll funcional
+       (wheel, drag do mouse via scroller.js, e swipe nativo no touch/mobile) */
+    scrollbar-width: none;       /* Firefox */
+    -ms-overflow-style: none;    /* IE / Edge legado */
+}
+
+#scroll-wrapper::-webkit-scrollbar {
+    display: none;               /* Chrome, Safari, Edge (Chromium) */
 }
 
 /* Container do Cytoscape */
@@ -137,25 +146,12 @@ body {
 }
 
 /* Faixa da Região de Eventos Históricos */
- 
-.events-band {
-    position: absolute;
-    left: 0;
-    z-index: 0;
-    pointer-events: none; /* nunca intercepta cliques nos eventos */
-}
- 
-.events-band-staff-line {
-    position: absolute;
-    left: 0;
-    height: 1px;
-    z-index: 0;
-    pointer-events: none; /* puramente decorativa, tal como a faixa */
-}
+/* O fundo, as bordas e as linhas de partitura da faixa agora são elementos reais
+   do grafo do Cytoscape (ver build_events_band em render.py), não DOM/CSS. */
 
 .events-band-label {
-    position: absolute;
-    transform: translate(-50%, -50%);
+    position: absolute; /* parte do conteúdo: rola junto com a timeline, como a própria faixa */
+    transform: translate(-50%, -50%); /* centralizado horizontalmente sobre a largura total da timeline */
     display: inline-block;
     font-size: 12px;
     font-weight: bold;
@@ -164,7 +160,8 @@ body {
     white-space: nowrap;
     z-index: 2;
     pointer-events: none; /* texto puramente visual, translúcido */
-
+ 
+    /* Cor e fonte modularizadas: definidas via JS a partir da config do backend */
     color: var(--events-band-label-color, #e0669c);
     font-family: var(--events-band-label-font, monospace);
 }

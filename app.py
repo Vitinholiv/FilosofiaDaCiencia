@@ -264,13 +264,13 @@ def visualization_data():
 
     events_band_color = "#34003d" 
     events_band_height = 100
-    events_band_opacity = 0.45
-    events_band_border_opacity = 0.45
+    events_band_opacity = 0.55
+    events_band_border_opacity = 0.00
     events_band_text_color = "#be41d4"
     events_band_font = "monospace"
     events_band_staff = True
     events_band_staff_lines = 2
-    events_band_staff_opacity = 0.45
+    events_band_staff_opacity = 0.55
     events_band_staff_color = "#630c72"
 
     return {
