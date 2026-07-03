@@ -135,3 +135,38 @@ body {
     text-align: center;
     white-space: nowrap;
 }
+
+/* Faixa da Região de Eventos Históricos */
+ 
+.events-band {
+    position: absolute;
+    left: 0;
+    z-index: 0;
+    pointer-events: none; /* nunca intercepta cliques nos eventos */
+}
+ 
+.events-band-staff-line {
+    position: absolute;
+    left: 0;
+    height: 1px;
+    z-index: 0;
+    pointer-events: none; /* puramente decorativa, tal como a faixa */
+}
+
+.events-band-label {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%); /* sempre centralizado na tela, na altura da faixa */
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 2;
+    pointer-events: none; /* texto puramente visual, translúcido */
+ 
+    /* Cor e fonte modularizadas: definidas via JS a partir da config do backend */
+    color: var(--events-band-label-color, #e0669c);
+    font-family: var(--events-band-label-font, monospace);
+}

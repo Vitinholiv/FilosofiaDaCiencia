@@ -520,5 +520,12 @@ def build_timeline_elements(data):
         "total_width": total_width,
         "total_height": total_height,
         "min_year": min_year,
-        "scale_x": scale_x
+        "scale_x": scale_x,
+        "events_center": events_center,
+        "events_band_color": data.get("events_band_color", "#cc0066"),
+        "events_band_height": data.get("events_band_height", 70),
+        "events_band_text_color": data.get("events_band_text_color", "#e0669c"),
+        "events_band_font": data.get("events_band_font", "monospace"),
+        "events_band_staff": data.get("events_band_staff", False),
+        "events_band_staff_lines": data.get("events_band_staff_lines", 5)
     }
