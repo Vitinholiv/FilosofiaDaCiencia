@@ -1,4 +1,14 @@
 import { cyStyles } from '../css/cy_styles.js';
+
+/** Converte cor hex (#rrggbb) em rgba com alpha ajustável. */
+function hexToRgba(hex, alpha) {
+    const clean = hex.replace('#', '');
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export const TimelineApp = {
     cy: null,
     wrapper: null,
@@ -120,6 +130,51 @@ export const TimelineApp = {
                 this.wrapper.appendChild(line);
                 this.wrapper.appendChild(label);
             });
+        }
+
+        // Faixa indicando a região dos eventos históricos
+        if(typeof data.events_center === 'number'){
+            const bandColor  = data.events_band_color      || '#cc0066';
+            const bandHeight = data.events_band_height      || 70;
+            const textColor  = data.events_band_text_color  || bandColor;
+            const textFont   = data.events_band_font        || 'monospace';
+            const bandY = data.events_center * scaleY;
+ 
+            // Faixa preenchida, levemente transparente, sem interceptar cliques
+            const band = document.createElement('div');
+            band.className = 'events-band';
+            band.style.top = `${bandY - bandHeight / 2}px`;
+            band.style.height = `${bandHeight}px`;
+            band.style.width = `${data.total_width}px`;
+            band.style.backgroundColor = hexToRgba(bandColor, 0.08);
+            band.style.borderTop = `1px solid ${hexToRgba(bandColor, 0.3)}`;
+            band.style.borderBottom = `1px solid ${hexToRgba(bandColor, 0.3)}`;
+ 
+            // Rótulo: sempre centralizado na tela, translúcido; cor e fonte modularizadas via CSS vars
+            const label = document.createElement('div');
+            label.className = 'events-band-label';
+            label.style.top = `${bandY}px`;
+            label.style.setProperty('--events-band-label-color', hexToRgba(textColor, 0.6));
+            label.style.setProperty('--events-band-label-font', textFont);
+            label.innerText = 'Eventos Históricos e Científicos Importantes';
+ 
+            this.wrapper.appendChild(band);
+            this.wrapper.appendChild(label);
+ 
+            // Aspecto de partitura (opcional): linhas horizontais suaves dentro da faixa
+            if(data.events_band_staff){
+                const staffLines = data.events_band_staff_lines || 5;
+                const spacing = bandHeight / (staffLines + 1);
+ 
+                for(let i = 1; i <= staffLines; i++){
+                    const staffLine = document.createElement('div');
+                    staffLine.className = 'events-band-staff-line';
+                    staffLine.style.top = `${bandY - bandHeight / 2 + spacing * i}px`;
+                    staffLine.style.width = `${data.total_width}px`;
+                    staffLine.style.backgroundColor = hexToRgba(bandColor, 0.15);
+                    this.wrapper.appendChild(staffLine);
+                }
+            }
         }
 
         // Criação do grafo com passagem dos elementos já processados

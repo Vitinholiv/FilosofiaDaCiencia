@@ -222,9 +222,20 @@ def visualization_data():
         ]'''
 
     events = [
-        
+        (1550, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1710, -25, "static/img/bacon.png", "CEO Do Bacon 2", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1720, 0, "static/img/bacon.png", "CEO Do Bacon 3", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1730, 25, "static/img/bacon.png", "CEO Do Bacon 3", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (2076, 0, "static/img/bacon.png", "CEO Do Bacon 4", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
     ]
     #(-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
+
+    events_band_color = "#cc0066" 
+    events_band_height = 100
+    events_band_text_color = "#e0669c"
+    events_band_font = "monospace"
+    events_band_staff = True        # opcional: aspecto de partitura (linhas horizontais suaves)
+    events_band_staff_lines = 3     # opcional: quantidade de linhas da "partitura"
 
     return {
         "philosophies": philosophies,
@@ -235,7 +246,13 @@ def visualization_data():
         "influences": influences,
         "adepts": adepts,
         "oppositions": oppositions,
-        "events": events
+        "events": events,
+        "events_band_color": events_band_color,
+        "events_band_height": events_band_height,
+        "events_band_text_color": events_band_text_color,
+        "events_band_font": events_band_font,
+        "events_band_staff": events_band_staff,
+        "events_band_staff_lines": events_band_staff_lines
     }
 
 @app.route('/')
