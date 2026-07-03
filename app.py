@@ -5,9 +5,9 @@ app = Flask(__name__)
 
 def visualization_data():
     philosophies = {
-        "Raízes de Euclides": (1550, 1625, 0, "#00FF44"),
+        "Raízes de Euclides": (1550, 1605, 0, "#00FF44"),
 
-        "Empirismo": (1640, 1734, 220, "#88FF00"),
+        "Empirismo": (1620, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
         "Empirismo Moderado": (1670, 1838, 370, "#CCFF00"),
         "Idealismo Empírico": (1710, 1760, 320, "#EEFF00"),
@@ -36,7 +36,7 @@ def visualization_data():
         "Demarcação Comportamental": (1978, 2028, 150, "#FF2121"),
         "Empirismo Construtivo": (1980, 2030, 400, "#FF0048"),
 
-        "Racionalismo": (1630, 1709, -220, "#00FFDD"),
+        "Racionalismo": (1610, 1709, -220, "#00FFDD"),
         "Monismo Panteísta": (1677, 1727, -270, "#00EECC"),
         "Ocasionalismo": (1674, 1724, -320, "#00DDCC"),
         "Monadologia": (1714, 1764, -170, "#00CCBB"),
@@ -139,7 +139,7 @@ def visualization_data():
             ]),
         ]),
         
-        ("Thomas Hobbes", "Empirismo Materialista", 1651, 0, "static/img/Thomas_Hobbes.jpg", [
+        ("Thomas Hobbes", "Empirismo Materialista", 1653, 0, "static/img/Thomas_Hobbes.jpg", [
             ("Informações pessoais", "Filósofo inglês, um dos principais pensadores da filosofia política moderna."),
             ("Vida e fatos", "Popularizou a frase “O homem é o lobo do homem”. Contemporâneo de Bacon."),
             ("Teorias/Ideias", [
