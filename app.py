@@ -128,11 +128,30 @@ def visualization_data():
         ("Francis Variedades", "Carne", 800, 0, "static/img/variedades.png", 'Cortes de vários animais')'''
     
     philosophers = [
-        ("Francis Bacon", "Programa Forte", 1900, 0, "static/img/bacon.png", 'Barriga de porco defumada'),
+        ("Francis Bacon", "Empirismo", 1620, 0, "static/img/Francis_bacon.jpg", [
+            ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
+            ("Vida e fatos", "Considerado um dos fundadores da Revolução Científica."),
+            ("Teorias/Ideias", [
+                "O conhecimento verdadeiro só nasce da experiência sensível organizada de forma metódica.",
+                "Método Indutivo: consiste nas fases de observação rigorosa, organização racional, formulação de hipóteses e comprovação.",
+                "O seu livro Novum Organum funda o programa empirista.",
+                "\"Saber é poder.\"",
+            ]),
+        ]),
+        
+        ("Thomas Hobbes", "Empirismo Materialista", 1651, 0, "static/img/Thomas_Hobbes.jpg", [
+            ("Informações pessoais", "Filósofo inglês, um dos principais pensadores da filosofia política moderna."),
+            ("Vida e fatos", "Popularizou a frase “O homem é o lobo do homem”. Contemporâneo de Bacon."),
+            ("Teorias/Ideias", [
+                "Empirismo materialista: reduz toda atividade mental a movimento de matéria.",
+                "Teoria causal da percepção: sensações são movimentos internos causados por pressão externa nos órgãos dos sentidos.",
+                "Empirismo: todo o conhecimento humano começa nos sentidos.",
+            ]),
+        ]),
     ]
 
     works = {
-        
+        'Francis Bacon': [('Novum Organum', '1920')]
     }
     '''"Francis Bacon": [
             ('Rubrica',    'Ano 1 - Falava sobre a Rubrica'),
@@ -153,7 +172,7 @@ def visualization_data():
         ]'''
 
     influences = {
-        
+        'Francis Bacon': [('Aristóteles', '-', 'Discorda')]
     }
     '''"Francis Bacon": [
             ("Pepino", "Pepino é bom demais!", "Concorda"),
@@ -180,6 +199,7 @@ def visualization_data():
         ]'''
 
     adepts = {
+        'Francis Bacon': [('Thomas Hobbes', '-'), ('John Locke', '-')]
         
     }
     '''"Francis Bacon": [
@@ -202,7 +222,7 @@ def visualization_data():
         ]'''
 
     oppositions = {
-        
+        'Francis Bacon': [('René Descartes', '-')]
     }
     '''"Francis Bacon": [
             ("Calabresa", "Calabresa tem muito sal!"),
