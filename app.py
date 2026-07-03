@@ -4,62 +4,64 @@ from render import build_timeline_elements
 app = Flask(__name__)
 
 def visualization_data():
-    philosophies  = {
-        "Euclides": (1550, 1640, 0, "#888780"),
-        "Empirismo": (1620, 1739, 220, "#FF2929"),
-        "Empirismo Materialista": (1651, 1701, 170, "#FF2929"),
-        "Empirismo Moderado": (1690, 1845, 370, "#FF2929"),
-        "Idealismo Empírico": (1710, 1760, 320, "#FF2929"),
-        "Empirismo Cético": (1739, 1878, 270, "#FF2929"),
-        "Indutivismo Científico": (1843, 1900, 320, "#FF2929"),
-        "Positivismo Clássico": (1842, 1907, 420, "#FF2929"),
-        "Ceticismo Radical": (1750, 1800, 220, "#FF2929"),
-        "Empirio-Criticismo": (1883, 1922, 200, "#FF2929"),
-        "Pragmatismo (Peirce)": (1878, 1908, 150, "#FF2929"),
-        "Positivismo Científico": (1900, 1922, 350, "#FF2929"),
-        "Pragmatismo (James)": (1907, 1957, 50, "#FF2929"),
-        "Círculo de Viena": (1922, 1950, 250, "#FF2929"),
-        "Coerentismo": (1931, 1971, 400, "#FF2929"),
-        "Fundacionalismo": (1928, 1984, 450, "#FF2929"),
-        "Falsificacionismo": (1934, 1973, 200, "#FF2929"),
-        "Verificacionismo Estrito (Waismann)": (1929, 1964, 150, "#FF2929"),
-        "Verificacionismo Estrito (Ayer)": (1936, 1966, 100, "#FF2929"),
-        "Confirmacionismo": (1945, 1969, 350, "#FF2929"),
-        "Naturalismo Epistemológico": (1951, 1975, 300, "#FF2929"),
-        "Historicismo": (1968, 2012, 250, "#FF2929"),
-        "Programas de Pesquisa": (1970, 2020, 100, "#FF2929"),
-        "Racionalismo Crítico": (1980, 2020, 350, "#FF2929"),
-        "Anarquismo Epistemológico": (1982, 2025, 300, "#FF2929"),
-        "Programa Forte": (1976, 2026, 50, "#FF2929"),
-        "Tradições de Pesquisa": (1977, 2027, 200, "#FF2929"),
-        "Demarcação Comportamental": (1978, 2028, 150, "#FF2929"),
-        "Empirismo Construtivo": (1980, 2030, 400, "#FF2929"),
+    philosophies = {
+        "Euclides": (1550, 1650, 0, "#FF2A2A"),
+        "Empirismo": (1620, 1739, 220, "#FF6A00"),
+        "Empirismo Materialista": (1651, 1701, 170, "#FF8C00"),
+        "Empirismo Moderado": (1690, 1845, 370, "#FFB700"),
+        "Idealismo Empírico": (1710, 1760, 320, "#FFCC00"),
+        "Empirismo Cético": (1739, 1878, 270, "#FFEB00"),
+        "Indutivismo Científico": (1843, 1900, 320, "#00FF51"),
+        "Positivismo Clássico": (1842, 1907, 420, "#00FF4D"),
+        "Ceticismo Radical": (1750, 1800, 220, "#F2FF00"),
+        "Empirio-Criticismo": (1883, 1922, 200, "#00FFE5"),
+        "Pragmatismo (Peirce)": (1878, 1908, 150, "#00FFD5"),
+        "Positivismo Científico": (1900, 1922, 350, "#00DDFF"),
+        "Pragmatismo (James)": (1907, 1957, 50, "#00C3FF"),
+        "Círculo de Viena": (1922, 1950, 250, "#008CFF"),
+        "Coerentismo": (1931, 1971, 400, "#006AFF"),
+        "Fundacionalismo": (1928, 1984, 450, "#0077FF"),
+        "Falsificacionismo": (1934, 1973, 200, "#005EFF"),
+        "Verificacionismo Estrito (Waismann)": (1929, 1964, 150, "#0072FF"),
+        "Verificacionismo Estrito (Ayer)": (1936, 1966, 100, "#0055FF"),
+        "Confirmacionismo": (1945, 1969, 350, "#3300FF"),
+        "Naturalismo Epistemológico": (1951, 1975, 300, "#5E00FF"),
+        "Historicismo": (1968, 2012, 250, "#CA00FF"),
+        "Programas de Pesquisa": (1970, 2020, 100, "#D400FF"),
+        "Racionalismo Crítico": (1980, 2020, 350, "#FF00F2"),
+        "Anarquismo Epistemológico": (1982, 2025, 300, "#FF00E1"),
+        "Programa Forte": (1976, 2026, 50, "#F200FF"),
+        "Tradições de Pesquisa": (1977, 2027, 200, "#F700FF"),
+        "Demarcação Comportamental": (1978, 2028, 150, "#FC00FF"),
+        "Empirismo Construtivo": (1980, 2030, 400, "#FF00F2"),
 
-        "Racionalismo": (1637, 1714, -220, "#2979FF"),
-        "Monismo Panteísta": (1677, 1727, -270, "#2979FF"),
-        "Ocasionalismo": (1674, 1724, -320, "#2979FF"),
-        "Monadologia": (1714, 1764, -170, "#2979FF"),
-        "Wolffianismo": (1730, 1780, 0, "#2979FF"),
+        "Racionalismo": (1637, 1714, -220, "#FF7B00"),
+        "Monismo Panteísta": (1677, 1727, -270, "#FFAA00"),
+        "Ocasionalismo": (1674, 1724, -320, "#FFA600"),
+        "Monadologia": (1714, 1764, -170, "#FFD000"),
+        "Wolffianismo": (1730, 1780, 0, "#FFE100"),
 
-        "Criticismo Kantiano": (1781, 1905, -100, "#9C27B0"),
-        "Fenomenologia": (1900, 1950, -200, "#9C27B0"),
-        "Idealismo Alemão": (1805, 1870, -150, "#9C27B0"),
-        "Dialética Hegeliana": (1812, 1858, -200, "#9C27B0"),
-        "Materialismo Dialético": (1867, 1992, -300, "#9C27B0"),
-        "Neo-kantismo": (1870, 1960, -50, "#9C27B0"),
-        "Hermenêutica Filosófica": (1927, 1956, -250, "#9C27B0"),
-        "Existencialismo": (1943, 1993, -150, "#9C27B0"),
+        "Criticismo Kantiano": (1781, 1905, -100, "#AEFF00"),
+        "Fenomenologia": (1900, 1950, -200, "#00DDFF"),
+        "Idealismo Alemão": (1805, 1870, -150, "#51FF00"),
+        "Dialética Hegeliana": (1812, 1858, -200, "#36FF00"),
+        "Materialismo Dialético": (1867, 1992, -300, "#00FFAD"),
+        "Neo-kantismo": (1870, 1960, -50, "#00FFB7"),
+        "Hermenêutica Filosófica": (1927, 1956, -250, "#007BFF"),
+        "Existencialismo": (1943, 1993, -150, "#2600FF"),
 
-        "Logicismo": (1879, 1963, 00, "#00C853"),
-        "Estruturalismo Epistemológico": (1923, 1973, -100, "#00C853"),
-        "Racionalismo Contemporâneo": (1957, 2007, -200, "#00C853"),
-        "Problema de Gettier": (1963, 2013, -50, "#00C853"),
-        "Confiabilismo": (1986, 2036, -100, "#00C853"),
-        "Epistemologia de Virtudes": (1991, 2041, -250, "#00C853"),
+        "Logicismo": (1879, 1963, 00, "#00FFD9"),
+        "Estruturalismo Epistemológico": (1923, 1973, -100, "#0088FF"),
+        "Racionalismo Contemporâneo": (1957, 2007, -200, "#8400FF"),
+        "Problema de Gettier": (1963, 2013, -50, "#AA00FF"),
+        "Confiabilismo": (1986, 2036, -100, "#FF00BF"),
+        "Epistemologia de Virtudes": (1991, 2041, -250, "#FF0095"),
     }
 
     bifurcations = [
         ("Euclides", "Racionalismo"),
+        ("Euclides", "Empirismo"),
+        ("Euclides", "Empirismo Materialista"),
         ("Empirismo", "Empirismo Moderado"),
         ("Empirismo", "Idealismo Empírico"),
         ("Empirismo", "Empirismo Cético"),
@@ -124,12 +126,15 @@ def visualization_data():
         ("Francis Alface", "Salada", -590, 0, "static/img/alface.png", 'Outro vegetal'),
         ("Francis Alcatra", "Carne", 450, 0, "static/img/alcatra.png", 'Bovinae'),
         ("Francis Variedades", "Carne", 800, 0, "static/img/variedades.png", 'Cortes de vários animais')'''
+    
     philosophers = [
-
+        ("Francis Bacon", "Programa Forte", 1900, 0, "static/img/bacon.png", 'Barriga de porco defumada'),
     ]
 
     works = {
-        '''"Francis Bacon": [
+        
+    }
+    '''"Francis Bacon": [
             ('Rubrica',    'Ano 1 - Falava sobre a Rubrica'),
             ('Kopesh',     'Ano 2 - Falava sobre um machado'),
             ('Fogueteiro', 'Ano 3 - Falava sobre um foguete')
@@ -146,10 +151,11 @@ def visualization_data():
         "Francis Variedades": [
             ('Pluralidade', 'Ano 1 - Sobre a diversidade animal')
         ]'''
-    }
 
     influences = {
-        '''"Francis Bacon": [
+        
+    }
+    '''"Francis Bacon": [
             ("Pepino", "Pepino é bom demais!", "Concorda"),
             ("Alface", "Alface é ruim demais!", "Discorda")
         ],
@@ -172,10 +178,11 @@ def visualization_data():
         "Francis Variedades": [
             ("Calabresa", "Diversidade é riqueza.", "Concorda")
         ]'''
-    }
 
     adepts = {
-        '''"Francis Bacon": [
+        
+    }
+    '''"Francis Bacon": [
             ("Variedades", "Variedades é o futuro!")
         ],
         "Francis Calabresa": [
@@ -193,10 +200,11 @@ def visualization_data():
         "Francis Variedades": [
             ("Bacon", "Bacon abraça a variedade!")
         ]'''
-    }
 
     oppositions = {
-        '''"Francis Bacon": [
+        
+    }
+    '''"Francis Bacon": [
             ("Calabresa", "Calabresa tem muito sal!"),
             ("Salada", "Salada é muito ruim!")
         ],
@@ -212,11 +220,11 @@ def visualization_data():
         "Francis Alcatra": [
             ("Salada", "Salada não sustenta!")
         ]'''
-    }
 
     events = [
-        #(-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
+        
     ]
+    #(-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
 
     return {
         "philosophies": philosophies,
