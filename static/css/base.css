@@ -135,3 +135,10 @@ body {
     text-align: center;
     white-space: nowrap;
 }
+
+.html-card-wrapper {
+    width: 260px;
+    box-sizing: border-box;
+    transform: translate(-50%, 0);   /* era translate(-50%, -50%) */
+    pointer-events: none;
+}
