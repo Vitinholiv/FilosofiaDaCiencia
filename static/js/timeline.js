@@ -99,11 +99,7 @@ export const TimelineApp = {
         const scaleY = realHeightPx / data.total_height;
 
         // Escala de elementos
-        data.elements.forEach(el => {
-            if(el.position && el.position.y){
-                el.position.y = el.position.y * scaleY;
-            }
-        });
+
 
         // Plotagem da épocas no fundo
         if(data.epochs){
@@ -111,6 +107,7 @@ export const TimelineApp = {
                 const line = document.createElement('div');
                 line.className = 'epoch-line';
                 line.style.left = `${ep.x_pos}px`;
+                line.style.height = `${data.total_height}px`;
 
                 const label = document.createElement('div');
                 label.className = 'epoch-label';
@@ -126,7 +123,7 @@ export const TimelineApp = {
         const cyContainer = document.createElement('div');
         cyContainer.id = 'cy';
         cyContainer.style.width = `${data.total_width}px`;
-        cyContainer.style.height = `100vh`;
+        cyContainer.style.height = `${data.total_height}px`;
         this.wrapper.appendChild(cyContainer);
 
         cytoscape.warnings(false);
@@ -144,5 +141,45 @@ export const TimelineApp = {
 
         // Ativa Interatividade
         this.bindInteractivity();
+
+        // Cards HTML em tópicos sobre os nós de resumo
+        this.setupHtmlCards();
+    },
+
+    /** Cria as divs HTML dos cards de resumo e as ancora sobre os nós correspondentes. */
+    setupHtmlCards(){
+        const overlay = document.createElement('div');
+        overlay.className = 'html-card-overlay';
+        this.cy.container().appendChild(overlay);
+
+        this.htmlCards = {};
+        this.cy.nodes().forEach(node => {
+            const html = node.data('html');
+            if(!html) return;
+
+            const div = document.createElement('div');
+            div.className = 'html-card-wrapper';
+            div.innerHTML = html;
+
+            const pos = node.renderedPosition();
+            div.style.left = `${pos.x}px`;
+            div.style.top  = `${pos.y}px`;
+            div.style.display = node.style('display') === 'none' ? 'none' : 'block';
+
+            overlay.appendChild(div);
+            this.htmlCards[node.id()] = div;
+        });
+
+        // Após cada clique, espelha a visibilidade dos cards HTML na dos nós.
+        this.cy.on('tap', () => this.refreshHtmlCards());
+    },
+
+    /** Sincroniza a visibilidade das divs HTML com o estado de exibição dos nós. */
+    refreshHtmlCards(){
+        if(!this.htmlCards) return;
+        Object.keys(this.htmlCards).forEach(id => {
+            const node = this.cy.getElementById(id);
+            this.htmlCards[id].style.display = node.style('display') === 'none' ? 'none' : 'block';
+        });
     }
 };

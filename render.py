@@ -239,6 +239,50 @@ def build_events(events, min_year, scale_x, events_center):
         })
     return elements
 
+def build_philosopher_card_html(name, info, border_color):
+    """Monta o HTML em tópicos exibido sobre o card de resumo do filósofo.
+
+    `info` é uma lista de (título, conteúdo), onde conteúdo é uma string
+    (tópico simples) ou uma lista de strings (subtópicos)."""
+    topics = []
+    for title, content in info:
+        if isinstance(content, (list, tuple)):
+            sub = "".join(f"<li>{item}</li>" for item in content)
+            topics.append(f"<li><b>{title}:</b><ul>{sub}</ul></li>")
+        else:
+            topics.append(f"<li><b>{title}:</b> {content}</li>")
+    return (
+        f'<div class="phil-card" style="border-color:{border_color}">'
+        f'<div class="phil-card-name">{name}</div>'
+        f'<ul class="phil-topics">{"".join(topics)}</ul>'
+        f'</div>'
+    )
+
+def estimate_info_height(info, chars_per_line=34, line_h=17, pad=52):
+    """Estima a altura do card estruturado para posicionar botões e o nó âncora."""
+    lines = 1  # linha do nome
+    for title, content in info:
+        if isinstance(content, (list, tuple)):
+            head = f"{title}:"
+            lines += max(1, (len(head) + chars_per_line - 1) // chars_per_line)
+            for item in content:
+                lines += max(1, (len(item) + chars_per_line - 1) // chars_per_line)
+        else:
+            head = f"{title}: {content}"
+            lines += max(1, (len(head) + chars_per_line - 1) // chars_per_line)
+    return max(70, lines * line_h + pad)
+
+def build_side_card_html(header_text, body_text, color):
+    """HTML de um card lateral dos botões (cabeçalho colorido + corpo); altura automática via CSS."""
+    header_bg = hex_to_rgba(color, 0.3)
+    body_html = "<br>".join(body_text.split("\n"))
+    return (
+        f'<div class="side-card" style="border-color:{color}">'
+        f'<div class="side-card-header" style="background-color:{header_bg};border-bottom-color:{color}">{header_text}</div>'
+        f'<div class="side-card-body">{body_html}</div>'
+        f'</div>'
+    )
+
 def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, works=None, influences=None, adepts=None, oppositions=None):
     """Constroi a informação completa dos nós que representam os filósofos"""
 
@@ -280,49 +324,44 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         phil_node["data"]["phil_name"] = name
         elements.append(phil_node)
 
-        text_content = f"{name}\n\n{info}"
-        chars_per_line = 34
-        lines = 0
-        for paragraph in text_content.split('\n'):
-            if paragraph == "":
-                lines += 1
-            else:
-                lines += (len(paragraph) + chars_per_line - 1) // chars_per_line
-        estimated_card_height = max(70, (lines * 15) + 20)
-
-        # Variáveis para Stacking dos Botões
-        dist_to_card_center = PORTRAIT_RADIUS + GAP_TO_CARD + (estimated_card_height / 2)
-        card_y = y_pos_line + (sign * dist_to_card_center)
+        card_html = build_philosopher_card_html(name, info, line_info['color'])
+        estimated_card_height = estimate_info_height(info)
 
         detail_class = f"phil-detail details_{safe_name}"
         button_class = f"clickable-button details_{safe_name}"
         summary_id = f"summary_{safe_name}"
 
-        # Resumo
+        # Card de descrição + botões: coluna à ESQUERDA da bolinha, centralizada
+        # verticalmente na altura do filósofo (evita que o card vaze da tela).
+        GAP_CARD_BUTTONS = 25
+        buttons_block_h  = 4 * BUTTON_HEIGHT + 3 * GAP_BUTTONS
+        group_height     = estimated_card_height + GAP_CARD_BUTTONS + buttons_block_h
+        group_top        = y_pos_line - (group_height / 2)
+
+        left_x = x_pos - (PORTRAIT_RADIUS + GAP_TO_CARD + (CARD_WIDTH / 2))
+        card_y = group_top + (estimated_card_height / 2)
+
+        # Resumo (nó âncora transparente; o conteúdo visível é o overlay HTML)
         summary_node = build_rect_node(
             node_id=summary_id,
-            x=x_pos, y=card_y,
-            width=CARD_WIDTH, height="label",
-            color="#d9d9d9",
+            x=left_x, y=card_y,
+            width=CARD_WIDTH, height=estimated_card_height,
+            color="rgba(0,0,0,0)",
             classes=detail_class,
-            label=text_content,
-            border_width=4,
-            font_size=12,
-            font_color="#222222",
-            font_family="monospace"
+            label="",
+            border_width=0
         )
-        summary_node["style"]["border-color"] = line_info['color']
+        summary_node["data"]["html"] = card_html
         elements.append(summary_node)
 
-        # Ligação
+        # Ligação bolinha -> card
         elements.append({
             "classes": detail_class + " dashed-link",
             "data": {"source": phil_id, "target": summary_id}
         })
 
-        # Botões
-        dist_to_first_btn = (estimated_card_height / 2) + GAP_SUMMARY + (BUTTON_HEIGHT / 2)
-        current_btn_y = card_y + (sign * dist_to_first_btn)
+        # Botões: empilhados abaixo do card, na mesma coluna à esquerda
+        current_btn_y = group_top + estimated_card_height + GAP_CARD_BUTTONS + (BUTTON_HEIGHT / 2)
 
         btn_defs = [
             ("oppositions", "Filósofos contrários", "#ff6666", (oppositions or {}).get(name, [])),
@@ -343,64 +382,48 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             btn_id = f"btn_{safe_name}_{i}"
             btn_node = build_rect_node(
                 node_id=btn_id,
-                x=x_pos, y=current_btn_y,
+                x=left_x, y=current_btn_y,
                 width=CARD_WIDTH, height=BUTTON_HEIGHT,
                 color=btn_color,
                 classes=button_class,
                 label=btn_text,
-                z_index=11
+                z_index=11,
+                font_size=16
             )
             btn_node["data"]["btn_type"]       = btn_key
             btn_node["data"]["safe_phil_name"] = safe_name
+            btn_node["style"]["font-weight"] = "bold"
             elements.append(btn_node)
             button_registry.append((btn_key, btn_color, btn_items, current_btn_y, btn_id))
-            current_btn_y += sign * (BUTTON_HEIGHT + GAP_BUTTONS)
+            current_btn_y += (BUTTON_HEIGHT + GAP_BUTTONS)
 
         # Cards Laterais: cada card = nó header (negrito) + nó body (texto normal)
         SIDE_X        = CARD_WIDTH + 40
         HEADER_H      = 50
         FONT_SZ       = 14
-        GAP_CARD      = 30
-        CARD_ANCHOR_Y = 200
+        GAP_CARD      = 50
+        CARD_ANCHOR_Y = group_top
         last_name = name.split()[-1]
 
         def make_card(header_text, body_text, card_x, ref_y, card_cls, id_prefix, hdr_color, bdr_color):
-            """Cria par header+body; retorna (nodes, id_do_header, altura_total)."""
-            body_h = est_h(body_text)
+            """Cria UM nó âncora invisível que carrega o HTML do card (altura automática no CSS).
+            ref_y = centro do cabeçalho (mantém a lógica de empilhamento).
+            Retorna (nós, id_âncora, altura_estimada)."""
+            est_total = HEADER_H + est_h(body_text)
+            card_top  = ref_y - HEADER_H / 2
+            node_id   = f"{id_prefix}-c"
 
-            h_node = build_rect_node(
-                node_id=f"{id_prefix}-h",
-                x=card_x, y=ref_y,
-                width=CARD_WIDTH, height=HEADER_H,
-                color=hex_to_rgba(hdr_color, 0.3),
-                classes=f"{card_cls} card-header",
-                label=header_text,
-                border_width=2, z_index=10,
-                font_size=FONT_SZ, font_color="#ffffff", font_family="monospace"
+            anchor = build_rect_node(
+                node_id=node_id,
+                x=card_x, y=card_top + est_total / 2,
+                width=CARD_WIDTH, height=est_total,
+                color="rgba(0,0,0,0)",
+                classes=card_cls,
+                label="",
+                border_width=0, z_index=10
             )
-            h_node["style"]["border-color"]        = bdr_color
-            h_node["style"]["font-weight"]         = "bold"
-            h_node["style"]["border-bottom-width"] = 1
-            h_node["style"]["text-halign"]         = "center"
-            h_node["style"]["text-valign"]         = "center"
-
-            body_y = ref_y + HEADER_H / 2 + body_h / 2
-            b_node = build_rect_node(
-                node_id=f"{id_prefix}-b",
-                x=card_x, y=body_y,
-                width=CARD_WIDTH, height=body_h,
-                color="#1e1e1e",
-                classes=f"{card_cls} card-body",
-                label=body_text,
-                border_width=2, z_index=10,
-                font_size=FONT_SZ, font_color="#cccccc", font_family="monospace"
-            )
-            b_node["style"]["border-color"]     = bdr_color
-            b_node["style"]["border-top-width"] = 0
-            b_node["style"]["text-halign"]      = "center"
-            b_node["style"]["text-valign"]      = "center"
-
-            return [h_node, b_node], f"{id_prefix}-h", HEADER_H + body_h
+            anchor["data"]["html"] = build_side_card_html(header_text, body_text, bdr_color)
+            return [anchor], node_id, est_total
 
         for btn_key, btn_color, btn_items, btn_y, btn_id in button_registry:
             card_cls = f"btn-cards cards-{safe_name} cards-{safe_name}-{btn_key}"
@@ -434,14 +457,14 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
                     left_col  = [btn_items[j] for j in range(1, len(btn_items), 2)]
                     place_column(right_col, x_pos + SIDE_X, "r")
                     if left_col:
-                        place_column(left_col, x_pos - SIDE_X, "l")
+                        place_column(left_col, x_pos + 2 * SIDE_X, "l")
 
             elif btn_key == 'influences':
                 concordou = [(n, d) for n, d, s in btn_items if s == 'Concorda']
                 discordou = [(n, d) for n, d, s in btn_items if s != 'Concorda']
                 for group_items, title, x_sign, g_color, g_key in [
-                    (concordou, f"{last_name} concordou", -1, "#66cc66", "concordou"),
-                    (discordou, f"{last_name} discordou", +1, "#ff6666", "discordou"),
+                    (concordou, f"{last_name} concordou", 1, "#66cc66", "concordou"),
+                    (discordou, f"{last_name} discordou", 2, "#ff6666", "discordou"),
                 ]:
                     if not group_items:
                         continue
