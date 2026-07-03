@@ -13,10 +13,10 @@ def hex_to_rgba(hex_color, alpha, factor=1):
 def general_metrics(philosophies):
     """Calcula o grid básico, posições e metadados das correntes filosóficas"""
     # Eixo X
-    epsilon = 200
-    min_year = -700 - epsilon
+    epsilon = 50
+    min_year = 1600 - epsilon
     max_year = 2026 + epsilon
-    scale_x = 1.5
+    scale_x = 10
     total_width = (max_year - min_year) * scale_x
 
     # Eixo Y
@@ -89,7 +89,7 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
         tgt_color = tgt_info['color']
 
         # Vértice Invisível em Source
-        delta_year = 40
+        delta_year = 5
         branch_year = tgt_info['start_year'] - delta_year
         branch_x = (branch_year - min_year) * scale_x
         branch_y = src_info['y_pos']
