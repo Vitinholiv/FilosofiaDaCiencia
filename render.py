@@ -222,7 +222,7 @@ def build_events_band(events_center, band_height, band_color, band_opacity, bord
         border = build_rect_node(
             node_id=f"events-band-border-{suffix}",
             x=cx, y=edge_y,
-            width=total_width, height=2,
+            width=total_width, height=0.2,
             color=band_color,
             classes="events-band-border",
             border_width=0, z_index=0,
@@ -272,7 +272,7 @@ def build_events(events, min_year, scale_x, events_center):
             node_id=event_id,
             x=x_pos,
             y=y_pos,
-            size=30,
+            size=25,
             color=color,
             classes="event",
             img_url=img,
