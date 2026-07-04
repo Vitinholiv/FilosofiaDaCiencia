@@ -1,10 +1,10 @@
-const CACHE_NAME = 'timeline-cache-v1';
+const CACHE_NAME = 'timeline-cache-v2';
 const CORE_ASSETS = [
   './', './index.html',
-  './css/base.css',
-  './js/base.js', './js/scroller.js', './js/timeline.js', './css/cy_styles.js',
-  './timeline.json',
-  './js/data.js'
+  './static/css/base.css',
+  './static/js/base.js', './static/js/scroller.js', './static/js/timeline.js', './static/css/cy_styles.js',
+  './static/js/data.js',
+  './sw.js'
 ];
 
 self.addEventListener('install', (event) => {

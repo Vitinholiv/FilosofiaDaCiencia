@@ -18,9 +18,14 @@ def main():
     data = visualization_data()
     result = build_timeline_elements(data)
     
+    json_str = json.dumps(result, ensure_ascii=False)
+    data_js_content = f"export const timelineData = {json_str};\n"
+
     with open(f'{OUT_DIR}/js/data.js', 'w', encoding='utf-8') as f:
-        json_str = json.dumps(result, ensure_ascii=False)
-        f.write(f"export const timelineData = {json_str};\n")
+        f.write(data_js_content)
+
+    with open(f'{OUT_DIR}/static/js/data.js', 'w', encoding='utf-8') as f:
+        f.write(data_js_content)
 
     images = []
     for root, _, files in os.walk(f'{OUT_DIR}/static/img'):
