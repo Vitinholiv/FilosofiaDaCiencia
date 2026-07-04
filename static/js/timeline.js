@@ -11,6 +11,11 @@ function hexToRgba(hex, alpha) {
 export const TimelineApp = {
     cy: null,
     wrapper: null,
+    sizerEl: null,
+    contentEl: null,
+    zoomLevel: 1,
+    baseWidth: 0,
+    baseHeight: 0,
 
     init(){
         this.wrapper = document.querySelector('#scroll-wrapper');
@@ -28,7 +33,7 @@ export const TimelineApp = {
     },
 
     bindInteractivity(){
-        // Detecção de Cliques
+        // ... inalterado, mantenha exatamente como está hoje ...
         this.cy.on('tap', (evt) => {
             const target = evt.target;
             const allUI = '.phil-detail, .clickable-button, .event-detail, .btn-cards';
@@ -95,6 +100,27 @@ export const TimelineApp = {
     },
 
     buildGraph(data){
+        this.baseWidth  = data.total_width;
+        this.baseHeight = data.total_height;
+
+        // "Sizer": define a área rolável real (seu tamanho muda com o zoom)
+        this.sizerEl = document.createElement('div');
+        this.sizerEl.id = 'zoom-sizer';
+        this.sizerEl.style.position = 'relative';
+        this.wrapper.appendChild(this.sizerEl);
+
+        // "Content": tamanho fixo (natural), só escalado visualmente por transform
+        this.contentEl = document.createElement('div');
+        this.contentEl.id = 'zoom-content';
+        this.contentEl.style.position = 'absolute';
+        this.contentEl.style.top = '0';
+        this.contentEl.style.left = '0';
+        this.contentEl.style.width  = `${data.total_width}px`;
+        this.contentEl.style.height = `${data.total_height}px`;
+        this.contentEl.style.transformOrigin = '0 0';
+        this.sizerEl.appendChild(this.contentEl);
+
+        // Tudo que antes ia em this.wrapper agora vai em this.contentEl
         if(data.epochs){
             data.epochs.forEach(ep => {
                 const line = document.createElement('div');
@@ -107,8 +133,8 @@ export const TimelineApp = {
                 label.style.left = `${ep.x_pos}px`;
                 label.innerText = ep.label;
 
-                this.wrapper.appendChild(line);
-                this.wrapper.appendChild(label);
+                this.contentEl.appendChild(line);
+                this.contentEl.appendChild(label);
             });
         }
 
@@ -126,14 +152,14 @@ export const TimelineApp = {
             label.style.setProperty('--events-band-label-font', textFont);
             label.innerText = 'Eventos Históricos e Científicos Importantes';
 
-            this.wrapper.appendChild(label);
+            this.contentEl.appendChild(label);
         }
 
         const cyContainer = document.createElement('div');
         cyContainer.id = 'cy';
         cyContainer.style.width = `${data.total_width}px`;
         cyContainer.style.height = `${data.total_height}px`;
-        this.wrapper.appendChild(cyContainer);
+        this.contentEl.appendChild(cyContainer);
 
         cytoscape.warnings(false);
         this.cy = cytoscape({
@@ -150,6 +176,53 @@ export const TimelineApp = {
 
         this.bindInteractivity();
         this.setupHtmlCards();
+
+        this.setZoom(1);
+        this.fitHeightIfNeeded();
+        window.addEventListener('resize', () => this.fitHeightIfNeeded());
+    },
+
+    /** Aplica um nível de zoom ao conteúdo, opcionalmente mantendo fixo o ponto
+     * do conteúdo que está sob o cursor (anchorClientX/Y = event.clientX/Y). */
+    setZoom(zoom, anchorClientX, anchorClientY){
+        const oldZoom = this.zoomLevel;
+        const newZoom = Math.max(0.2, Math.min(3, zoom));
+        if(newZoom === oldZoom) return;
+
+        const wrapper = this.wrapper;
+        let scrollLeft = wrapper.scrollLeft;
+        let scrollTop  = wrapper.scrollTop;
+
+        if(anchorClientX !== undefined && anchorClientY !== undefined){
+            const rect = wrapper.getBoundingClientRect();
+            const cursorX = anchorClientX - rect.left;
+            const cursorY = anchorClientY - rect.top;
+
+            // Ponto do conteúdo (em coordenada "base", sem zoom) que está sob o cursor
+            const baseX = (scrollLeft + cursorX) / oldZoom;
+            const baseY = (scrollTop  + cursorY) / oldZoom;
+
+            // Recalcula o scroll pra esse mesmo ponto continuar sob o cursor no novo zoom
+            scrollLeft = baseX * newZoom - cursorX;
+            scrollTop  = baseY * newZoom - cursorY;
+        }
+
+        this.zoomLevel = newZoom;
+        this.contentEl.style.transform = `scale(${this.zoomLevel})`;
+        this.sizerEl.style.width  = `${this.baseWidth  * this.zoomLevel}px`;
+        this.sizerEl.style.height = `${this.baseHeight * this.zoomLevel}px`;
+
+        wrapper.scrollLeft = scrollLeft;
+        wrapper.scrollTop  = scrollTop;
+    },
+
+    /** Aumenta o zoom só o suficiente pra cobrir a altura da janela (nunca reduz
+     * um zoom maior já aplicado). Corrige o vão vazio depois do F11/resize. */
+    fitHeightIfNeeded(){
+        const currentContentHeight = this.baseHeight * this.zoomLevel;
+        if(currentContentHeight < window.innerHeight){
+            this.setZoom(window.innerHeight / this.baseHeight);
+        }
     },
 
     setupHtmlCards(){

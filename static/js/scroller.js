@@ -1,12 +1,16 @@
+import { TimelineApp } from './timeline.js';
+
 export function setup_scroll() {
     const scrollWrapper = document.querySelector('#scroll-wrapper');
+
+    // Roda do mouse: só zoom agora, não rola mais a página
     scrollWrapper.addEventListener('wheel', function(event) {
-        if (event.deltaY !== 0) {
-            event.preventDefault();
-            scrollWrapper.scrollLeft += event.deltaY;
-        }
+        event.preventDefault();
+        const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
+        TimelineApp.setZoom(TimelineApp.zoomLevel * factor, event.clientX, event.clientY);
     }, { passive: false });
 
+    // Clicar-e-arrastar: inalterado
     let dragging = false;
     let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
