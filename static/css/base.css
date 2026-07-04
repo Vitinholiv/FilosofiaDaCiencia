@@ -180,3 +180,22 @@ body {
     z-index: 2;
     pointer-events: none;
 }
+
+#loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8ab4f8;
+    font-family: monospace;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+#loading-indicator.hidden {
+    opacity: 0;
+    pointer-events: none;
+}

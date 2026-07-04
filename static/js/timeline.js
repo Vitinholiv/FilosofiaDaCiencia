@@ -20,11 +20,11 @@ export const TimelineApp = {
 
     init(){
         this.wrapper = document.querySelector('#scroll-wrapper');
-        this.loadData();
+        return this.loadData();
     },
 
     loadData(){
-        fetch('/timeline')
+        return fetch('/timeline')
             .then(response => {
                 if(!response.ok) throw new Error("Erro ao buscar /timeline");
                 return response.json();
