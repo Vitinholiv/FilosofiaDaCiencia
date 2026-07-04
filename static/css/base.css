@@ -199,3 +199,27 @@ body {
     opacity: 0;
     pointer-events: none;
 }
+
+.html-card-wrapper {
+    position: absolute;
+    width: 260px;
+    box-sizing: border-box;
+    transform: translate(-50%, -45%) scale(0.9);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.html-card-wrapper.btn-cards {
+    transform: translate(-50%, 0) scale(0.9);
+}
+.html-card-wrapper.card-visible {
+    opacity: 1;
+    transform: translate(-50%, -45%) scale(1);
+}
+.html-card-wrapper.btn-cards.card-visible {
+    transform: translate(-50%, 0) scale(1);
+}
+
+.clickable-button {
+    transition: transform 0.1s ease;
+}

@@ -176,6 +176,14 @@ export const TimelineApp = {
         });
 
         this.bindInteractivity();
+
+        this.cy.on('mouseover', 'node.phil-portrait, node.event', (evt) => {
+        evt.target.animate({ style: { 'border-width': 4 } }, { duration: 100 });
+        });
+        this.cy.on('mouseout', 'node.phil-portrait, node.event', (evt) => {
+            evt.target.animate({ style: { 'border-width': 3 } }, { duration: 100 });
+        });
+
         this.setupHtmlCards();
 
         this.setZoom(1);
@@ -190,25 +198,47 @@ export const TimelineApp = {
 
     /** Aplica um nível de zoom ao conteúdo, opcionalmente mantendo fixo o ponto
      * do conteúdo que está sob o cursor (anchorClientX/Y = event.clientX/Y). */
-        setZoom(zoom, anchorClientX, anchorClientY){
+    targetZoom: 1,
+    zoomAnimId: null,
+
+    setZoom(zoom, anchorClientX, anchorClientY){
+        this.targetZoom = Math.max(this.minZoom, Math.min(3, zoom));
+        this._zoomAnchor = (anchorClientX !== undefined) ? { x: anchorClientX, y: anchorClientY } : null;
+        if(!this.zoomAnimId){
+            this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
+        }
+    },
+
+    _stepZoom(){
         const oldZoom = this.zoomLevel;
-        const newZoom = Math.max(this.minZoom, Math.min(3, zoom));   // era Math.max(0.2, ...)
+        const diff = this.targetZoom - oldZoom;
+
+        // Se já está bem perto do alvo, encerra a animação exatamente nele
+        if(Math.abs(diff) < 0.001){
+            this._applyZoom(this.targetZoom, this._zoomAnchor);
+            this.zoomAnimId = null;
+            return;
+        }
+
+        const newZoom = oldZoom + diff * 0.65; // 65% do caminho a cada frame
+        this._applyZoom(newZoom, this._zoomAnchor);
+        this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
+    },
+
+    _applyZoom(newZoom, anchor){
+        const oldZoom = this.zoomLevel;
         if(newZoom === oldZoom) return;
 
         const wrapper = this.wrapper;
         let scrollLeft = wrapper.scrollLeft;
         let scrollTop  = wrapper.scrollTop;
 
-        if(anchorClientX !== undefined && anchorClientY !== undefined){
+        if(anchor){
             const rect = wrapper.getBoundingClientRect();
-            const cursorX = anchorClientX - rect.left;
-            const cursorY = anchorClientY - rect.top;
-
-            // Ponto do conteúdo (em coordenada "base", sem zoom) que está sob o cursor
+            const cursorX = anchor.x - rect.left;
+            const cursorY = anchor.y - rect.top;
             const baseX = (scrollLeft + cursorX) / oldZoom;
             const baseY = (scrollTop  + cursorY) / oldZoom;
-
-            // Recalcula o scroll pra esse mesmo ponto continuar sob o cursor no novo zoom
             scrollLeft = baseX * newZoom - cursorX;
             scrollTop  = baseY * newZoom - cursorY;
         }
@@ -217,7 +247,6 @@ export const TimelineApp = {
         this.contentEl.style.transform = `scale(${this.zoomLevel})`;
         this.sizerEl.style.width  = `${this.baseWidth  * this.zoomLevel}px`;
         this.sizerEl.style.height = `${this.baseHeight * this.zoomLevel}px`;
-
         wrapper.scrollLeft = scrollLeft;
         wrapper.scrollTop  = scrollTop;
     },
@@ -244,11 +273,11 @@ export const TimelineApp = {
             const div = document.createElement('div');
             div.className = 'html-card-wrapper ' + node.classes().join(' ');
             div.innerHTML = html;
+            div.style.display = 'none'; // estado inicial sempre oculto, sem depender de nada mais
 
             const pos = node.renderedPosition();
             div.style.left = `${pos.x}px`;
             div.style.top  = `${pos.y}px`;
-            div.style.display = node.style('display') === 'none' ? 'none' : 'block';
 
             overlay.appendChild(div);
             this.htmlCards[node.id()] = div;
@@ -258,9 +287,30 @@ export const TimelineApp = {
 
     refreshHtmlCards(){
         if(!this.htmlCards) return;
+        const toShow = [];
         Object.keys(this.htmlCards).forEach(id => {
             const node = this.cy.getElementById(id);
-            this.htmlCards[id].style.display = node.style('display') === 'none' ? 'none' : 'block';
+            const el = this.htmlCards[id];
+            const shouldShow = node.style('display') !== 'none';
+
+            if(shouldShow){
+                if(el.style.display === 'none'){
+                    el.style.display = 'block';
+                    el.classList.remove('card-visible');
+                    void el.offsetWidth; // força reflow — garante que a transição de entrada rode
+                }
+                toShow.push(el);
+            } else if(el.classList.contains('card-visible')){
+                el.classList.remove('card-visible'); // dispara o fade-out
+                setTimeout(() => {
+                    if(!el.classList.contains('card-visible')) el.style.display = 'none';
+                }, 200); // mesmo tempo da transition no CSS
+            } else {
+                el.style.display = 'none';
+            }
+        });
+        toShow.forEach((el, i) => {
+            setTimeout(() => el.classList.add('card-visible'), i * 60); // stagger na entrada
         });
     }
 };
