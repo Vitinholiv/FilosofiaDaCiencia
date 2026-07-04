@@ -1,4 +1,5 @@
 import { cyStyles } from '../css/cy_styles.js';
+import { timelineData } from './data.js';
 
 function hexToRgba(hex, alpha) {
     const clean = hex.replace('#', '');
@@ -17,30 +18,23 @@ export const TimelineApp = {
     minZoom: 0.1,
     baseWidth: 0,
     baseHeight: 0,
+    targetZoom: 1,
+    zoomAnimId: null,
+    _zoomAnchor: null,
 
-    init(){
+    init() {
         this.wrapper = document.querySelector('#scroll-wrapper');
-        return this.loadData();
+        this.buildGraph(timelineData);
     },
 
-    loadData(){
-        return fetch('/timeline.json')
-            .then(response => {
-                if(!response.ok) throw new Error("Erro ao buscar /timeline.json");
-                return response.json();
-            })
-            .then(data => this.buildGraph(data))
-            .catch(error => console.error("Erro no TimelineApp:", error));
-    },
-
-    extractSafeName(classesStr){
-        if(!classesStr) return null;
+    extractSafeName(classesStr) {
+        if (!classesStr) return null;
         const tokens = classesStr.split(/\s+/);
         const token = tokens.find(t => t.indexOf('details_') === 0);
         return token ? token.slice('details_'.length) : null;
     },
 
-    measureCardHeights(elements){
+    measureCardHeights(elements) {
         const container = document.createElement('div');
         container.className = 'html-card-wrapper';
         container.style.position = 'absolute';
@@ -52,27 +46,27 @@ export const TimelineApp = {
         const groups = {};
         elements.forEach(el => {
             const safeName = this.extractSafeName(el.classes);
-            if(!safeName) return;
+            if (!safeName) return;
 
-            if(el.classes.includes('phil-detail') && el.data && el.data.html){
+            if (el.classes.includes('phil-detail') && el.data && el.data.html) {
                 (groups[safeName] = groups[safeName] || {}).summary = el;
-            } else if(el.classes.includes('clickable-button')){
+            } else if (el.classes.includes('clickable-button')) {
                 const g = (groups[safeName] = groups[safeName] || {});
                 (g.buttons = g.buttons || []).push(el);
             }
         });
 
         Object.values(groups).forEach(group => {
-            if(!group.summary || !group.buttons || !group.buttons.length) return;
+            if (!group.summary || !group.buttons || !group.buttons.length) return;
 
             const estimatedHeight = group.summary.style && group.summary.style.height;
-            if(typeof estimatedHeight !== 'number') return;
+            if (typeof estimatedHeight !== 'number') return;
 
             container.innerHTML = group.summary.data.html;
             const actualHeight = container.getBoundingClientRect().height;
             const delta = actualHeight - estimatedHeight;
 
-            if(Math.abs(delta) < 0.5) return;
+            if (Math.abs(delta) < 0.5) return;
             group.summary.position.y += delta / 2;
             group.summary.style.height = actualHeight;
 
@@ -82,7 +76,7 @@ export const TimelineApp = {
         document.body.removeChild(container);
     },
 
-    bindInteractivity(){
+    bindInteractivity() {
         this.cy.on('tap', (evt) => {
             const target = evt.target;
             const allUI = '.phil-detail, .clickable-button, .event-detail, .btn-cards';
@@ -92,9 +86,9 @@ export const TimelineApp = {
                 return;
             }
 
-            if(target.hasClass('phil-portrait')){
+            if (target.hasClass('phil-portrait')) {
                 const philName = target.data('phil_name');
-                if(!philName) return;
+                if (!philName) return;
 
                 const safeName = philName.toLowerCase().replace(/ /g, '_');
                 const selector = '.details_' + safeName;
@@ -103,7 +97,7 @@ export const TimelineApp = {
                 const isHidden = details.style('display') === 'none';
                 this.cy.elements(allUI).style('display', 'none');
 
-                if(isHidden && details.length > 0){
+                if (isHidden && details.length > 0) {
                     details.style('display', 'element');
                 }
                 return;
@@ -125,20 +119,18 @@ export const TimelineApp = {
                 return;
             }
 
-            if(target.hasClass('phil-detail', 'event-detail')){
-                return;
-            }
+            if (target.hasClass('phil-detail', 'event-detail')) return;
 
-            if(target.hasClass('clickable-button')){
+            if (target.hasClass('clickable-button')) {
                 const safeName = target.data('safe_phil_name');
-                const btnKey   = target.data('btn_type');
+                const btnKey = target.data('btn_type');
 
                 const allPhilCards = this.cy.elements(`.cards-${safeName}`);
-                const thisGroup    = this.cy.elements(`.cards-${safeName}-${btnKey}`);
-                const isHidden     = thisGroup.length === 0 || thisGroup.first().style('display') === 'none';
+                const thisGroup = this.cy.elements(`.cards-${safeName}-${btnKey}`);
+                const isHidden = thisGroup.length === 0 || thisGroup.first().style('display') === 'none';
 
                 allPhilCards.style('display', 'none');
-                if(isHidden && thisGroup.length > 0){
+                if (isHidden && thisGroup.length > 0) {
                     thisGroup.style('display', 'element');
                 }
                 return;
@@ -148,8 +140,8 @@ export const TimelineApp = {
         });
     },
 
-    buildGraph(data){
-        this.baseWidth  = data.total_width;
+    buildGraph(data) {
+        this.baseWidth = data.total_width;
         this.baseHeight = data.total_height;
 
         this.sizerEl = document.createElement('div');
@@ -162,12 +154,12 @@ export const TimelineApp = {
         this.contentEl.style.position = 'absolute';
         this.contentEl.style.top = '0';
         this.contentEl.style.left = '0';
-        this.contentEl.style.width  = `${data.total_width}px`;
+        this.contentEl.style.width = `${data.total_width}px`;
         this.contentEl.style.height = `${data.total_height}px`;
         this.contentEl.style.transformOrigin = '0 0';
         this.sizerEl.appendChild(this.contentEl);
 
-        if(data.epochs){
+        if (data.epochs) {
             data.epochs.forEach(ep => {
                 const line = document.createElement('div');
                 line.className = 'epoch-line';
@@ -184,10 +176,10 @@ export const TimelineApp = {
             });
         }
 
-        if(typeof data.events_center === 'number'){
+        if (typeof data.events_center === 'number') {
             const bandColor = data.events_band_color || '#cc0066';
             const textColor = data.events_band_text_color || bandColor;
-            const textFont  = data.events_band_font || 'monospace';
+            const textFont = data.events_band_font || 'monospace';
             const bandY = data.events_center;
 
             const label = document.createElement('div');
@@ -233,87 +225,73 @@ export const TimelineApp = {
 
         this.setupHtmlCards();
 
-        // Zoom inicial: sempre exatamente 100% (zoom real = 1), aplicado na
-        // hora, sem animação e sem depender de um cálculo assíncrono de
-        // minZoom (era isso que fazia o zoom inicial "vazar" para um valor
-        // maior que 1 em telas mais altas).
         this.minZoom = this.computeMinZoom();
         this.targetZoom = 1;
         this._applyZoom(1, null);
 
         window.addEventListener('resize', () => {
             this.minZoom = this.computeMinZoom();
-            if(this.targetZoom < this.minZoom){
+            if (this.targetZoom < this.minZoom) {
                 this.setZoom(this.minZoom);
             }
         });
     },
 
-    computeMinZoom(){
-        // Impede dar zoom out a ponto de sobrar espaço vazio abaixo/acima do
-        // conteúdo, mas o teto é 1: nunca força um zoom inicial (ou mínimo)
-        // maior que 100%. Isso é o que antes causava o zoom "estranho" ao
-        // carregar a página em telas com altura maior que o conteúdo.
+    computeMinZoom() {
         const fitZoom = window.innerHeight / this.baseHeight;
         return Math.min(1, Math.max(0.1, fitZoom));
     },
 
-    targetZoom: 1,
-    zoomAnimId: null,
-    setZoom(zoom, anchorClientX, anchorClientY){
+    setZoom(zoom, anchorClientX, anchorClientY) {
         this.targetZoom = Math.max(this.minZoom, Math.min(3, zoom));
         this._zoomAnchor = (anchorClientX !== undefined) ? { x: anchorClientX, y: anchorClientY } : null;
-        if(!this.zoomAnimId){
+        if (!this.zoomAnimId) {
             this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
         }
     },
 
-    _stepZoom(){
+    _stepZoom() {
         const oldZoom = this.zoomLevel;
         const diff = this.targetZoom - oldZoom;
-        if(Math.abs(diff) < 0.001){
+        if (Math.abs(diff) < 0.001) {
             this._applyZoom(this.targetZoom, this._zoomAnchor);
             this.zoomAnimId = null;
             return;
         }
-        const newZoom = oldZoom + diff * 0.65; 
+        const newZoom = oldZoom + diff * 0.65;
         this._applyZoom(newZoom, this._zoomAnchor);
         this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
     },
 
-    _applyZoom(newZoom, anchor){
+    _applyZoom(newZoom, anchor) {
         const oldZoom = this.zoomLevel;
-
         const wrapper = this.wrapper;
         let scrollLeft = wrapper.scrollLeft;
-        let scrollTop  = wrapper.scrollTop;
+        let scrollTop = wrapper.scrollTop;
 
-        if(anchor){
+        if (anchor) {
             const rect = wrapper.getBoundingClientRect();
             const cursorX = anchor.x - rect.left;
             const cursorY = anchor.y - rect.top;
-
             const baseX = (scrollLeft + cursorX) / oldZoom;
-            const baseY = (scrollTop  + cursorY) / oldZoom;
-
+            const baseY = (scrollTop + cursorY) / oldZoom;
             scrollLeft = baseX * newZoom - cursorX;
-            scrollTop  = baseY * newZoom - cursorY;
+            scrollTop = baseY * newZoom - cursorY;
         }
 
         this.zoomLevel = newZoom;
         this.contentEl.style.transform = `scale(${this.zoomLevel})`;
-        this.sizerEl.style.width  = `${this.baseWidth  * this.zoomLevel}px`;
+        this.sizerEl.style.width = `${this.baseWidth * this.zoomLevel}px`;
         this.sizerEl.style.height = `${this.baseHeight * this.zoomLevel}px`;
-
         wrapper.scrollLeft = scrollLeft;
-        wrapper.scrollTop  = scrollTop;
+        wrapper.scrollTop = scrollTop;
 
-        if(this.cy){
+        if (this.cy) {
             this.cy.resize();
         }
     },
 
-    setupHtmlCards(){
+    setupHtmlCards() {
         const overlay = document.createElement('div');
         overlay.className = 'html-card-overlay';
         this.cy.container().appendChild(overlay);
@@ -321,7 +299,7 @@ export const TimelineApp = {
         this.htmlCards = {};
         this.cy.nodes().forEach(node => {
             const html = node.data('html');
-            if(!html) return;
+            if (!html) return;
 
             const div = document.createElement('div');
             div.className = 'html-card-wrapper ' + node.classes().join(' ');
@@ -330,7 +308,7 @@ export const TimelineApp = {
 
             const pos = node.renderedPosition();
             div.style.left = `${pos.x}px`;
-            div.style.top  = `${pos.y}px`;
+            div.style.top = `${pos.y}px`;
 
             overlay.appendChild(div);
             this.htmlCards[node.id()] = div;
@@ -338,8 +316,8 @@ export const TimelineApp = {
         this.cy.on('tap', () => this.refreshHtmlCards());
     },
 
-    refreshHtmlCards(){
-        if(!this.htmlCards) return;
+    refreshHtmlCards() {
+        if (!this.htmlCards) return;
 
         const toShow = [];
         Object.keys(this.htmlCards).forEach(id => {
@@ -347,17 +325,17 @@ export const TimelineApp = {
             const el = this.htmlCards[id];
             const shouldShow = node.style('display') !== 'none';
 
-            if(shouldShow){
-                if(el.style.display === 'none'){
+            if (shouldShow) {
+                if (el.style.display === 'none') {
                     el.style.display = 'block';
                     el.classList.remove('card-visible');
                     void el.offsetWidth;
                 }
                 toShow.push(el);
-            } else if(el.classList.contains('card-visible')){
+            } else if (el.classList.contains('card-visible')) {
                 el.classList.remove('card-visible');
                 setTimeout(() => {
-                    if(!el.classList.contains('card-visible')) el.style.display = 'none';
+                    if (!el.classList.contains('card-visible')) el.style.display = 'none';
                 }, 200);
             } else {
                 el.style.display = 'none';

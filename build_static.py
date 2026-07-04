@@ -9,16 +9,18 @@ def main():
         shutil.rmtree(OUT_DIR)
     os.makedirs(OUT_DIR)
 
-    data = visualization_data()
-    result = build_timeline_elements(data)
-    with open(f'{OUT_DIR}/timeline.json', 'w', encoding='utf-8') as f:
-        json.dump(result, f, ensure_ascii=False)
-
     shutil.copy('templates/index.html', f'{OUT_DIR}/index.html')
     shutil.copytree('static/css', f'{OUT_DIR}/css')
     shutil.copytree('static/js', f'{OUT_DIR}/js')
     shutil.copytree('static', f'{OUT_DIR}/static')
     shutil.copy('sw.js', f'{OUT_DIR}/sw.js')
+
+    data = visualization_data()
+    result = build_timeline_elements(data)
+    
+    with open(f'{OUT_DIR}/js/data.js', 'w', encoding='utf-8') as f:
+        json_str = json.dumps(result, ensure_ascii=False)
+        f.write(f"export const timelineData = {json_str};\n")
 
     images = []
     for root, _, files in os.walk(f'{OUT_DIR}/static/img'):

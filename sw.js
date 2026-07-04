@@ -3,7 +3,8 @@ const CORE_ASSETS = [
   './', './index.html',
   './css/base.css',
   './js/base.js', './js/scroller.js', './js/timeline.js', './css/cy_styles.js',
-  './timeline.json'
+  './timeline.json',
+  './js/data.js'
 ];
 
 self.addEventListener('install', (event) => {
