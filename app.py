@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def visualization_data():
     philosophies = {
-        "Raízes de Euclides": (1550, 1605, 0, "#00FF44"),
+        "Raízes de Euclides": (1580, 1605, 0, "#00FF44"),
 
         "Empirismo": (1620, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
@@ -19,22 +19,22 @@ def visualization_data():
         "Empirio-Criticismo": (1883, 1917, 200, "#FF7700"),
         "Pragmatismo (Peirce)": (1878, 1902, 120, "#FF4400"),
         "Pragmatismo (James)": (1907, 1957, 50, "#FF3300"),
-        "Círculo de Viena": (1922, 1950, 450, "#FF2200"),
-        "Verificacionismo Estrito (Waismann)": (1929, 1964, 250, "#FF1100"),
-        "Verificacionismo Estrito (Ayer)": (1935, 1960, 150, "#FF0000"),
-        "Coerentismo": (1931, 1971, 650, "#DD0022"),
-        "Fundacionalismo": (1928, 1984, 700, "#BB0044"),
-        "Confirmacionismo": (1945, 1969, 600, "#C10E47"),
-        "Falsificacionismo": (1934, 1973, 310, "#C1003A"),
-        "Naturalismo Epistemológico": (1951, 1975, 470, "#DB081D"),
-        "Tradições de Pesquisa": (1977, 2026, 100, "#D7032A"),
-        "Programa Forte": (1976, 2026, 400, "#E80A49"),
-        "Racionalismo Crítico": (1980, 2026, 250, "#D80229"),
-        "Programas de Pesquisa": (1970, 2026, 350, "#C00C4E"),
-        "Historicismo": (1968, 2026, 150, "#FF2453"),
-        "Anarquismo Epistemológico": (1982, 2026, 200, "#FF0026"),
-        "Demarcação Comportamental": (1982, 2026, 50, "#FF2121"),
-        "Empirismo Construtivo": (1980, 2026, 650, "#FF0048"),
+        "Círculo de Viena": (1922, 1950, 250, "#FF2200"),
+        "Verificacionismo Estrito (Waismann)": (1929, 1964, 150, "#FF1100"),
+        "Verificacionismo Estrito (Ayer)": (1936, 1966, 100, "#FF0000"),
+        "Coerentismo": (1931, 1971, 400, "#DD0022"),
+        "Fundacionalismo": (1928, 2026, 450, "#BB0044"),
+        "Confirmacionismo": (1945, 1969, 350, "#C10E47"),
+        "Falsificacionismo": (1934, 1973, 200, "#C1003A"),
+        "Naturalismo Epistemológico": (1951, 1975, 300, "#DB081D"),
+        "Tradições de Pesquisa": (1977, 2026, 200, "#D7032A"),
+        "Programa Forte": (1976, 2026, 50, "#E80A49"),
+        "Racionalismo Crítico": (1980, 2026, 350, "#D80229"),
+        "Programas de Pesquisa": (1970, 2026, 100, "#C00C4E"),
+        "Historicismo": (1968, 2026, 250, "#FF2453"),
+        "Anarquismo Epistemológico": (1982, 2026, 300, "#FF0026"),
+        "Demarcação Comportamental": (1978, 2026, 150, "#FF2121"),
+        "Empirismo Construtivo": (1980, 2026, 400, "#FF0048"),
 
         "Racionalismo": (1610, 1709, -220, "#00FFDD"),
         "Monismo Panteísta": (1677, 1727, -270, "#00EECC"),
@@ -54,14 +54,15 @@ def visualization_data():
         "Racionalismo Contemporâneo": (1957, 2026, -200, "#7B0ECF"),
         "Problema de Gettier": (1963, 2026, -50, "#801EDC"),
         "Confiabilismo": (1986, 2026, -100, "#7E1BE1"),
-        "Epistemologia de Virtudes": (1991, 2026, -300, "#7A0CB9"),
+        "Epistemologia de Virtudes": (1991, 2026, -250, "#7A0CB9"),
+
+        "Futuro": (2031, 2046, 25, "#AA0AB9")
     }
 
     bifurcations = [
         ("Raízes de Euclides", "Racionalismo"),
         ("Racionalismo", "Empirismo"),
         ("Empirismo", "Empirismo Materialista"),
-
         ("Empirismo", "Empirismo Moderado"),
         ("Empirismo", "Idealismo Empírico"),
         ("Empirismo", "Empirismo Cético"),
@@ -107,7 +108,21 @@ def visualization_data():
         ("Programas de Pesquisa", "Programa Forte"),
         ("Problema de Gettier", "Confiabilismo"),
         ("Materialismo Dialético", "Epistemologia de Virtudes"),
-        ("Hermenêutica Filosófica", "Racionalismo Contemporâneo")
+        ("Hermenêutica Filosófica", "Racionalismo Contemporâneo"),
+        ("Epistemologia de Virtudes","Futuro"),
+        ("Racionalismo Contemporâneo","Futuro"),
+        ("Existencialismo","Futuro"),
+        ("Confiabilismo","Futuro"),
+        ("Problema de Gettier","Futuro"),
+        ("Programa Forte","Futuro"),
+        ("Programas de Pesquisa","Futuro"),
+        ("Demarcação Comportamental","Futuro"),
+        ("Tradições de Pesquisa","Futuro"),
+        ("Historicismo","Futuro"),
+        ("Anarquismo Epistemológico","Futuro"),
+        ("Racionalismo Crítico","Futuro"),
+        ("Empirismo Construtivo","Futuro"),
+        ("Fundacionalismo","Futuro"),
     ]
 
     epochs = [
@@ -784,9 +799,24 @@ def visualization_data():
 
 
     events = [
-        
+        (1700, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1710, -33, "static/img/bacon.png", "CEO Do Bacon 2", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1720, 0, "static/img/bacon.png", "CEO Do Bacon 3", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (1730, 33, "static/img/bacon.png", "CEO Do Bacon 4", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
+        (2026, 0, "static/img/bacon.png", "CEO Do Bacon 5", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066"),
     ]
     #(-400, 0, "static/img/bacon.png", "CEO Do Bacon", "O CEO do Bacon Nasceu e Dominou o Mundo Inteiro", "#cc0066")
+
+    events_band_color = "#34003d" 
+    events_band_height = 100
+    events_band_opacity = 0.55
+    events_band_border_opacity = 0.00
+    events_band_text_color = "#be41d4"
+    events_band_font = "monospace"
+    events_band_staff = True
+    events_band_staff_lines = 2
+    events_band_staff_opacity = 0.55
+    events_band_staff_color = "#630c72"
 
     return {
         "philosophies": philosophies,
@@ -797,7 +827,17 @@ def visualization_data():
         "influences": influences,
         "adepts": adepts,
         "oppositions": oppositions,
-        "events": events
+        "events": events,
+        "events_band_color": events_band_color,
+        "events_band_height": events_band_height,
+        "events_band_opacity": events_band_opacity,
+        "events_band_border_opacity": events_band_border_opacity,
+        "events_band_text_color": events_band_text_color,
+        "events_band_font": events_band_font,
+        "events_band_staff": events_band_staff,
+        "events_band_staff_lines": events_band_staff_lines,
+        "events_band_staff_opacity": events_band_staff_opacity,
+        "events_band_staff_color": events_band_staff_color
     }
 
 @app.route('/')

@@ -1,4 +1,14 @@
 import { cyStyles } from '../css/cy_styles.js';
+
+/** Converte cor hex (#rrggbb) em rgba com alpha ajustável. */
+function hexToRgba(hex, alpha) {
+    const clean = hex.replace('#', '');
+    const r = parseInt(clean.substring(0, 2), 16);
+    const g = parseInt(clean.substring(2, 4), 16);
+    const b = parseInt(clean.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export const TimelineApp = {
     cy: null,
     wrapper: null,
@@ -95,9 +105,6 @@ export const TimelineApp = {
 
     /** Cria o grafo que representa a timeline. Qualquer abstração de qualquer tipo de grafo interage com esse grafo geral criado. */
     buildGraph(data){
-        const realHeightPx = window.innerHeight;
-        const scaleY = realHeightPx / data.total_height;
-
         // Escala de elementos
 
 
@@ -117,6 +124,27 @@ export const TimelineApp = {
                 this.wrapper.appendChild(line);
                 this.wrapper.appendChild(label);
             });
+        }
+
+        // Rótulo textual da faixa de eventos (o fundo, as bordas e as linhas de partitura
+        // agora são elementos reais do grafo do Cytoscape - ver build_events_band em render.py -
+        // então a ordem de empilhamento com os eventos é resolvida lá, sem conflito de camadas.
+        // Aqui só cuidamos do texto, que continua sendo um overlay HTML simples.)
+        if(typeof data.events_center === 'number'){
+            const bandColor = data.events_band_color || '#cc0066';
+            const textColor = data.events_band_text_color || bandColor;
+            const textFont  = data.events_band_font || 'monospace';
+            const bandY = data.events_center;
+
+            const label = document.createElement('div');
+            label.className = 'events-band-label';
+            label.style.top = `${bandY}px`;
+            label.style.left = `${data.total_width / 2}px`;
+            label.style.setProperty('--events-band-label-color', hexToRgba(textColor, 0.6));
+            label.style.setProperty('--events-band-label-font', textFont);
+            label.innerText = 'Eventos Históricos e Científicos Importantes';
+
+            this.wrapper.appendChild(label);
         }
 
         // Criação do grafo com passagem dos elementos já processados

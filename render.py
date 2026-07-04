@@ -10,7 +10,7 @@ def hex_to_rgba(hex_color, alpha, factor=1):
     b = int(b * factor)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
-def general_metrics(philosophies):
+def general_metrics(philosophies, events_band_height=70):
     """Calcula o grid básico, posições e metadados das correntes filosóficas"""
     # Eixo X
     epsilon = 20
@@ -22,7 +22,10 @@ def general_metrics(philosophies):
     # Eixo Y
     total_height = 1300
     timeline_center = total_height * 0.4
-    events_center = total_height * 0.9
+    # A faixa fica com metade da sua altura acima e metade abaixo de events_center;
+    # para colar exatamente na borda inferior da página, o centro precisa ficar
+    # deslocado de total_height por meia altura da faixa.
+    events_center = total_height - (events_band_height / 2)
 
     philosophy_metrics = {}
     for name, values in philosophies.items():
@@ -153,28 +156,103 @@ def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, labe
         "style": style
     }
 
-def build_rect_node(node_id, x, y, width, height, color, classes="", label="", border_width=0, z_index=9, font_size=11, font_color="#000000", font_family="sans-serif"):
-    """Abstração dos elementos retangulares da UI."""
+def build_rect_node(node_id, x, y, width, height, color, classes="", label="", border_width=0, z_index=9, font_size=11, font_color="#000000", font_family="sans-serif", bg_opacity=None, border_opacity=None):
+    """Abstração dos elementos retangulares da UI.
+
+    IMPORTANTE: o Cytoscape.js ignora o canal alpha de strings rgba() passadas em
+    'background-color'/'border-color' — a opacidade real é controlada pelas propriedades
+    separadas 'background-opacity'/'border-opacity' (padrão 1). Por isso, quando `color`
+    já vier como rgba(...) com alpha < 1 (ex.: gerado por hex_to_rgba), é necessário também
+    informar bg_opacity/border_opacity explicitamente, ou a opacidade é perdida.
+    """
 
     final_classes = f"rect-node {classes}".strip()
+    style = {
+        "width": width,
+        "height": height,
+        "background-color": color,
+        "border-width": border_width,
+        "z-index": z_index,
+        "font-size": font_size,
+        "color": font_color,
+        "font-family": font_family,
+        "text-wrap": "wrap",
+        "text-max-width": width - 16,
+        "padding": 2
+    }
+    if bg_opacity is not None:
+        style["background-opacity"] = bg_opacity
+    if border_opacity is not None:
+        style["border-opacity"] = border_opacity
+
     return {
         "classes": final_classes,
         "data": {"id": node_id, "label": label},
         "position": {"x": x, "y": y},
-        "style": {
-            "width": width,
-            "height": height,
-            "background-color": color,
-            "border-width": border_width,
-            "z-index": z_index,
-            "font-size": font_size,
-            "color": font_color,
-            "font-family": font_family,
-            "text-wrap": "wrap",
-            "text-max-width": width - 16,
-            "padding": 2
-        }
+        "style": style
     }
+
+def build_events_band(events_center, band_height, band_color, band_opacity, border_opacity,
+                       total_width, staff, staff_lines, staff_opacity, staff_color):
+    """Constrói a faixa de eventos (fundo, bordas e linhas de partitura) como elementos reais
+    do grafo do Cytoscape, ao invés de divs HTML sobrepostas. Assim a ordem de empilhamento
+    entre a faixa e os nós (eventos, filósofos etc.) é resolvida pelo próprio Cytoscape:
+    esses elementos usam z-index 0 e são inseridos antes dos demais, então ficam atrás de
+    tudo que tiver z-index igual (o padrão), sem cobrir nem ser coberto de forma inconsistente."""
+    elements = []
+    cx = total_width / 2
+
+    # Fundo translúcido da faixa
+    # (band_color aqui é passado "cru", sem alpha embutido; a opacidade vai explicitamente
+    # em bg_opacity, já que o Cytoscape ignora o alpha de rgba() em background-color)
+    bg = build_rect_node(
+        node_id="events-band-bg",
+        x=cx, y=events_center,
+        width=total_width, height=band_height,
+        color=band_color,
+        classes="events-band-bg",
+        border_width=0, z_index=0,
+        bg_opacity=band_opacity
+    )
+    bg["style"]["events"] = "no"
+    elements.append(bg)
+
+    # Bordas superior e inferior
+    for suffix, edge_y in (("top", events_center - band_height / 2), ("bottom", events_center + band_height / 2)):
+        border = build_rect_node(
+            node_id=f"events-band-border-{suffix}",
+            x=cx, y=edge_y,
+            width=total_width, height=2,
+            color=band_color,
+            classes="events-band-border",
+            border_width=0, z_index=0,
+            bg_opacity=border_opacity
+        )
+        border["style"]["events"] = "no"
+        elements.append(border)
+
+    # Linhas de partitura (opcional)
+    if staff:
+        n = staff_lines or 5
+        spacing = band_height / (n + 1)
+        line_color = staff_color or band_color
+        top = events_center - band_height / 2
+
+        for i in range(1, n + 1):
+            y = top + spacing * i
+            line = build_rect_node(
+                node_id=f"events-band-staff-{i}",
+                x=cx, y=y,
+                width=total_width, height=1,
+                color=line_color,
+                classes="events-band-staff-line",
+                border_width=0, z_index=0,
+                bg_opacity=staff_opacity
+            )
+            line["style"]["events"] = "no"
+            elements.append(line)
+
+    return elements
 
 def build_events(events, min_year, scale_x, events_center):
     """Constroi os eventos históricos da linha do tempo."""
@@ -503,13 +581,30 @@ def build_timeline_elements(data):
     oppositions   = data.get('oppositions', {})
 
     # Métricas Base
-    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies)
+    events_band_height = data.get('events_band_height', 70)
+    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies, events_band_height)
+
+    # Config da Faixa de Eventos
+    events_band_color          = data.get('events_band_color', '#cc0066')
+    events_band_opacity        = data.get('events_band_opacity', 0.08)
+    events_band_border_opacity = data.get('events_band_border_opacity', 0.3)
+    events_band_staff          = data.get('events_band_staff', False)
+    events_band_staff_lines    = data.get('events_band_staff_lines', 5)
+    events_band_staff_opacity  = data.get('events_band_staff_opacity', 0.15)
+    events_band_staff_color    = data.get('events_band_staff_color')
 
     # Marcação de Épocas
     epoch_markers = build_epochs(epochs, min_year, scale_x)
 
     # Construção dos Elementos
+    # A faixa entra primeiro na lista: com z-index 0 (empatado com o padrão dos demais nós),
+    # o Cytoscape desenha por ordem de inserção, então ela fica atrás de tudo que vier depois.
     elements = []
+    elements.extend(build_events_band(
+        events_center, events_band_height, events_band_color, events_band_opacity,
+        events_band_border_opacity, total_width, events_band_staff,
+        events_band_staff_lines, events_band_staff_opacity, events_band_staff_color
+    ))
     elements.extend(build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x))
     elements.extend(build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, works, influences, adepts, oppositions))
     elements.extend(build_events(events, min_year, scale_x, events_center))
@@ -520,5 +615,16 @@ def build_timeline_elements(data):
         "total_width": total_width,
         "total_height": total_height,
         "min_year": min_year,
-        "scale_x": scale_x
+        "scale_x": scale_x,
+        "events_center": events_center,
+        "events_band_color": events_band_color,
+        "events_band_height": events_band_height,
+        "events_band_opacity": events_band_opacity,
+        "events_band_border_opacity": events_band_border_opacity,
+        "events_band_text_color": data.get("events_band_text_color", "#e0669c"),
+        "events_band_font": data.get("events_band_font", "monospace"),
+        "events_band_staff": events_band_staff,
+        "events_band_staff_lines": events_band_staff_lines,
+        "events_band_staff_opacity": events_band_staff_opacity,
+        "events_band_staff_color": events_band_staff_color
     }
