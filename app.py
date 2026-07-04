@@ -21,7 +21,7 @@ def visualization_data():
         "Pragmatismo (James)": (1907, 1957, 50, "#FF3300"),
         "Círculo de Viena": (1922, 1950, 450, "#FF2200"),
         "Verificacionismo Estrito (Waismann)": (1929, 1964, 250, "#FF1100"),
-        "Verificacionismo Estrito (Ayer)": (1935, 1966, 150, "#FF0000"),
+        "Verificacionismo Estrito (Ayer)": (1935, 1960, 150, "#FF0000"),
         "Coerentismo": (1931, 1971, 650, "#DD0022"),
         "Fundacionalismo": (1928, 1984, 700, "#BB0044"),
         "Confirmacionismo": (1945, 1969, 600, "#C10E47"),
@@ -188,6 +188,16 @@ def visualization_data():
             ]),
         ]),
 
+        ("Paul Feyerabend", "Anarquismo epistemológico", 1982, 0, "static/img/paul-feyerabend.jpeg", [
+            ("Informações pessoais", "Filósofo da ciência austríaco."),
+            ("Vida e fatos", "Foi um dos principais críticos da ideia de um método científico universal, defendendo uma visão pluralista da ciência e debatendo intensamente com Popper, Kuhn e Lakatos."),
+            ("Teorias/Ideias", [
+                "Anarquismo epistemológico: não existe um método científico universal capaz de explicar o progresso da ciência.",
+                "Pluralismo metodológico: diferentes métodos e teorias podem contribuir para o avanço científico.",
+                "Crítica ao cientificismo: a ciência não é a única forma válida de produzir conhecimento.",
+            ]),
+        ]),
+        
         ("Moritz Schlick", "Círculo de Viena", 1946, 0, "static/img/moritz_schlick.jpeg", [
             ("Informações pessoais", "Filósofo alemão."),
             ("Vida e fatos", "Fundador e líder do Círculo de Viena."),
@@ -227,7 +237,7 @@ def visualization_data():
             ]),
         ]),
 
-        ("Thomas Kuhn", "Historicismo", 1985, 0, "static/img/thomas_kuhn.jpg", [
+        ("Thomas Kuhn", "Historicismo", 1968, 0, "static/img/thomas_kuhn.jpg", [
             ("Informações pessoais", "Físico, historiador e filósofo da ciência estadunidense."),
             ("Vida e fatos", "Foi o grande rival intelectual de Popper ao introduzir o historicismo."),
             ("Teorias/Ideias", [
@@ -616,6 +626,7 @@ def visualization_data():
         'Ernest Sosa': [('Knowledge in Perspective', '1991')],
         'Noam Chomsky': [('Syntactic Structures', '1957'), ('Aspects of the Theory of Syntax', '1965')],
         'Jerry Fodor': [('The Modularity of Mind', '1983'), ('The Language of Thought', '1975')],
+        'Paul Feyerabend': [('Against Method', '1975'), ('Science in a Free Society', '1978'), ('Farewell to Reason', '1987')],
         'David Chalmers': [('The Conscious Mind', '1996'), ('Reality+: Virtual Worlds and the Problems of Philosophy', '2022')],
     }
 
@@ -669,6 +680,7 @@ def visualization_data():
     }
 
     adepts = {
+        'Paul Feyerabend': [('Thomas Kuhn', 'Compartilhava a crítica à existência de um método científico único, embora defendesse uma posição menos radical.'), ('David Bloor', 'Incorporou a ideia de que o conhecimento científico deve ser compreendido também em seu contexto social.'), ('Barry Barnes', 'Desenvolveu abordagens sociológicas da ciência inspiradas pela crítica ao objetivismo científico.')],
         'Francis Bacon': [('Thomas Hobbes', 'Adotou o empirismo como base do conhecimento, aplicando-o ao materialismo.'), ('John Locke', 'Desenvolveu o empirismo defendendo que toda ideia deriva da experiência.')],
         'Thomas Hobbes': [('John Locke', 'Manteve a ideia de que todo conhecimento começa na experiência, embora rejeitasse o materialismo de Hobbes.')],
         'John Locke': [('George Berkeley', 'Aceitou que todo conhecimento provém da experiência, embora negasse a existência da matéria.'), ('David Hume', 'Radicalizou o empirismo ao questionar causalidade, substância e indução.')],
@@ -719,6 +731,7 @@ def visualization_data():
     }
 
     oppositions = {
+        'Paul Feyerabend': [('Karl Popper', 'Criticava o abandono de critérios racionais para distinguir ciência de pseudociência.'), ('Imre Lakatos', 'Discordava do anarquismo metodológico e defendia regras racionais para comparar programas de pesquisa.'), ('Larry Laudan', 'Rejeitava seu relativismo metodológico, defendendo critérios objetivos de progresso científico.')],
         'Francis Bacon': [('René Descartes', 'Defendia que a razão e as ideias claras são o fundamento do conhecimento, enquanto Bacon privilegiava a observação e a indução.')],
         'Thomas Hobbes': [('René Descartes', 'Rejeitava a redução da mente à matéria proposta por Hobbes, defendendo o dualismo mente-corpo.')],
         'John Locke': [('René Descartes', 'Criticava a negação das ideias inatas e defendia que certos conhecimentos são anteriores à experiência.')],
