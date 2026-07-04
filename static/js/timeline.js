@@ -13,18 +13,18 @@ export const TimelineApp = {
     wrapper: null,
     sizerEl: null,
     contentEl: null,
-    zoomLevel: null,
-    minZoom: 0.2,
+    zoomLevel: 1,
+    minZoom: 0.1,
     baseWidth: 0,
     baseHeight: 0,
 
     init(){
         this.wrapper = document.querySelector('#scroll-wrapper');
-        this.loadData();
+        return this.loadData();
     },
 
     loadData(){
-        fetch('/timeline')
+        return fetch('/timeline')
             .then(response => {
                 if(!response.ok) throw new Error("Erro ao buscar /timeline");
                 return response.json();
@@ -223,30 +223,61 @@ export const TimelineApp = {
         });
 
         this.bindInteractivity();
+
+        this.cy.on('mouseover', 'node.phil-portrait, node.event', (evt) => {
+            evt.target.animate({ style: { 'border-width': 4 } }, { duration: 100 });
+        });
+        this.cy.on('mouseout', 'node.phil-portrait, node.event', (evt) => {
+            evt.target.animate({ style: { 'border-width': 3 } }, { duration: 100 });
+        });
+
         this.setupHtmlCards();
 
-        this.minZoom = window.innerHeight / this.baseHeight;
-        this.setZoom(this.minZoom);
+        this.setZoom(1);
+        this.fitHeightIfNeeded();
+        this.minZoom = this.zoomLevel;
 
         window.addEventListener('resize', () => {
-            this.minZoom = window.innerHeight / this.baseHeight;
             this.fitHeightIfNeeded();
+            this.minZoom = Math.max(this.minZoom, window.innerHeight / this.baseHeight);
         });
     },
 
+    targetZoom: 1,
+    zoomAnimId: null,
     setZoom(zoom, anchorClientX, anchorClientY){
+        this.targetZoom = Math.max(this.minZoom, Math.min(3, zoom));
+        this._zoomAnchor = (anchorClientX !== undefined) ? { x: anchorClientX, y: anchorClientY } : null;
+        if(!this.zoomAnimId){
+            this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
+        }
+    },
+
+    _stepZoom(){
         const oldZoom = this.zoomLevel;
-        const newZoom = Math.max(this.minZoom, Math.min(3, zoom));
-        if(oldZoom !== null && newZoom === oldZoom) return;
+        const diff = this.targetZoom - oldZoom;
+        if(Math.abs(diff) < 0.001){
+            this._applyZoom(this.targetZoom, this._zoomAnchor);
+            this.zoomAnimId = null;
+            return;
+        }
+        const newZoom = oldZoom + diff * 0.65; 
+        this._applyZoom(newZoom, this._zoomAnchor);
+        this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
+    },
+
+    _applyZoom(newZoom, anchor){
+        const oldZoom = this.zoomLevel;
+        if(newZoom === oldZoom) return;
 
         const wrapper = this.wrapper;
         let scrollLeft = wrapper.scrollLeft;
         let scrollTop  = wrapper.scrollTop;
 
-        if(oldZoom !== null && anchorClientX !== undefined && anchorClientY !== undefined){
+        if(anchor){
             const rect = wrapper.getBoundingClientRect();
-            const cursorX = anchorClientX - rect.left;
-            const cursorY = anchorClientY - rect.top;
+            const cursorX = anchor.x - rect.left;
+            const cursorY = anchor.y - rect.top;
 
             const baseX = (scrollLeft + cursorX) / oldZoom;
             const baseY = (scrollTop  + cursorY) / oldZoom;
@@ -269,8 +300,9 @@ export const TimelineApp = {
     },
 
     fitHeightIfNeeded(){
-        if(this.zoomLevel < this.minZoom){
-            this.setZoom(this.minZoom);
+        const currentContentHeight = this.baseHeight * this.zoomLevel;
+        if(currentContentHeight < window.innerHeight){
+            this.setZoom(window.innerHeight / this.baseHeight);
         }
     },
 
@@ -287,11 +319,11 @@ export const TimelineApp = {
             const div = document.createElement('div');
             div.className = 'html-card-wrapper ' + node.classes().join(' ');
             div.innerHTML = html;
+            div.style.display = 'none';
 
             const pos = node.renderedPosition();
             div.style.left = `${pos.x}px`;
             div.style.top  = `${pos.y}px`;
-            div.style.display = node.style('display') === 'none' ? 'none' : 'block';
 
             overlay.appendChild(div);
             this.htmlCards[node.id()] = div;
@@ -301,9 +333,32 @@ export const TimelineApp = {
 
     refreshHtmlCards(){
         if(!this.htmlCards) return;
+
+        const toShow = [];
         Object.keys(this.htmlCards).forEach(id => {
             const node = this.cy.getElementById(id);
-            this.htmlCards[id].style.display = node.style('display') === 'none' ? 'none' : 'block';
+            const el = this.htmlCards[id];
+            const shouldShow = node.style('display') !== 'none';
+
+            if(shouldShow){
+                if(el.style.display === 'none'){
+                    el.style.display = 'block';
+                    el.classList.remove('card-visible');
+                    void el.offsetWidth;
+                }
+                toShow.push(el);
+            } else if(el.classList.contains('card-visible')){
+                el.classList.remove('card-visible');
+                setTimeout(() => {
+                    if(!el.classList.contains('card-visible')) el.style.display = 'none';
+                }, 200);
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        toShow.forEach((el, i) => {
+            setTimeout(() => el.classList.add('card-visible'), i * 60);
         });
     }
 };

@@ -58,6 +58,12 @@ body {
     box-sizing: border-box;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.html-card-wrapper.card-visible {
+    opacity: 1;
 }
 
 .phil-card {
