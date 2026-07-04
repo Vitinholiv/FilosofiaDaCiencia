@@ -14,6 +14,7 @@ export const TimelineApp = {
     sizerEl: null,
     contentEl: null,
     zoomLevel: 1,
+    minZoom: 0.2,   // será recalculado com base na tela inicial
     baseWidth: 0,
     baseHeight: 0,
 
@@ -179,14 +180,19 @@ export const TimelineApp = {
 
         this.setZoom(1);
         this.fitHeightIfNeeded();
-        window.addEventListener('resize', () => this.fitHeightIfNeeded());
+        this.minZoom = this.zoomLevel;   // trava o zoom-out máximo na disposição inicial
+
+        window.addEventListener('resize', () => {
+            this.fitHeightIfNeeded();
+            this.minZoom = Math.max(this.minZoom, window.innerHeight / this.baseHeight);
+        });
     },
 
     /** Aplica um nível de zoom ao conteúdo, opcionalmente mantendo fixo o ponto
      * do conteúdo que está sob o cursor (anchorClientX/Y = event.clientX/Y). */
-    setZoom(zoom, anchorClientX, anchorClientY){
+        setZoom(zoom, anchorClientX, anchorClientY){
         const oldZoom = this.zoomLevel;
-        const newZoom = Math.max(0.2, Math.min(3, zoom));
+        const newZoom = Math.max(this.minZoom, Math.min(3, zoom));   // era Math.max(0.2, ...)
         if(newZoom === oldZoom) return;
 
         const wrapper = this.wrapper;
