@@ -15,8 +15,8 @@ def main():
         json.dump(result, f, ensure_ascii=False)
 
     shutil.copy('templates/index.html', f'{OUT_DIR}/index.html')
-    shutil.copytree('css', f'{OUT_DIR}/css')
-    shutil.copytree('js', f'{OUT_DIR}/js')
+    shutil.copytree('static/css', f'{OUT_DIR}/css')
+    shutil.copytree('static/js', f'{OUT_DIR}/js')
     shutil.copytree('static', f'{OUT_DIR}/static')
     shutil.copy('sw.js', f'{OUT_DIR}/sw.js')
 

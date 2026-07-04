@@ -1,0 +1,188 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ccc;
+    font-family: sans-serif;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#scroll-wrapper {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#scroll-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+#cy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.epoch-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 1px dashed rgba(255, 255, 255, 0.15);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.html-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.html-card-wrapper {
+    position: absolute;
+    width: 260px;
+    box-sizing: border-box;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.html-card-wrapper.card-visible {
+    opacity: 1;
+}
+
+.phil-card {
+    background-color: #d9d9d9;
+    border: 4px solid #888;
+    border-radius: 6px;
+    padding: 10px 12px;
+    color: #222;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.phil-card-name {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.phil-topics,
+.phil-topics ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.phil-topics > li {
+    list-style: disc;
+    margin-bottom: 4px;
+}
+
+.phil-topics ul > li {
+    list-style: circle;
+    margin-top: 2px;
+}
+
+.event-card {
+    background-color: #d9d9d9;
+    border: 4px solid #888;
+    border-radius: 6px;
+    overflow: hidden;
+    color: #222;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.event-card-img {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.event-card-name {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 12px 0;
+}
+
+.event-card-text {
+    padding: 8px 12px 10px;
+}
+
+.html-card-wrapper.btn-cards {
+    transform: translate(-50%, 0);
+}
+
+.side-card {
+    background-color: #1e1e1e;
+    border: 2px solid #888;
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.side-card-header {
+    padding: 10px 12px;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #888;
+}
+
+.side-card-body {
+    padding: 10px 12px;
+    background-color: #1e1e1e;
+    color: #cccccc;
+    text-align: center;
+}
+
+.epoch-label {
+    position: absolute;
+    top: 20px;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 0;
+    pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.events-band-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-align: center;
+    color: var(--events-band-label-color, #cc0066);
+    font-family: var(--events-band-label-font, monospace);
+    z-index: 2;
+    pointer-events: none;
+}
