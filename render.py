@@ -20,7 +20,7 @@ def general_metrics(philosophies):
     total_width = (max_year - min_year) * scale_x
 
     # Eixo Y
-    total_height = 1000
+    total_height = 1300
     timeline_center = total_height * 0.4
     events_center = total_height * 0.9
 
@@ -399,7 +399,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
 
         # Cards Laterais: cada card = nó header (negrito) + nó body (texto normal)
         SIDE_X        = CARD_WIDTH + 40
-        HEADER_H      = 50
+        HEADER_H      = 0
         FONT_SZ       = 14
         GAP_CARD      = 50
         CARD_ANCHOR_Y = group_top
