@@ -1,5 +1,3 @@
-/* Estilos Base da Página */
-
 body {
     margin: 0;
     padding: 0;
@@ -18,17 +16,13 @@ body {
     position: relative;
     -webkit-overflow-scrolling: touch;
 
-    /* Esconde a barra de rolagem visualmente, mas mantém o scroll funcional
-       (wheel, drag do mouse via scroller.js, e swipe nativo no touch/mobile) */
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE / Edge legado */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 #scroll-wrapper::-webkit-scrollbar {
-    display: none;               /* Chrome, Safari, Edge (Chromium) */
+    display: none;
 }
-
-/* Container do Cytoscape */
 
 #cy {
     position: absolute;
@@ -36,8 +30,6 @@ body {
     left: 0;
     z-index: 1;
 }
-
-/* Marcadores de Época */
 
 .epoch-line {
     position: absolute;
@@ -49,9 +41,6 @@ body {
     z-index: 0;
     pointer-events: none;
 }
-
-
-/* Cards de resumo em tópicos (HTML sobre os nós) */
 
 .html-card-overlay {
     position: absolute;
@@ -134,9 +123,12 @@ body {
     padding: 8px 12px 10px;
 }
 
-/* Cards laterais dos botões (mesmo mecanismo: HTML com altura automática) */
+.html-card-wrapper.btn-cards {
+    transform: translate(-50%, 0);
+}
 
 .side-card {
+    background-color: #1e1e1e;
     border: 2px solid #888;
     border-radius: 6px;
     overflow: hidden;
@@ -172,4 +164,19 @@ body {
     pointer-events: none;
     text-align: center;
     white-space: nowrap;
+}
+
+.events-band-label {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-align: center;
+    color: var(--events-band-label-color, #cc0066);
+    font-family: var(--events-band-label-font, monospace);
+    z-index: 2;
+    pointer-events: none;
 }

@@ -1,6 +1,5 @@
 import { cyStyles } from '../css/cy_styles.js';
 
-/** Converte cor hex (#rrggbb) em rgba com alpha ajustável. */
 function hexToRgba(hex, alpha) {
     const clean = hex.replace('#', '');
     const r = parseInt(clean.substring(0, 2), 16);
@@ -13,13 +12,11 @@ export const TimelineApp = {
     cy: null,
     wrapper: null,
 
-    /** Inicializa a timeline. */
     init(){
         this.wrapper = document.querySelector('#scroll-wrapper');
         this.loadData();
     },
 
-    /** Faz uma chamada para a API da aplicação, retornando os dados já processados para uso. */
     loadData(){
         fetch('/timeline')
             .then(response => {
@@ -30,20 +27,17 @@ export const TimelineApp = {
             .catch(error => console.error("Erro no TimelineApp:", error));
     },
 
-    /** Ativa a interatividade dos componentes do grafo. */
     bindInteractivity(){
         // Detecção de Cliques
         this.cy.on('tap', (evt) => {
             const target = evt.target;
             const allUI = '.phil-detail, .clickable-button, .event-detail, .btn-cards';
 
-            // Clique Arbitrário
             if (target === this.cy) {
                 this.cy.elements(allUI).style('display', 'none');
                 return;
             }
 
-            // Filósofo
             if(target.hasClass('phil-portrait')){
                 const philName = target.data('phil_name');
                 if(!philName) return;
@@ -61,7 +55,6 @@ export const TimelineApp = {
                 return;
             }
 
-            // Evento
             if (target.hasClass('event')) {
                 const eventId = target.data('event_id');
                 if (!eventId) return;
@@ -78,12 +71,10 @@ export const TimelineApp = {
                 return;
             }
 
-            // Coisas não interativas mas que não devem desativar nada
             if(target.hasClass('phil-detail', 'event-detail')){
                 return;
             }
 
-            // Botões de ação do filósofo
             if(target.hasClass('clickable-button')){
                 const safeName = target.data('safe_phil_name');
                 const btnKey   = target.data('btn_type');
@@ -103,12 +94,7 @@ export const TimelineApp = {
         });
     },
 
-    /** Cria o grafo que representa a timeline. Qualquer abstração de qualquer tipo de grafo interage com esse grafo geral criado. */
     buildGraph(data){
-        // Escala de elementos
-
-
-        // Plotagem da épocas no fundo
         if(data.epochs){
             data.epochs.forEach(ep => {
                 const line = document.createElement('div');
@@ -126,10 +112,6 @@ export const TimelineApp = {
             });
         }
 
-        // Rótulo textual da faixa de eventos (o fundo, as bordas e as linhas de partitura
-        // agora são elementos reais do grafo do Cytoscape - ver build_events_band em render.py -
-        // então a ordem de empilhamento com os eventos é resolvida lá, sem conflito de camadas.
-        // Aqui só cuidamos do texto, que continua sendo um overlay HTML simples.)
         if(typeof data.events_center === 'number'){
             const bandColor = data.events_band_color || '#cc0066';
             const textColor = data.events_band_text_color || bandColor;
@@ -147,7 +129,6 @@ export const TimelineApp = {
             this.wrapper.appendChild(label);
         }
 
-        // Criação do grafo com passagem dos elementos já processados
         const cyContainer = document.createElement('div');
         cyContainer.id = 'cy';
         cyContainer.style.width = `${data.total_width}px`;
@@ -167,14 +148,10 @@ export const TimelineApp = {
             layout: { name: 'preset' }
         });
 
-        // Ativa Interatividade
         this.bindInteractivity();
-
-        // Cards HTML em tópicos sobre os nós de resumo
         this.setupHtmlCards();
     },
 
-    /** Cria as divs HTML dos cards de resumo e as ancora sobre os nós correspondentes. */
     setupHtmlCards(){
         const overlay = document.createElement('div');
         overlay.className = 'html-card-overlay';
@@ -186,7 +163,7 @@ export const TimelineApp = {
             if(!html) return;
 
             const div = document.createElement('div');
-            div.className = 'html-card-wrapper';
+            div.className = 'html-card-wrapper ' + node.classes().join(' ');
             div.innerHTML = html;
 
             const pos = node.renderedPosition();
@@ -197,12 +174,9 @@ export const TimelineApp = {
             overlay.appendChild(div);
             this.htmlCards[node.id()] = div;
         });
-
-        // Após cada clique, espelha a visibilidade dos cards HTML na dos nós.
         this.cy.on('tap', () => this.refreshHtmlCards());
     },
 
-    /** Sincroniza a visibilidade das divs HTML com o estado de exibição dos nós. */
     refreshHtmlCards(){
         if(!this.htmlCards) return;
         Object.keys(this.htmlCards).forEach(id => {

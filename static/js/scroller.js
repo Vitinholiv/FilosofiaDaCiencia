@@ -7,14 +7,13 @@ export function setup_scroll() {
         }
     }, { passive: false });
 
-    // Navegação por clicar-e-arrastar (pan) nos eixos horizontal e vertical
     let dragging = false;
     let startX = 0, startY = 0, startLeft = 0, startTop = 0;
 
     scrollWrapper.style.cursor = 'grab';
 
     scrollWrapper.addEventListener('mousedown', function(event) {
-        if (event.button !== 0) return;            // apenas o botão esquerdo
+        if (event.button !== 0) return;
         dragging = true;
         startX = event.clientX;
         startY = event.clientY;

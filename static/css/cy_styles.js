@@ -1,4 +1,3 @@
-/** Estilos do cytoscape */
 export const cyStyles = [
     {
         selector: 'node.philosophy',

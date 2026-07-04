@@ -1,5 +1,4 @@
 def hex_to_rgba(hex_color, alpha, factor=1):
-    """Conversão de Hex para RGBA com argumento adicional factor de clareamento"""
     hex_color = hex_color.lstrip('#')
     r = int(hex_color[0:2], 16)
     g = int(hex_color[2:4], 16)
@@ -11,20 +10,14 @@ def hex_to_rgba(hex_color, alpha, factor=1):
     return f"rgba({r}, {g}, {b}, {alpha})"
 
 def general_metrics(philosophies, events_band_height=70):
-    """Calcula o grid básico, posições e metadados das correntes filosóficas"""
-    # Eixo X
     epsilon = 20
     min_year = 1600 - epsilon
     max_year = 2026 + epsilon
     scale_x = 10
     total_width = (max_year - min_year) * scale_x
 
-    # Eixo Y
     total_height = 1000
     timeline_center = total_height * 0.4
-    # A faixa fica com metade da sua altura acima e metade abaixo de events_center;
-    # para colar exatamente na borda inferior da página, o centro precisa ficar
-    # deslocado de total_height por meia altura da faixa.
     events_center = total_height - (events_band_height / 2)
 
     philosophy_metrics = {}
@@ -51,7 +44,6 @@ def general_metrics(philosophies, events_band_height=70):
     return min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics
 
 def build_epochs(epochs, min_year, scale_x):
-    """Calcula a posição X (em pixels) para as marcações de época."""
     epoch_markers = []
 
     for year, label in epochs:
@@ -64,10 +56,8 @@ def build_epochs(epochs, min_year, scale_x):
     return epoch_markers
 
 def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
-    """Gera os elementos das correntes principais (nós) e suas ramificações (arestas)."""
     elements = []
 
-    # Construção das Correntes Filosóficas
     for name, metric in philosophy_metrics.items():
         color = metric['color']
         elements.append({
@@ -85,13 +75,11 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
             }
         })
 
-    # Construção das Bifurcações
     for src, tgt in bifurcations:
         src_info = philosophy_metrics.get(src)
         tgt_info = philosophy_metrics.get(tgt)
         tgt_color = tgt_info['color']
 
-        # Vértice Invisível em Source
         delta_year = 5
         branch_year = tgt_info['start_year'] - delta_year
         branch_x = (branch_year - min_year) * scale_x
@@ -104,7 +92,6 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
             "style": {"width": 1, "height": 1, "opacity": 0, "events": "no"}
         })
 
-        # Vértice Invisível em Target
         arrival_x = (tgt_info['start_year'] - min_year) * scale_x
         arrival_y = tgt_info['y_pos']
         inv_tgt_id = f"anchor_{tgt}_from_{src}"
@@ -115,7 +102,6 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
             "style": {"width": 1, "height": 1, "opacity": 0, "events": "no"}
         })
 
-        # Aresta ligando as correntes filosóficas
         elements.append({
             "classes": "philosophy",
             "data": {
@@ -128,9 +114,6 @@ def build_philosophies(philosophy_metrics, bifurcations, min_year, scale_x):
     return elements
 
 def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, label="", border_width=2):
-    """Abstração de um nó circular. Serve tanto para filósofos quanto eventos."""
-
-    # Propriedades Gerais Dinâmicas
     final_classes = f"circle-node {classes}".strip()
     data_dict = {
         "id": node_id,
@@ -143,7 +126,6 @@ def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, labe
         "border-color": color
     }
 
-    # Visibilidade por Cor ou Imagem
     if img_url:
         data_dict["img"] = img_url
     else:
@@ -157,14 +139,6 @@ def build_circle_node(node_id, x, y, size, color, classes="", img_url=None, labe
     }
 
 def build_rect_node(node_id, x, y, width, height, color, classes="", label="", border_width=0, z_index=9, font_size=11, font_color="#000000", font_family="sans-serif", bg_opacity=None, border_opacity=None):
-    """Abstração dos elementos retangulares da UI.
-
-    IMPORTANTE: o Cytoscape.js ignora o canal alpha de strings rgba() passadas em
-    'background-color'/'border-color' — a opacidade real é controlada pelas propriedades
-    separadas 'background-opacity'/'border-opacity' (padrão 1). Por isso, quando `color`
-    já vier como rgba(...) com alpha < 1 (ex.: gerado por hex_to_rgba), é necessário também
-    informar bg_opacity/border_opacity explicitamente, ou a opacidade é perdida.
-    """
 
     final_classes = f"rect-node {classes}".strip()
     style = {
@@ -194,17 +168,9 @@ def build_rect_node(node_id, x, y, width, height, color, classes="", label="", b
 
 def build_events_band(events_center, band_height, band_color, band_opacity, border_opacity,
                        total_width, staff, staff_lines, staff_opacity, staff_color):
-    """Constrói a faixa de eventos (fundo, bordas e linhas de partitura) como elementos reais
-    do grafo do Cytoscape, ao invés de divs HTML sobrepostas. Assim a ordem de empilhamento
-    entre a faixa e os nós (eventos, filósofos etc.) é resolvida pelo próprio Cytoscape:
-    esses elementos usam z-index 0 e são inseridos antes dos demais, então ficam atrás de
-    tudo que tiver z-index igual (o padrão), sem cobrir nem ser coberto de forma inconsistente."""
     elements = []
     cx = total_width / 2
 
-    # Fundo translúcido da faixa
-    # (band_color aqui é passado "cru", sem alpha embutido; a opacidade vai explicitamente
-    # em bg_opacity, já que o Cytoscape ignora o alpha de rgba() em background-color)
     bg = build_rect_node(
         node_id="events-band-bg",
         x=cx, y=events_center,
@@ -217,7 +183,6 @@ def build_events_band(events_center, band_height, band_color, band_opacity, bord
     bg["style"]["events"] = "no"
     elements.append(bg)
 
-    # Bordas superior e inferior
     for suffix, edge_y in (("top", events_center - band_height / 2), ("bottom", events_center + band_height / 2)):
         border = build_rect_node(
             node_id=f"events-band-border-{suffix}",
@@ -231,7 +196,6 @@ def build_events_band(events_center, band_height, band_color, band_opacity, bord
         border["style"]["events"] = "no"
         elements.append(border)
 
-    # Linhas de partitura (opcional)
     if staff:
         n = staff_lines or 5
         spacing = band_height / (n + 1)
@@ -255,16 +219,13 @@ def build_events_band(events_center, band_height, band_color, band_opacity, bord
     return elements
 
 def build_events(events, min_year, scale_x, events_center):
-    """Constroi os eventos históricos da linha do tempo."""
-
     elements = []
     SHOW_NAMES = False
     CARD_WIDTH = 260
-    EVENT_RADIUS = 12.5   # metade do size=25 do nó do evento
-    GAP_EVENT_CARD = 20   # espaço entre o topo do evento e a base do card
+    EVENT_RADIUS = 12.5
+    GAP_EVENT_CARD = 20
 
     for i, (year, y_offset, img, label, tooltip, color) in enumerate(events):
-        # Evento
         x_pos = (year - min_year) * scale_x
         y_pos = events_center + y_offset
 
@@ -287,14 +248,12 @@ def build_events(events, min_year, scale_x, events_center):
 
         elements.append(event_node)
 
-        # Interface: card de resumo em HTML (mesmo estilo do card do filósofo),
-        # com a imagem do evento em tamanho grande no topo.
         detail_class = f"event-detail details_{event_id}"
         summary_id = f"summary_{event_id}"
 
         estimated_card_height = estimate_event_card_height(label, tooltip, has_img=bool(img))
         card_bottom = y_pos - EVENT_RADIUS - GAP_EVENT_CARD
-        card_y = card_bottom - (estimated_card_height / 2)   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
+        card_y = card_bottom - (estimated_card_height / 2)
 
         summary_node = build_rect_node(
             node_id=summary_id,
@@ -309,7 +268,6 @@ def build_events(events, min_year, scale_x, events_center):
         summary_node["data"]["html"] = build_event_card_html(label, tooltip, img, color)
         elements.append(summary_node)
 
-        # Ligação
         elements.append({
             "classes": detail_class + " dashed-link",
             "data": {
@@ -321,9 +279,6 @@ def build_events(events, min_year, scale_x, events_center):
     return elements
 
 def build_event_card_html(label, tooltip, img, border_color):
-    """Monta o card de resumo de um evento, no mesmo estilo do card do filósofo
-    (moldura colorida, fundo claro, texto em monospace), mas com a imagem do
-    evento em tamanho grande no topo do card."""
     img_html = f'<img class="event-card-img" src="{img}" alt="">' if img else ''
     return (
         f'<div class="event-card" style="border-color:{border_color}">'
@@ -336,18 +291,12 @@ def build_event_card_html(label, tooltip, img, border_color):
 def estimate_event_card_height(label, tooltip, has_img, img_height=160,
                                 chars_name=24, chars_text=28, line_h=16.5,
                                 name_line_h=19, pad=26, name_block_pad=8):
-    """Estima a altura do card de evento (imagem + nome + texto), com a mesma
-    lógica de segurança de estimate_info_height: nunca subestimar a altura real."""
     name_lines = max(1, (len(label) + chars_name - 1) // chars_name)
     text_lines = max(1, (len(tooltip) + chars_text - 1) // chars_text)
     text_block_h = name_lines * name_line_h + name_block_pad + text_lines * line_h + pad
     return (img_height if has_img else 0) + text_block_h
 
 def build_philosopher_card_html(name, info, border_color):
-    """Monta o HTML em tópicos exibido sobre o card de resumo do filósofo.
-
-    `info` é uma lista de (título, conteúdo), onde conteúdo é uma string
-    (tópico simples) ou uma lista de strings (subtópicos)."""
     topics = []
     for title, content in info:
         if isinstance(content, (list, tuple)):
@@ -363,9 +312,6 @@ def build_philosopher_card_html(name, info, border_color):
     )
 
 def estimate_info_height(info, chars_top=24, chars_sub=24, line_h=16.5, pad=26, name_block=27, top_margin=4, sub_margin=2):
-    """Estima a altura do card estruturado. Calibrado para nunca subestimar a
-    altura real (testado contra medições reais no navegador), com pequena
-    margem de segurança embutida em `pad`."""
     total_lines_h = 0.0
     n_top = len(info)
     n_sub = 0
@@ -382,9 +328,18 @@ def estimate_info_height(info, chars_top=24, chars_sub=24, line_h=16.5, pad=26, 
     margins = n_top * top_margin + n_sub * sub_margin
     return max(70, name_block + pad + total_lines_h + margins)
 
+def blend_hex(fg_hex, bg_hex, alpha):
+    fg_hex = fg_hex.lstrip('#')
+    bg_hex = bg_hex.lstrip('#')
+    fr, fg_g, fb = int(fg_hex[0:2], 16), int(fg_hex[2:4], 16), int(fg_hex[4:6], 16)
+    br, bg_g, bb = int(bg_hex[0:2], 16), int(bg_hex[2:4], 16), int(bg_hex[4:6], 16)
+    r = round(fr * alpha + br * (1 - alpha))
+    g = round(fg_g * alpha + bg_g * (1 - alpha))
+    b = round(fb * alpha + bb * (1 - alpha))
+    return f"rgb({r}, {g}, {b})"
+
 def build_side_card_html(header_text, body_text, color):
-    """HTML de um card lateral dos botões (cabeçalho colorido + corpo); altura automática via CSS."""
-    header_bg = hex_to_rgba(color, 0.3)
+    header_bg = blend_hex(color, "#1e1e1e", 0.3)
     body_html = "<br>".join(body_text.split("\n"))
     return (
         f'<div class="side-card" style="border-color:{color}">'
@@ -394,8 +349,6 @@ def build_side_card_html(header_text, body_text, color):
     )
 
 def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, works=None, influences=None, adepts=None, oppositions=None):
-    """Constroi a informação completa dos nós que representam os filósofos"""
-
     elements = []
     SHOW_NAMES = True
     CARD_WIDTH = 260
@@ -417,7 +370,6 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         y_pos_line = line_info['y_pos'] + offset
         sign = get_direction_sign(y_pos_line)
 
-        # Botão Geral do Filósofo
         safe_name = name.lower().replace(' ', '_')
         phil_id = f"phil_{safe_name}"
         phil_node = build_circle_node(
@@ -441,17 +393,13 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         button_class = f"clickable-button details_{safe_name}"
         summary_id = f"summary_{safe_name}"
 
-        # Card de descrição + botões: coluna à ESQUERDA da bolinha, centralizada
-        # verticalmente na altura do filósofo (evita que o card vaze da tela).
-        GAP_CARD_BUTTONS = 10 # 50
+        GAP_CARD_BUTTONS = 10
         buttons_block_h  = 4 * BUTTON_HEIGHT + 3 * GAP_BUTTONS
         group_height     = estimated_card_height + GAP_CARD_BUTTONS + buttons_block_h
         group_top        = y_pos_line - (group_height / 2)
 
         left_x = x_pos - (PORTRAIT_RADIUS + GAP_TO_CARD + (CARD_WIDTH / 2))
-        card_y = group_top + (estimated_card_height / 2)   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
-
-        # Resumo (nó âncora transparente; o conteúdo visível é o overlay HTML)
+        card_y = group_top + (estimated_card_height / 2)
         summary_node = build_rect_node(
             node_id=summary_id,
             x=left_x, y=card_y,
@@ -465,13 +413,11 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         summary_node["data"]["html"] = card_html
         elements.append(summary_node)
 
-        # Ligação bolinha -> card
         elements.append({
             "classes": detail_class + " dashed-link",
             "data": {"source": phil_id, "target": summary_id}
         })
 
-        # Botões: empilhados abaixo do card, na mesma coluna à esquerda
         current_btn_y = group_top + estimated_card_height + GAP_CARD_BUTTONS + (BUTTON_HEIGHT / 2)
 
         btn_defs = [
@@ -482,11 +428,9 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         ]
 
         def est_h(text, chars=28, lh=19, pad=28, min_h=60):
-            """Estima a altura de um nó com base no conteúdo textual."""
             lines = sum(1 if p == '' else (len(p) + chars - 1) // chars for p in text.split('\n'))
             return max(min_h, lines * lh + pad)
 
-        # Registro de botões com y e id para linkar nos cards
         button_registry = []
 
         for i, (btn_key, btn_text, btn_color, btn_items) in enumerate(btn_defs):
@@ -508,9 +452,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             button_registry.append((btn_key, btn_color, btn_items, current_btn_y, btn_id))
             current_btn_y += (BUTTON_HEIGHT + GAP_BUTTONS)
 
-        # Cards Laterais: cada card = nó header (negrito) + nó body (texto normal)
         SIDE_X = PORTRAIT_RADIUS + GAP_TO_CARD/2 + (CARD_WIDTH / 4) 
-        # SIDE_X        = CARD_WIDTH + 40
         HEADER_H      = 15
         FONT_SZ       = 14
         GAP_CARD      = 50
@@ -518,16 +460,13 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         last_name = name.split()[-1]
 
         def make_card(header_text, body_text, card_x, ref_y, card_cls, id_prefix, hdr_color, bdr_color):
-            """Cria UM nó âncora invisível que carrega o HTML do card (altura automática no CSS).
-            ref_y = centro do cabeçalho (mantém a lógica de empilhamento).
-            Retorna (nós, id_âncora, altura_estimada)."""
             est_total = HEADER_H + est_h(body_text)
             card_top  = ref_y - HEADER_H / 2
             node_id   = f"{id_prefix}-c"
 
             anchor = build_rect_node(
                 node_id=node_id,
-                x=card_x, y=card_top + est_total / 2,   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
+                x=card_x, y=card_top,
                 width=CARD_WIDTH, height=est_total,
                 color="rgba(0,0,0,0)",
                 classes=card_cls,
@@ -542,7 +481,6 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             card_cls = f"btn-cards cards-{safe_name} cards-{safe_name}-{btn_key}"
 
             def place_column(col_items, card_x, col_suffix):
-                """Empilha uma lista de (título, desc) a partir de uma posição fixa no topo."""
                 heights = [HEADER_H + est_h(d) for _, d in col_items]
                 y = CARD_ANCHOR_Y + HEADER_H / 2
                 for k, (title, desc) in enumerate(col_items):
@@ -576,8 +514,8 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
                 concordou = [(n, d) for n, d, s in btn_items if s == 'Concorda']
                 discordou = [(n, d) for n, d, s in btn_items if s != 'Concorda']
 
-                ref_y = CARD_ANCHOR_Y + HEADER_H / 2  # mesma posição de sempre (concordou fica exatamente aqui)
-                INFLUENCE_GAP = CARD_WIDTH + 20       # espaço horizontal entre concordou e discordou
+                ref_y = CARD_ANCHOR_Y + HEADER_H / 2
+                INFLUENCE_GAP = CARD_WIDTH + 20
 
                 for i, (group_items, title, g_color, g_key) in enumerate([
                     (concordou, f"{last_name} concordou", "#66cc66", "concordou"),
@@ -589,7 +527,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
                     nodes, anchor_id, _ = make_card(
                         header_text=title,
                         body_text=body_text,
-                        card_x=x_pos + SIDE_X + i * INFLUENCE_GAP, ref_y=ref_y,  # mesma altura, colunas lado a lado
+                        card_x=x_pos + SIDE_X + i * INFLUENCE_GAP, ref_y=ref_y,
                         card_cls=card_cls, id_prefix=f"card-inf-{safe_name}-{g_key}",
                         hdr_color=g_color, bdr_color=g_color
                     )
@@ -599,16 +537,14 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
                         "data": {"id": f"edge-inf-{safe_name}-{g_key}", "source": btn_id, "target": anchor_id, "lineColor": btn_color}
                     })
 
-            else:  # oppositions, adepts — centralizados em btn_y
+            else:
                 if btn_items:
                     place_column(btn_items, x_pos + SIDE_X, "r")
 
     return elements
 
 def build_timeline_elements(data):
-    """Função principal de construção da timeline."""
 
-    # Extração de Dados
     epochs        = data.get('epochs', [])
     events        = data.get('events', [])
     philosophies  = data.get('philosophies', {})
@@ -619,11 +555,9 @@ def build_timeline_elements(data):
     adepts        = data.get('adepts', {})
     oppositions   = data.get('oppositions', {})
 
-    # Métricas Base
     events_band_height = data.get('events_band_height', 70)
     min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies, events_band_height)
 
-    # Config da Faixa de Eventos
     events_band_color          = data.get('events_band_color', '#cc0066')
     events_band_opacity        = data.get('events_band_opacity', 0.08)
     events_band_border_opacity = data.get('events_band_border_opacity', 0.3)
@@ -632,12 +566,7 @@ def build_timeline_elements(data):
     events_band_staff_opacity  = data.get('events_band_staff_opacity', 0.15)
     events_band_staff_color    = data.get('events_band_staff_color')
 
-    # Marcação de Épocas
     epoch_markers = build_epochs(epochs, min_year, scale_x)
-
-    # Construção dos Elementos
-    # A faixa entra primeiro na lista: com z-index 0 (empatado com o padrão dos demais nós),
-    # o Cytoscape desenha por ordem de inserção, então ela fica atrás de tudo que vier depois.
     elements = []
     elements.extend(build_events_band(
         events_center, events_band_height, events_band_color, events_band_opacity,
