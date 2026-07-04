@@ -5,36 +5,37 @@ app = Flask(__name__)
 
 def visualization_data():
     philosophies = {
-        "Raízes de Euclides": (1580, 1605, 0, "#00FF44"),
+        "Raízes de Euclides": (1570, 1605, 0, "#00FF44"),
+        "Futuro": (2031, 2056, 120, "#FF00E1"),
 
         "Empirismo": (1620, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
         "Empirismo Moderado": (1670, 1838, 370, "#CCFF00"),
-        "Idealismo Empírico": (1710, 1760, 320, "#EEFF00"),
+        "Idealismo Empírico": (1710, 1780, 320, "#EEFF00"),
         "Empirismo Cético": (1739, 1878, 270, "#FFFF00"),
         "Indutivismo Científico": (1843, 1890, 320, "#FFDD00"),
         "Positivismo Clássico": (1842, 1890, 420, "#FFBB00"),
         "Ceticismo Radical": (1750, 1800, 220, "#FFD500"),
         "Positivismo Científico": (1895, 1917, 350, "#FF9900"),
         "Empirio-Criticismo": (1883, 1917, 200, "#FF7700"),
-        "Pragmatismo (Peirce)": (1878, 1902, 120, "#FF4400"),
+        "Pragmatismo (Peirce)": (1878, 1925, 120, "#FF4400"),
         "Pragmatismo (James)": (1907, 1957, 50, "#FF3300"),
-        "Círculo de Viena": (1922, 1950, 250, "#FF2200"),
-        "Verificacionismo Estrito (Waismann)": (1929, 1964, 150, "#FF1100"),
-        "Verificacionismo Estrito (Ayer)": (1936, 1966, 100, "#FF0000"),
-        "Coerentismo": (1931, 1971, 400, "#DD0022"),
-        "Fundacionalismo": (1928, 2026, 450, "#BB0044"),
-        "Confirmacionismo": (1945, 1969, 350, "#C10E47"),
-        "Falsificacionismo": (1934, 1973, 200, "#C1003A"),
-        "Naturalismo Epistemológico": (1951, 1975, 300, "#DB081D"),
-        "Tradições de Pesquisa": (1977, 2026, 200, "#D7032A"),
-        "Programa Forte": (1976, 2026, 50, "#E80A49"),
-        "Racionalismo Crítico": (1980, 2026, 350, "#D80229"),
-        "Programas de Pesquisa": (1970, 2026, 100, "#C00C4E"),
-        "Historicismo": (1968, 2026, 250, "#FF2453"),
-        "Anarquismo Epistemológico": (1982, 2026, 300, "#FF0026"),
-        "Demarcação Comportamental": (1978, 2026, 150, "#FF2121"),
-        "Empirismo Construtivo": (1980, 2026, 400, "#FF0048"),
+        "Círculo de Viena": (1922, 1950, 450, "#FF2200"),
+        "Verificacionismo Estrito (Waismann)": (1929, 1964, 250, "#FF1100"),
+        "Verificacionismo Estrito (Ayer)": (1935, 1960, 150, "#FF0000"),
+        "Coerentismo": (1931, 1971, 650, "#DD0022"),
+        "Fundacionalismo": (1928, 2026, 700, "#BB0044"),
+        "Confirmacionismo": (1945, 1969, 600, "#C10E47"),
+        "Falsificacionismo": (1934, 1973, 310, "#C1003A"),
+        "Naturalismo Epistemológico": (1951, 1975, 470, "#DB081D"),
+        "Tradições de Pesquisa": (1977, 2026, 100, "#D7032A"),
+        "Programa Forte": (1976, 2026, 400, "#E80A49"),
+        "Racionalismo Crítico": (1980, 2026, 250, "#D80229"),
+        "Programas de Pesquisa": (1970, 2026, 350, "#C00C4E"),
+        "Historicismo": (1968, 2026, 150, "#FF2453"),
+        "Anarquismo Epistemológico": (1982, 2026, 200, "#FF0026"),
+        "Demarcação Comportamental": (1982, 2026, 50, "#FF2121"),
+        "Empirismo Construtivo": (1980, 2026, 650, "#FF0048"),
 
         "Racionalismo": (1610, 1709, -220, "#00FFDD"),
         "Monismo Panteísta": (1677, 1727, -270, "#00EECC"),
@@ -54,9 +55,7 @@ def visualization_data():
         "Racionalismo Contemporâneo": (1957, 2026, -200, "#7B0ECF"),
         "Problema de Gettier": (1963, 2026, -50, "#801EDC"),
         "Confiabilismo": (1986, 2026, -100, "#7E1BE1"),
-        "Epistemologia de Virtudes": (1991, 2026, -250, "#7A0CB9"),
-
-        "Futuro": (2031, 2046, 25, "#AA0AB9")
+        "Epistemologia de Virtudes": (1991, 2026, -300, "#7A0CB9"),
     }
 
     bifurcations = [
@@ -109,20 +108,19 @@ def visualization_data():
         ("Problema de Gettier", "Confiabilismo"),
         ("Materialismo Dialético", "Epistemologia de Virtudes"),
         ("Hermenêutica Filosófica", "Racionalismo Contemporâneo"),
-        ("Epistemologia de Virtudes","Futuro"),
-        ("Racionalismo Contemporâneo","Futuro"),
-        ("Existencialismo","Futuro"),
-        ("Confiabilismo","Futuro"),
-        ("Problema de Gettier","Futuro"),
-        ("Programa Forte","Futuro"),
-        ("Programas de Pesquisa","Futuro"),
-        ("Demarcação Comportamental","Futuro"),
-        ("Tradições de Pesquisa","Futuro"),
-        ("Historicismo","Futuro"),
-        ("Anarquismo Epistemológico","Futuro"),
-        ("Racionalismo Crítico","Futuro"),
-        ("Empirismo Construtivo","Futuro"),
-        ("Fundacionalismo","Futuro"),
+        ("Epistemologia de Virtudes", "Futuro"),
+        ("Tradições de Pesquisa", "Futuro"),
+        ("Demarcação Comportamental", "Futuro"),
+        ("Racionalismo Contemporâneo", "Futuro"),
+        ("Confiabilismo", "Futuro"),
+        ("Problema de Gettier", "Futuro"),
+        ("Historicismo", "Futuro"),
+        ("Racionalismo Crítico", "Futuro"),
+        ("Anarquismo Epistemológico", "Futuro"),
+        ("Programas de Pesquisa", "Futuro"),
+        ("Programa Forte", "Futuro"),
+        ("Empirismo Construtivo", "Futuro"),
+        ("Fundacionalismo", "Futuro"),
     ]
 
     epochs = [
@@ -132,19 +130,26 @@ def visualization_data():
         (1900, "1900"), (1920, "1920"), (1940, "1940"), (1960, "1960"), (1980, "1980"),
         (2000, "2000"), (2026, "2026")
     ]
-    '''("Francis Bacon", "Bacon", -240, 0, "static/img/bacon.jpg", 'Barriga de porco defumada'),
-        ("Francis Calabresa", "Calabresa", -297, 0, "static/img/calabresa.jpg", 'Embutido feito com carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne carne '),
-        ("Francis Pepino", "Salada", -180, 0, "static/img/pepino.jpg", 'Vegetal'),
-        ("Francis Alface", "Salada", -590, 0, "static/img/alface.jpg", 'Outro vegetal'),
-        ("Francis Alcatra", "Carne", 450, 0, "static/img/alcatra.jpg", 'Bovinae'),
-        ("Francis Variedades", "Carne", 800, 0, "static/img/variedades.jpg", 'Cortes de vários animais')'''
     
     philosophers = [
+        ("Rafael Beraldo", "Futuro", 2035, 0, "static/img/Beraldo.jpg", [
+            ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
+            ("Vida e fatos", "Considerado um dos fundadores da Revolução Científica."),
+            ("Teorias/Ideias", [
+                "O conhecimento verdadeiro só nasce da experiência sensível organizada de forma metódica.",
+                "Método Indutivo: consiste nas fases de observação rigorosa, organização racional, formulação de hipóteses e comprovação.",
+                "O seu livro Novum Organum funda o programa empirista.",
+                "\"Saber é poder.\"",
+            ]),
+        ]),
+
         ("Francis Bacon", "Empirismo", 1620, 0, "static/img/Francis_Bacon.jpg", [
             ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
             ("Vida e fatos", "Considerado um dos fundadores da Revolução Científica."),
             ("Teorias/Ideias", [
                 "O conhecimento verdadeiro só nasce da experiência sensível organizada de forma metódica.",
+                "Método Indutivo: consiste nas fases de observação rigorosa, organização racional, formulação de hipóteses e comprovação.",
+                "O seu livro Novum Organum funda o programa empirista.",
                 "\"Saber é poder.\"",
             ]),
         ]),
@@ -188,7 +193,7 @@ def visualization_data():
             ]),
         ]),
 
-        ("Charles Sanders Peirce", "Pragmatismo (Peirce)", 1878, 0, "static/img/charles_sanders_peirce.jpeg", [
+        ("Charles Sanders Peirce", "Pragmatismo (Peirce)", 1879, 0, "static/img/charles_sanders_peirce.jpeg", [
             ("Informações pessoais", "Matemático, lógico, químico e filósofo americano."),
             ("Vida e fatos", "Fundador do pragmatismo."),
             ("Teorias/Ideias", [
@@ -275,7 +280,7 @@ def visualization_data():
             ]),
         ]),
 
-        ("W. V. O. Quine", "Naturalismo Epistemológico", 1960, 60, "static/img/Willard_Van_Orman_Quin.webp", [
+        ("W V O Quine", "Naturalismo Epistemológico", 1960, 60, "static/img/Willard_Van_Orman_Quin.webp", [
             ("Informações pessoais", "Filósofo e lógico estadunidense."),
             ("Vida e fatos", "Destruiu os dogmas do Círculo de Viena com seu naturalismo epistemológico."),
             ("Teorias/Ideias", [
@@ -363,7 +368,7 @@ def visualization_data():
             ]),
         ]),
 
-        ("A. J. Ayer", "Verificacionismo Estrito (Ayer)", 1934, 0, "static/img/AJ-Ayer.webp", [
+        ("A J Ayer", "Verificacionismo Estrito (Ayer)", 1934, 0, "static/img/AJ-Ayer.webp", [
             ("Informações pessoais", "Filósofo britânico."),
             ("Vida e fatos", "Foi o principal responsável por importar e traduzir o positivismo lógico para o mundo anglófono."),
             ("Teorias/Ideias", [
@@ -576,7 +581,7 @@ def visualization_data():
             ]),
         ]),
 
-        ("Jerry Fodor", "Racionalismo Contemporâneo", 1978, 0, "static/img/Jerry_Fodor.jpg", [
+        ("Jerry Fodor", "Racionalismo Contemporâneo", 1976, 0, "static/img/Jerry_Fodor.jpg", [
             ("Informações pessoais", "Filósofo e cientista cognitivo estadunidense."),
             ("Vida e fatos", "Foi um dos principais representantes da filosofia da mente e das ciências cognitivas, desenvolvendo teorias inspiradas pelo racionalismo e pela psicologia cognitiva."),
             ("Teorias/Ideias", [
@@ -611,7 +616,7 @@ def visualization_data():
         'Karl Popper': [('A Lógica da Pesquisa Científica', '1934')],
         'Thomas Kuhn': [('A Estrutura das Revoluções Científicas', '1962')],
         'Imre Lakatos': [('Falsification and the Methodology of SRP', '1970')],
-        'W. V. O. Quine': [('Two Dogmas of Empiricism', '1951'), ('Ontological Relativity', '1969')],
+        'W V O Quine': [('Two Dogmas of Empiricism', '1951'), ('Ontological Relativity', '1969')],
         'René Descartes': [('Discurso do Método', '1637')],
         'Baruch Spinoza': [('Ética', '1677')],
         'Gottfried Wilhelm Leibniz': [('Monadologia', '1714')],
@@ -621,7 +626,7 @@ def visualization_data():
         'Auguste Comte': [('Cours de philosophie positive', '1842')],
         'Ernst Mach': [('Die Mechanik', '1883')],
         'Friedrich Waismann': [('Discussões do Círculo de Viena', '1929-1936')],
-        'A. J. Ayer': [('Language, Truth and Logic', '1936')],
+        'A J Ayer': [('Language, Truth and Logic', '1936')],
         'Carl Hempel': [('Aspects of Scientific Explanation', '1965')],
         'Larry Laudan': [('Progress and Its Problems', '1977'), ('Science at the Bar', '1982')],
         'John Watkins': [('Against Normal Science', '1970')],
@@ -649,8 +654,6 @@ def visualization_data():
         'David Chalmers': [('The Conscious Mind', '1996'), ('Reality+: Virtual Worlds and the Problems of Philosophy', '2022')],
     }
 
-    LOREM_IPSUM = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software like Aldus PageMaker and Microsoft Word including versions of Lorem Ipsum."
-
     influences = {
         'Francis Bacon': [('Aristóteles', 'Bacon buscou substituir seu método.', 'Discorda')],
         'Thomas Hobbes': [('Francis Bacon', 'Hobbes manteve a base empirista de Bacon, mas a radicalizou no materialismo.', 'Discorda')],
@@ -663,7 +666,7 @@ def visualization_data():
         'Rudolf Carnap': [('Moritz Schlick', 'Carnap deu continuidade ao projeto do Círculo de Viena liderado por Schlick.', 'Concorda'), ('Otto Neurath', 'Incorporou ideias de Neurath sobre linguagem científica.', 'Concorda')],
         'Karl Popper': [('David Hume', 'Aceitou o problema da indução de Hume, mas recusou o ceticismo, propondo o falsificacionismo.', 'Discorda')],
         'Imre Lakatos': [('Karl Popper', 'Lakatos tentou refinar e defender o falsificacionismo de Popper.', 'Concorda'), ('Thomas Kuhn', 'Buscou responder às críticas históricas levantadas por Kuhn.', 'Discorda')],
-        'W. V. O. Quine': [('Rudolf Carnap', 'Quine rompeu com dogmas centrais do empirismo lógico de Carnap.', 'Discorda')],
+        'W V O Quine': [('Rudolf Carnap', 'Quine rompeu com dogmas centrais do empirismo lógico de Carnap.', 'Discorda')],
         'René Descartes': [('Euclides', 'O método geométrico de Euclides inspirou o ideal cartesiano de conhecimento mais geométrico.', 'Concorda')],
         'Baruch Spinoza': [('René Descartes', 'Spinoza partiu do racionalismo cartesiano, radicalizando-o no monismo.', 'Concorda')],
         'Gottfried Wilhelm Leibniz': [('René Descartes', 'Leibniz expandiu o racionalismo cartesiano com a teoria das mônadas.', 'Concorda')],
@@ -673,12 +676,12 @@ def visualization_data():
         'Auguste Comte': [('Empiristas anteriores', 'Radicalizou a tradição empirista em um sistema positivista.', 'Concorda')],
         'Ernst Mach': [('David Hume', 'Retomou o ceticismo humeano em relação a entidades metafísicas não observáveis.', 'Concorda')],
         'Friedrich Waismann': [('Moritz Schlick', 'Trabalhou diretamente sob a liderança de Schlick no Círculo de Viena.', 'Concorda'), ('Ludwig Wittgenstein', 'Incorporou ideias de Wittgenstein às discussões do Círculo.', 'Concorda')],
-        'A. J. Ayer': [('Moritz Schlick', 'Importou e traduziu o positivismo lógico do Círculo de Viena.', 'Concorda'), ('Friedrich Waismann', 'Popularizou o verificacionismo estrito de Waismann.', 'Concorda')],
+        'A J Ayer': [('Moritz Schlick', 'Importou e traduziu o positivismo lógico do Círculo de Viena.', 'Concorda'), ('Friedrich Waismann', 'Popularizou o verificacionismo estrito de Waismann.', 'Concorda')],
         'Carl Hempel': [('Rudolf Carnap', 'Hempel deu continuidade ao projeto confirmacionista de Carnap.', 'Concorda')],
-        'Larry Laudan': [('W. V. O. Quine', 'Incorporou o naturalismo epistemológico quineano à filosofia da ciência.', 'Concorda')],
+        'Larry Laudan': [('W V O Quine', 'Incorporou o naturalismo epistemológico quineano à filosofia da ciência.', 'Concorda')],
         'John Watkins': [('Karl Popper', 'Defendeu e desenvolveu o racionalismo crítico popperiano.', 'Concorda')],
         'Paul Thagard': [('Larry Laudan', 'Desenvolveu computacionalmente critérios de progresso científico inspirados em Laudan.', 'Concorda')],
-        'Bas van Fraassen': [('W. V. O. Quine', 'Incorporou o naturalismo quineano ao empirismo construtivo.', 'Concorda'), ('Thomas Kuhn', 'Absorveu a crítica kuhniana ao realismo ingênuo sobre teorias científicas.', 'Concorda')],
+        'Bas van Fraassen': [('W V O Quine', 'Incorporou o naturalismo quineano ao empirismo construtivo.', 'Concorda'), ('Thomas Kuhn', 'Absorveu a crítica kuhniana ao realismo ingênuo sobre teorias científicas.', 'Concorda')],
         'David Bloor': [('Thomas Kuhn', 'Radicalizou sociologicamente a noção kuhniana de paradigma.', 'Concorda')],
         'Barry Barnes': [('Thomas Kuhn', 'Desenvolveu com Bloor a leitura sociológica dos paradigmas kuhnianos.', 'Concorda')],
         'Christian Wolff': [('Gottfried Wilhelm Leibniz', 'Sistematizou rigorosamente a monadologia leibniziana.', 'Concorda')],
@@ -693,7 +696,7 @@ def visualization_data():
         'Bertrand Russell': [('Gottlob Frege', 'Desenvolveu a análise lógica e o logicismo inspirado em Frege.', 'Concorda')],
         'Martin Heidegger': [('Edmund Husserl', 'Foi discípulo de Husserl antes de transformar a fenomenologia em ontologia existencial.', 'Discorda')],
         'Hans-Georg Gadamer': [('Martin Heidegger', 'Desenvolveu a hermenêutica a partir da ontologia de Heidegger.', 'Concorda')],
-        'Alvin Goldman': [('W. V. O. Quine', 'Expoente do naturalismo epistemológico quineano.', 'Concorda'), ('Edmund Gettier', 'Desenvolveu o confiabilismo como resposta ao problema de Gettier.', 'Concorda')],
+        'Alvin Goldman': [('W V O Quine', 'Expoente do naturalismo epistemológico quineano.', 'Concorda'), ('Edmund Gettier', 'Desenvolveu o confiabilismo como resposta ao problema de Gettier.', 'Concorda')],
         'Ernest Sosa': [('Edmund Gettier', 'Ramificou as respostas ao problema de Gettier na epistemologia de virtudes.', 'Concorda')],
         'Noam Chomsky': [('René Descartes', 'Retomou o inatismo cartesiano em oposição ao behaviorismo.', 'Concorda')],
         'Jerry Fodor': [('Noam Chomsky', 'Desenvolveu teorias cognitivas inspiradas no inatismo chomskyano.', 'Concorda'), ('René Descartes', 'Defendeu formas de inatismo cognitivo na linhagem cartesiana.', 'Concorda')],
@@ -715,7 +718,7 @@ def visualization_data():
         'Karl Popper': [('John Watkins', 'Defendeu o racionalismo crítico.'), ('Imre Lakatos', 'Reformulou o falsificacionismo em programas de pesquisa.')],
         'Thomas Kuhn': [('Paul Feyerabend', 'Radicalizou a crítica ao método científico único.')],
         'Imre Lakatos': [('Elie Zahar', 'Desenvolveu e aplicou a metodologia dos programas de pesquisa.')],
-        'W. V. O. Quine': [('Alvin Goldman', 'Desenvolveu uma epistemologia naturalizada inspirada em Quine.')],
+        'W V O Quine': [('Alvin Goldman', 'Desenvolveu uma epistemologia naturalizada inspirada em Quine.')],
         'René Descartes': [('Baruch Spinoza', 'Desenvolveu o racionalismo em um sistema monista.'), ('Gottfried Wilhelm Leibniz', 'Expandiu o racionalismo com a teoria das mônadas.')],
         'Baruch Spinoza': [('Gilles Deleuze', 'Retomou o pensamento spinozano na filosofia contemporânea.')],
         'Gottfried Wilhelm Leibniz': [('Christian Wolff', 'Sistematizou sua filosofia.')],
@@ -724,8 +727,8 @@ def visualization_data():
         'John Stuart Mill': [('Herbert Spencer', 'Desenvolveu o empirismo e o evolucionismo.')],
         'Auguste Comte': [('Émile Durkheim', 'Aplicou o positivismo à sociologia.')],
         'Ernst Mach': [('Moritz Schlick', 'Inspirou o Círculo de Viena.'), ('Rudolf Carnap', 'Desenvolveu o empirismo lógico.')],
-        'Friedrich Waismann': [('A. J. Ayer', 'Popularizou o verificacionismo.')],
-        'A. J. Ayer': [('Michael Dummett', 'Inicialmente influenciado pela tradição analítica inaugurada por Ayer.')],
+        'Friedrich Waismann': [('A J Ayer', 'Popularizou o verificacionismo.')],
+        'A J Ayer': [('Michael Dummett', 'Inicialmente influenciado pela tradição analítica inaugurada por Ayer.')],
         'Carl Hempel': [('Nelson Goodman', 'Desenvolveu problemas ligados à confirmação.')],
         'Larry Laudan': [('Paul Thagard', 'Desenvolveu critérios de progresso científico.')],
         'John Watkins': [('David Miller', 'Desenvolveu o racionalismo crítico popperiano.')],
@@ -741,7 +744,7 @@ def visualization_data():
         'Ernst Cassirer': [('Jean Piaget', 'Compartilhou a ideia de que o conhecimento é construído por estruturas cognitivas.')],
         'Edmund Husserl': [('Martin Heidegger', 'Transformou a fenomenologia em uma ontologia existencial.'), ('Jean-Paul Sartre', 'Aplicou a fenomenologia ao existencialismo.')],
         'Gottlob Frege': [('Bertrand Russell', 'Desenvolveu o logicismo e a análise lógica inspirados em Frege.'), ('Ludwig Wittgenstein', 'Adotou a lógica fregiana como base de sua filosofia inicial.')],
-        'Bertrand Russell': [('A. J. Ayer', 'Desenvolveu a tradição analítica e o empirismo lógico inspirados em Russell.')],
+        'Bertrand Russell': [('A J Ayer', 'Desenvolveu a tradição analítica e o empirismo lógico inspirados em Russell.')],
         'Martin Heidegger': [('Hans-Georg Gadamer', 'Desenvolveu a hermenêutica filosófica a partir da ontologia de Heidegger.'), ('Jean-Paul Sartre', 'Adaptou conceitos heideggerianos ao existencialismo.')],
         'Hans-Georg Gadamer': [('Paul Ricoeur', 'Desenvolveu a hermenêutica incorporando análise textual e fenomenologia.')],
         'Alvin Goldman': [('John Greco', 'Desenvolveu versões contemporâneas do confiabilismo e da epistemologia das virtudes.')],
@@ -762,11 +765,11 @@ def visualization_data():
         'William James': [('Bertrand Russell', 'Criticava a ideia de que a verdade depende apenas de sua utilidade prática.')],
         'Moritz Schlick': [('Otto Neurath', 'Rejeitava a substituição da correspondência aos fatos pelo coerentismo.')],
         'Otto Neurath': [('Moritz Schlick', 'Criticava a existência de fundamentos absolutos para o conhecimento científico.')],
-        'Rudolf Carnap': [('W. V. O. Quine', 'Contestou a distinção analítico/sintético e o reducionismo lógico.')],
+        'Rudolf Carnap': [('W V O Quine', 'Contestou a distinção analítico/sintético e o reducionismo lógico.')],
         'Karl Popper': [('Thomas Kuhn', 'Discordava da ideia de ciência normal e do historicismo dos paradigmas.')],
         'Thomas Kuhn': [('Karl Popper', 'Criticava a ausência de crítica permanente durante a ciência normal.'), ('John Watkins', 'Considerava a ciência normal incompatível com a racionalidade científica.')],
         'Imre Lakatos': [('Paul Feyerabend', 'Considerava excessivamente racional sua metodologia dos programas de pesquisa.')],
-        'W. V. O. Quine': [('A. J. Ayer', 'Defendia o positivismo lógico que Quine criticou em "Dois Dogmas do Empirismo".')],
+        'W V O Quine': [('A J Ayer', 'Defendia o positivismo lógico que Quine criticou em "Dois Dogmas do Empirismo".')],
         'René Descartes': [('Francis Bacon', 'Criticava a confiança excessiva na experiência sensível.')],
         'Baruch Spinoza': [('Gottfried Wilhelm Leibniz', 'Discordava do monismo e defendia a pluralidade das mônadas.')],
         'Gottfried Wilhelm Leibniz': [('Baruch Spinoza', 'Rejeitava a ideia de uma única substância.')],
@@ -776,7 +779,7 @@ def visualization_data():
         'Auguste Comte': [('Idealistas alemães', 'Rejeitavam sua eliminação da metafísica.')],
         'Ernst Mach': [('Max Planck', 'Criticou seu fenomenalismo e antirrealismo científico.')],
         'Friedrich Waismann': [('Otto Neurath', 'Criticava o verificacionismo rígido.'), ('Rudolf Carnap', 'Defendia uma versão mais flexível do empirismo lógico.')],
-        'A. J. Ayer': [('W. V. O. Quine', 'Rejeitou os pressupostos fundamentais do positivismo lógico.')],
+        'A J Ayer': [('W V O Quine', 'Rejeitou os pressupostos fundamentais do positivismo lógico.')],
         'Carl Hempel': [('Karl Popper', 'Criticava o confirmacionismo como critério de ciência.')],
         'Larry Laudan': [('Paul Feyerabend', 'Criticava seu relativismo metodológico.'), ('Thomas Kuhn', 'Discordava da incomensurabilidade forte.')],
         'John Watkins': [('Thomas Kuhn', 'Criticava a ciência normal.')],
@@ -875,6 +878,7 @@ def visualization_data():
         (2012, 34, "static/img/events/85.jpg", "Descoberta do bóson de Higgs", "A descoberta do bóson de Higgs em 2012 confirmou o Modelo Padrão da física, tema debatido por Van Fraassen e Chalmers.", "#FF0048"),
         (2015, -34, "static/img/events/86.jpg", "Primeira detecção de ondas gravitacionais", "A primeira detecção de ondas gravitacionais em 2015 confirmou experimentalmente a Relatividade Geral, reforçando o empirismo construtivo de Van Fraassen.", "#FF0048"),
         (2020, 0, "static/img/events/87.jpeg", "Pandemia de COVID-19", "A pandemia de COVID-19, iniciada em 2020, evidenciou debates sobre evidência científica, modelos, negacionismo e confiança na ciência, temas caros a Laudan.", "#D7032A"),
+        (2024, -34, "static/img/events/88.jpg", "Inauguração do IMPA Tech", "Em 2024 foi inaugurado o IMPA Tech, trazendo o primeiro curso de graduação do IMPA.", "#FF00E1")
     ]
 
     events_band_color = "#34003d" 

@@ -233,14 +233,29 @@ export const TimelineApp = {
 
         this.setupHtmlCards();
 
-        this.setZoom(1);
-        this.fitHeightIfNeeded();
-        this.minZoom = this.zoomLevel;
+        // Zoom inicial: sempre exatamente 100% (zoom real = 1), aplicado na
+        // hora, sem animação e sem depender de um cálculo assíncrono de
+        // minZoom (era isso que fazia o zoom inicial "vazar" para um valor
+        // maior que 1 em telas mais altas).
+        this.minZoom = this.computeMinZoom();
+        this.targetZoom = 1;
+        this._applyZoom(1, null);
 
         window.addEventListener('resize', () => {
-            this.fitHeightIfNeeded();
-            this.minZoom = Math.max(this.minZoom, window.innerHeight / this.baseHeight);
+            this.minZoom = this.computeMinZoom();
+            if(this.targetZoom < this.minZoom){
+                this.setZoom(this.minZoom);
+            }
         });
+    },
+
+    computeMinZoom(){
+        // Impede dar zoom out a ponto de sobrar espaço vazio abaixo/acima do
+        // conteúdo, mas o teto é 1: nunca força um zoom inicial (ou mínimo)
+        // maior que 100%. Isso é o que antes causava o zoom "estranho" ao
+        // carregar a página em telas com altura maior que o conteúdo.
+        const fitZoom = window.innerHeight / this.baseHeight;
+        return Math.min(1, Math.max(0.1, fitZoom));
     },
 
     targetZoom: 1,
@@ -268,7 +283,6 @@ export const TimelineApp = {
 
     _applyZoom(newZoom, anchor){
         const oldZoom = this.zoomLevel;
-        if(newZoom === oldZoom) return;
 
         const wrapper = this.wrapper;
         let scrollLeft = wrapper.scrollLeft;
@@ -296,13 +310,6 @@ export const TimelineApp = {
 
         if(this.cy){
             this.cy.resize();
-        }
-    },
-
-    fitHeightIfNeeded(){
-        const currentContentHeight = this.baseHeight * this.zoomLevel;
-        if(currentContentHeight < window.innerHeight){
-            this.setZoom(window.innerHeight / this.baseHeight);
         }
     },
 

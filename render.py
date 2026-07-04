@@ -9,17 +9,13 @@ def hex_to_rgba(hex_color, alpha, factor=1):
     b = int(b * factor)
     return f"rgba({r}, {g}, {b}, {alpha})"
 
-def general_metrics(philosophies, events_band_height=70):
-    epsilon = 20
+def general_metrics(philosophies):
+    epsilon = 30
     min_year = 1600 - epsilon
     max_year = 2026 + epsilon
     scale_x = 10
     total_width = (max_year - min_year) * scale_x
-
-    # Eixo Y
-    total_height = 1300
-    timeline_center = total_height * 0.4
-    events_center = total_height - (events_band_height / 2)
+    timeline_center = 520
 
     philosophy_metrics = {}
     for name, values in philosophies.items():
@@ -42,7 +38,25 @@ def general_metrics(philosophies, events_band_height=70):
             'height_px': height_px,
             'color': color
         }
-    return min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics
+    return min_year, scale_x, total_width, timeline_center, philosophy_metrics
+
+
+def compute_content_bottom(philosophy_metrics, philosophers):
+    PORTRAIT_RADIUS = 27.5
+    LINE_HALF_HEIGHT = 1.5
+
+    max_bottom = 0
+    for metric in philosophy_metrics.values():
+        max_bottom = max(max_bottom, metric['y_pos'] + LINE_HALF_HEIGHT)
+
+    for name, philosophy, year, offset, img, info in philosophers:
+        line_info = philosophy_metrics.get(philosophy)
+        if not line_info:
+            continue
+        y_pos_line = line_info['y_pos'] + offset
+        max_bottom = max(max_bottom, y_pos_line + PORTRAIT_RADIUS)
+
+    return max_bottom
 
 def build_epochs(epochs, min_year, scale_x):
     epoch_markers = []
@@ -557,7 +571,7 @@ def build_timeline_elements(data):
     oppositions   = data.get('oppositions', {})
 
     events_band_height = data.get('events_band_height', 70)
-    min_year, scale_x, total_width, total_height, timeline_center, events_center, philosophy_metrics = general_metrics(philosophies, events_band_height)
+    min_year, scale_x, total_width, timeline_center, philosophy_metrics = general_metrics(philosophies)
 
     events_band_color          = data.get('events_band_color', '#cc0066')
     events_band_opacity        = data.get('events_band_opacity', 0.08)
@@ -568,6 +582,11 @@ def build_timeline_elements(data):
     events_band_staff_color    = data.get('events_band_staff_color')
 
     epoch_markers = build_epochs(epochs, min_year, scale_x)
+    content_bottom  = compute_content_bottom(philosophy_metrics, philosophers)
+    BAND_TOP_MARGIN = 80
+    events_center = content_bottom + BAND_TOP_MARGIN + (events_band_height / 2)
+    total_height  = events_center + (events_band_height / 2)
+
     elements = []
     elements.extend(build_events_band(
         events_center, events_band_height, events_band_color, events_band_opacity,
