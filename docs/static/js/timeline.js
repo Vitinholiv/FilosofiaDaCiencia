@@ -26,7 +26,7 @@ export const TimelineApp = {
     loadData(){
         return fetch('/timeline.json')
             .then(response => {
-                if(!response.ok) throw new Error("Erro ao buscar /timeline");
+                if(!response.ok) throw new Error("Erro ao buscar /timeline.json");
                 return response.json();
             })
             .then(data => this.buildGraph(data))
