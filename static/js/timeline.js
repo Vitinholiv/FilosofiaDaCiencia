@@ -33,6 +33,55 @@ export const TimelineApp = {
             .catch(error => console.error("Erro no TimelineApp:", error));
     },
 
+    extractSafeName(classesStr){
+        if(!classesStr) return null;
+        const tokens = classesStr.split(/\s+/);
+        const token = tokens.find(t => t.indexOf('details_') === 0);
+        return token ? token.slice('details_'.length) : null;
+    },
+
+    measureCardHeights(elements){
+        const container = document.createElement('div');
+        container.className = 'html-card-wrapper';
+        container.style.position = 'absolute';
+        container.style.left = '-99999px';
+        container.style.top = '0';
+        container.style.visibility = 'hidden';
+        document.body.appendChild(container);
+
+        const groups = {};
+        elements.forEach(el => {
+            const safeName = this.extractSafeName(el.classes);
+            if(!safeName) return;
+
+            if(el.classes.includes('phil-detail') && el.data && el.data.html){
+                (groups[safeName] = groups[safeName] || {}).summary = el;
+            } else if(el.classes.includes('clickable-button')){
+                const g = (groups[safeName] = groups[safeName] || {});
+                (g.buttons = g.buttons || []).push(el);
+            }
+        });
+
+        Object.values(groups).forEach(group => {
+            if(!group.summary || !group.buttons || !group.buttons.length) return;
+
+            const estimatedHeight = group.summary.style && group.summary.style.height;
+            if(typeof estimatedHeight !== 'number') return;
+
+            container.innerHTML = group.summary.data.html;
+            const actualHeight = container.getBoundingClientRect().height;
+            const delta = actualHeight - estimatedHeight;
+
+            if(Math.abs(delta) < 0.5) return;
+            group.summary.position.y += delta / 2;
+            group.summary.style.height = actualHeight;
+
+            group.buttons.forEach(btn => { btn.position.y += delta; });
+        });
+
+        document.body.removeChild(container);
+    },
+
     bindInteractivity(){
         this.cy.on('tap', (evt) => {
             const target = evt.target;
@@ -158,6 +207,8 @@ export const TimelineApp = {
         cyContainer.style.height = `${data.total_height}px`;
         this.contentEl.appendChild(cyContainer);
 
+        this.measureCardHeights(data.elements);
+
         cytoscape.warnings(false);
         this.cy = cytoscape({
             container: cyContainer,
@@ -175,7 +226,7 @@ export const TimelineApp = {
         this.setupHtmlCards();
 
         this.minZoom = window.innerHeight / this.baseHeight;
-        this.setZoom(Math.max(1, this.minZoom));
+        this.setZoom(this.minZoom);
 
         window.addEventListener('resize', () => {
             this.minZoom = window.innerHeight / this.baseHeight;
