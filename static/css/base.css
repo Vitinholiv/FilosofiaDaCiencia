@@ -67,7 +67,7 @@ body {
     position: absolute;
     width: 260px;
     box-sizing: border-box;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -45%);
     pointer-events: none;
 }
 
@@ -103,6 +103,35 @@ body {
 .phil-topics ul > li {
     list-style: circle;
     margin-top: 2px;
+}
+
+.event-card {
+    background-color: #d9d9d9;
+    border: 4px solid #888;
+    border-radius: 6px;
+    overflow: hidden;
+    color: #222;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.event-card-img {
+    display: block;
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.event-card-name {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 12px 0;
+}
+
+.event-card-text {
+    padding: 8px 12px 10px;
 }
 
 /* Cards laterais dos botões (mesmo mecanismo: HTML com altura automática) */
@@ -143,11 +172,4 @@ body {
     pointer-events: none;
     text-align: center;
     white-space: nowrap;
-}
-
-.html-card-wrapper {
-    width: 260px;
-    box-sizing: border-box;
-    transform: translate(-50%, 0);   /* era translate(-50%, -50%) */
-    pointer-events: none;
 }

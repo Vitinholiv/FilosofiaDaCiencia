@@ -189,20 +189,7 @@ def build_rect_node(node_id, x, y, width, height, color, classes="", label="", b
         "classes": final_classes,
         "data": {"id": node_id, "label": label},
         "position": {"x": x, "y": y},
-        "style": {
-            "width": width,
-            "height": height,
-            "background-color": bg_color,
-            "background-opacity": bg_opacity,
-            "border-width": border_width,
-            "z-index": z_index,
-            "font-size": font_size,
-            "color": font_color,
-            "font-family": font_family,
-            "text-wrap": "wrap",
-            "text-max-width": width - 16,
-            "padding": 2
-        }
+        "style": style
     }
 
 def build_events_band(events_center, band_height, band_color, band_opacity, border_opacity,
@@ -273,7 +260,8 @@ def build_events(events, min_year, scale_x, events_center):
     elements = []
     SHOW_NAMES = False
     CARD_WIDTH = 260
-    SUMMARY_HEIGHT = 70
+    EVENT_RADIUS = 12.5   # metade do size=25 do nó do evento
+    GAP_EVENT_CARD = 20   # espaço entre o topo do evento e a base do card
 
     for i, (year, y_offset, img, label, tooltip, color) in enumerate(events):
         # Evento
@@ -299,24 +287,26 @@ def build_events(events, min_year, scale_x, events_center):
 
         elements.append(event_node)
 
-        # Interface
+        # Interface: card de resumo em HTML (mesmo estilo do card do filósofo),
+        # com a imagem do evento em tamanho grande no topo.
         detail_class = f"event-detail details_{event_id}"
-        card_y = y_pos - 75
         summary_id = f"summary_{event_id}"
+
+        estimated_card_height = estimate_event_card_height(label, tooltip, has_img=bool(img))
+        card_bottom = y_pos - EVENT_RADIUS - GAP_EVENT_CARD
+        card_y = card_bottom - (estimated_card_height / 2)   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
+
         summary_node = build_rect_node(
             node_id=summary_id,
             x=x_pos, y=card_y,
-            width=CARD_WIDTH,
-            height="label",
-            color="#d9d9d9",
+            width=CARD_WIDTH, height=estimated_card_height,
+            color="rgba(0,0,0,0)",
             classes=detail_class,
-            label=f"{label}\n\n{tooltip}",
-            border_width=4,
-            font_size=12,
-            font_color="#222222",
-            font_family="monospace"
+            label="",
+            border_width=0,
+            bg_opacity=0
         )
-        summary_node["style"]["border-color"] = color
+        summary_node["data"]["html"] = build_event_card_html(label, tooltip, img, color)
         elements.append(summary_node)
 
         # Ligação
@@ -329,6 +319,29 @@ def build_events(events, min_year, scale_x, events_center):
             }
         })
     return elements
+
+def build_event_card_html(label, tooltip, img, border_color):
+    """Monta o card de resumo de um evento, no mesmo estilo do card do filósofo
+    (moldura colorida, fundo claro, texto em monospace), mas com a imagem do
+    evento em tamanho grande no topo do card."""
+    img_html = f'<img class="event-card-img" src="{img}" alt="">' if img else ''
+    return (
+        f'<div class="event-card" style="border-color:{border_color}">'
+        f'{img_html}'
+        f'<div class="event-card-name">{label}</div>'
+        f'<div class="event-card-text">{tooltip}</div>'
+        f'</div>'
+    )
+
+def estimate_event_card_height(label, tooltip, has_img, img_height=160,
+                                chars_name=24, chars_text=28, line_h=16.5,
+                                name_line_h=19, pad=26, name_block_pad=8):
+    """Estima a altura do card de evento (imagem + nome + texto), com a mesma
+    lógica de segurança de estimate_info_height: nunca subestimar a altura real."""
+    name_lines = max(1, (len(label) + chars_name - 1) // chars_name)
+    text_lines = max(1, (len(tooltip) + chars_text - 1) // chars_text)
+    text_block_h = name_lines * name_line_h + name_block_pad + text_lines * line_h + pad
+    return (img_height if has_img else 0) + text_block_h
 
 def build_philosopher_card_html(name, info, border_color):
     """Monta o HTML em tópicos exibido sobre o card de resumo do filósofo.
@@ -436,7 +449,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         group_top        = y_pos_line - (group_height / 2)
 
         left_x = x_pos - (PORTRAIT_RADIUS + GAP_TO_CARD + (CARD_WIDTH / 2))
-        card_y = group_top   # era: group_top + (estimated_card_height / 2) — agora ancora pelo topo, não pelo centro
+        card_y = group_top + (estimated_card_height / 2)   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
 
         # Resumo (nó âncora transparente; o conteúdo visível é o overlay HTML)
         summary_node = build_rect_node(
@@ -446,7 +459,8 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             color="rgba(0,0,0,0)",
             classes=detail_class,
             label="",
-            border_width=0
+            border_width=0,
+            bg_opacity=0
         )
         summary_node["data"]["html"] = card_html
         elements.append(summary_node)
@@ -513,12 +527,13 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
 
             anchor = build_rect_node(
                 node_id=node_id,
-                x=card_x, y=card_top,           # era: card_top + est_total / 2 (centro) -> agora topo
+                x=card_x, y=card_top + est_total / 2,   # centro do card: o overlay HTML é centralizado no node (translate -50%,-50%)
                 width=CARD_WIDTH, height=est_total,
                 color="rgba(0,0,0,0)",
                 classes=card_cls,
                 label="",
-                border_width=0, z_index=10
+                border_width=0, z_index=10,
+                bg_opacity=0
             )
             anchor["data"]["html"] = build_side_card_html(header_text, body_text, bdr_color)
             return [anchor], node_id, est_total

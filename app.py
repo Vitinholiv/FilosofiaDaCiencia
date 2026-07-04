@@ -145,8 +145,6 @@ def visualization_data():
             ("Vida e fatos", "Considerado um dos fundadores da Revolução Científica."),
             ("Teorias/Ideias", [
                 "O conhecimento verdadeiro só nasce da experiência sensível organizada de forma metódica.",
-                "Método Indutivo: consiste nas fases de observação rigorosa, organização racional, formulação de hipóteses e comprovação.",
-                "O seu livro Novum Organum funda o programa empirista.",
                 "\"Saber é poder.\"",
             ]),
         ]),
