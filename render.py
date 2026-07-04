@@ -16,7 +16,8 @@ def general_metrics(philosophies, events_band_height=70):
     scale_x = 10
     total_width = (max_year - min_year) * scale_x
 
-    total_height = 1000
+    # Eixo Y
+    total_height = 1300
     timeline_center = total_height * 0.4
     events_center = total_height - (events_band_height / 2)
 
