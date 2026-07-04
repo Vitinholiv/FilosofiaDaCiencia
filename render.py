@@ -393,7 +393,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
         button_class = f"clickable-button details_{safe_name}"
         summary_id = f"summary_{safe_name}"
 
-        GAP_CARD_BUTTONS = 10
+        GAP_CARD_BUTTONS = GAP_BUTTONS
         buttons_block_h  = 4 * BUTTON_HEIGHT + 3 * GAP_BUTTONS
         group_height     = estimated_card_height + GAP_CARD_BUTTONS + buttons_block_h
         group_top        = y_pos_line - (group_height / 2)

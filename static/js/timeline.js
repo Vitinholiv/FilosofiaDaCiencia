@@ -13,8 +13,8 @@ export const TimelineApp = {
     wrapper: null,
     sizerEl: null,
     contentEl: null,
-    zoomLevel: 1,
-    minZoom: 0.2,   // será recalculado com base na tela inicial
+    zoomLevel: null,
+    minZoom: 0.2,
     baseWidth: 0,
     baseHeight: 0,
 
@@ -34,7 +34,6 @@ export const TimelineApp = {
     },
 
     bindInteractivity(){
-        // ... inalterado, mantenha exatamente como está hoje ...
         this.cy.on('tap', (evt) => {
             const target = evt.target;
             const allUI = '.phil-detail, .clickable-button, .event-detail, .btn-cards';
@@ -104,13 +103,11 @@ export const TimelineApp = {
         this.baseWidth  = data.total_width;
         this.baseHeight = data.total_height;
 
-        // "Sizer": define a área rolável real (seu tamanho muda com o zoom)
         this.sizerEl = document.createElement('div');
         this.sizerEl.id = 'zoom-sizer';
         this.sizerEl.style.position = 'relative';
         this.wrapper.appendChild(this.sizerEl);
 
-        // "Content": tamanho fixo (natural), só escalado visualmente por transform
         this.contentEl = document.createElement('div');
         this.contentEl.id = 'zoom-content';
         this.contentEl.style.position = 'absolute';
@@ -121,7 +118,6 @@ export const TimelineApp = {
         this.contentEl.style.transformOrigin = '0 0';
         this.sizerEl.appendChild(this.contentEl);
 
-        // Tudo que antes ia em this.wrapper agora vai em this.contentEl
         if(data.epochs){
             data.epochs.forEach(ep => {
                 const line = document.createElement('div');
@@ -178,37 +174,32 @@ export const TimelineApp = {
         this.bindInteractivity();
         this.setupHtmlCards();
 
-        this.setZoom(1);
-        this.fitHeightIfNeeded();
-        this.minZoom = this.zoomLevel;   // trava o zoom-out máximo na disposição inicial
+        this.minZoom = window.innerHeight / this.baseHeight;
+        this.setZoom(Math.max(1, this.minZoom));
 
         window.addEventListener('resize', () => {
+            this.minZoom = window.innerHeight / this.baseHeight;
             this.fitHeightIfNeeded();
-            this.minZoom = Math.max(this.minZoom, window.innerHeight / this.baseHeight);
         });
     },
 
-    /** Aplica um nível de zoom ao conteúdo, opcionalmente mantendo fixo o ponto
-     * do conteúdo que está sob o cursor (anchorClientX/Y = event.clientX/Y). */
-        setZoom(zoom, anchorClientX, anchorClientY){
+    setZoom(zoom, anchorClientX, anchorClientY){
         const oldZoom = this.zoomLevel;
-        const newZoom = Math.max(this.minZoom, Math.min(3, zoom));   // era Math.max(0.2, ...)
-        if(newZoom === oldZoom) return;
+        const newZoom = Math.max(this.minZoom, Math.min(3, zoom));
+        if(oldZoom !== null && newZoom === oldZoom) return;
 
         const wrapper = this.wrapper;
         let scrollLeft = wrapper.scrollLeft;
         let scrollTop  = wrapper.scrollTop;
 
-        if(anchorClientX !== undefined && anchorClientY !== undefined){
+        if(oldZoom !== null && anchorClientX !== undefined && anchorClientY !== undefined){
             const rect = wrapper.getBoundingClientRect();
             const cursorX = anchorClientX - rect.left;
             const cursorY = anchorClientY - rect.top;
 
-            // Ponto do conteúdo (em coordenada "base", sem zoom) que está sob o cursor
             const baseX = (scrollLeft + cursorX) / oldZoom;
             const baseY = (scrollTop  + cursorY) / oldZoom;
 
-            // Recalcula o scroll pra esse mesmo ponto continuar sob o cursor no novo zoom
             scrollLeft = baseX * newZoom - cursorX;
             scrollTop  = baseY * newZoom - cursorY;
         }
@@ -220,14 +211,15 @@ export const TimelineApp = {
 
         wrapper.scrollLeft = scrollLeft;
         wrapper.scrollTop  = scrollTop;
+
+        if(this.cy){
+            this.cy.resize();
+        }
     },
 
-    /** Aumenta o zoom só o suficiente pra cobrir a altura da janela (nunca reduz
-     * um zoom maior já aplicado). Corrige o vão vazio depois do F11/resize. */
     fitHeightIfNeeded(){
-        const currentContentHeight = this.baseHeight * this.zoomLevel;
-        if(currentContentHeight < window.innerHeight){
-            this.setZoom(window.innerHeight / this.baseHeight);
+        if(this.zoomLevel < this.minZoom){
+            this.setZoom(this.minZoom);
         }
     },
 
