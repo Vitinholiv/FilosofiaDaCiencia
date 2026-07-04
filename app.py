@@ -183,8 +183,11 @@ def visualization_data():
             ('Pluralidade', 'Ano 1 - Sobre a diversidade animal')
         ]'''
 
+    LOREM_IPSUM = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Mosley, the librarian at St Bride Printing Library in London, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software like Aldus PageMaker and Microsoft Word including versions of Lorem Ipsum."
+
     influences = {
-        'Francis Bacon': [('Aristóteles', '-', 'Discorda')]
+        'Francis Bacon': [('Aristóteles', '-', 'Discorda'), ('Gustas', LOREM_IPSUM, 'Dircorda'), ('Erique', '-', 'Concorda')],
+        'Thomas Hobbes': [('Aristóteles', '-', 'Discorda'), ('Gustas', LOREM_IPSUM, 'Dircorda'), ('Erique', '-', 'Concorda')]
     }
     '''"Francis Bacon": [
             ("Pepino", "Pepino é bom demais!", "Concorda"),

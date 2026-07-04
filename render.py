@@ -189,7 +189,20 @@ def build_rect_node(node_id, x, y, width, height, color, classes="", label="", b
         "classes": final_classes,
         "data": {"id": node_id, "label": label},
         "position": {"x": x, "y": y},
-        "style": style
+        "style": {
+            "width": width,
+            "height": height,
+            "background-color": bg_color,
+            "background-opacity": bg_opacity,
+            "border-width": border_width,
+            "z-index": z_index,
+            "font-size": font_size,
+            "color": font_color,
+            "font-family": font_family,
+            "text-wrap": "wrap",
+            "text-max-width": width - 16,
+            "padding": 2
+        }
     }
 
 def build_events_band(events_center, band_height, band_color, band_opacity, border_opacity,
@@ -336,19 +349,25 @@ def build_philosopher_card_html(name, info, border_color):
         f'</div>'
     )
 
-def estimate_info_height(info, chars_per_line=34, line_h=17, pad=52):
-    """Estima a altura do card estruturado para posicionar botões e o nó âncora."""
-    lines = 1  # linha do nome
+def estimate_info_height(info, chars_top=24, chars_sub=24, line_h=16.5, pad=26, name_block=27, top_margin=4, sub_margin=2):
+    """Estima a altura do card estruturado. Calibrado para nunca subestimar a
+    altura real (testado contra medições reais no navegador), com pequena
+    margem de segurança embutida em `pad`."""
+    total_lines_h = 0.0
+    n_top = len(info)
+    n_sub = 0
     for title, content in info:
         if isinstance(content, (list, tuple)):
             head = f"{title}:"
-            lines += max(1, (len(head) + chars_per_line - 1) // chars_per_line)
+            total_lines_h += max(1, (len(head) + chars_top - 1) // chars_top) * line_h
             for item in content:
-                lines += max(1, (len(item) + chars_per_line - 1) // chars_per_line)
+                n_sub += 1
+                total_lines_h += max(1, (len(item) + chars_sub - 1) // chars_sub) * line_h
         else:
             head = f"{title}: {content}"
-            lines += max(1, (len(head) + chars_per_line - 1) // chars_per_line)
-    return max(70, lines * line_h + pad)
+            total_lines_h += max(1, (len(head) + chars_top - 1) // chars_top) * line_h
+    margins = n_top * top_margin + n_sub * sub_margin
+    return max(70, name_block + pad + total_lines_h + margins)
 
 def build_side_card_html(header_text, body_text, color):
     """HTML de um card lateral dos botões (cabeçalho colorido + corpo); altura automática via CSS."""
@@ -411,13 +430,13 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
 
         # Card de descrição + botões: coluna à ESQUERDA da bolinha, centralizada
         # verticalmente na altura do filósofo (evita que o card vaze da tela).
-        GAP_CARD_BUTTONS = 25
+        GAP_CARD_BUTTONS = 10 # 50
         buttons_block_h  = 4 * BUTTON_HEIGHT + 3 * GAP_BUTTONS
         group_height     = estimated_card_height + GAP_CARD_BUTTONS + buttons_block_h
         group_top        = y_pos_line - (group_height / 2)
 
         left_x = x_pos - (PORTRAIT_RADIUS + GAP_TO_CARD + (CARD_WIDTH / 2))
-        card_y = group_top + (estimated_card_height / 2)
+        card_y = group_top   # era: group_top + (estimated_card_height / 2) — agora ancora pelo topo, não pelo centro
 
         # Resumo (nó âncora transparente; o conteúdo visível é o overlay HTML)
         summary_node = build_rect_node(
@@ -476,8 +495,9 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             current_btn_y += (BUTTON_HEIGHT + GAP_BUTTONS)
 
         # Cards Laterais: cada card = nó header (negrito) + nó body (texto normal)
-        SIDE_X        = CARD_WIDTH + 40
-        HEADER_H      = 0
+        SIDE_X = PORTRAIT_RADIUS + GAP_TO_CARD/2 + (CARD_WIDTH / 4) 
+        # SIDE_X        = CARD_WIDTH + 40
+        HEADER_H      = 15
         FONT_SZ       = 14
         GAP_CARD      = 50
         CARD_ANCHOR_Y = group_top
@@ -493,7 +513,7 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
 
             anchor = build_rect_node(
                 node_id=node_id,
-                x=card_x, y=card_top + est_total / 2,
+                x=card_x, y=card_top,           # era: card_top + est_total / 2 (centro) -> agora topo
                 width=CARD_WIDTH, height=est_total,
                 color="rgba(0,0,0,0)",
                 classes=card_cls,
@@ -540,17 +560,21 @@ def build_philosophers(philosophers, philosophy_metrics, min_year, scale_x, work
             elif btn_key == 'influences':
                 concordou = [(n, d) for n, d, s in btn_items if s == 'Concorda']
                 discordou = [(n, d) for n, d, s in btn_items if s != 'Concorda']
-                for group_items, title, x_sign, g_color, g_key in [
-                    (concordou, f"{last_name} concordou", 1, "#66cc66", "concordou"),
-                    (discordou, f"{last_name} discordou", 2, "#ff6666", "discordou"),
-                ]:
+
+                ref_y = CARD_ANCHOR_Y + HEADER_H / 2  # mesma posição de sempre (concordou fica exatamente aqui)
+                INFLUENCE_GAP = CARD_WIDTH + 20       # espaço horizontal entre concordou e discordou
+
+                for i, (group_items, title, g_color, g_key) in enumerate([
+                    (concordou, f"{last_name} concordou", "#66cc66", "concordou"),
+                    (discordou, f"{last_name} discordou", "#ff6666", "discordou"),
+                ]):
                     if not group_items:
                         continue
                     body_text = '\n\n'.join(f"{n}\n{d}" for n, d in group_items)
                     nodes, anchor_id, _ = make_card(
                         header_text=title,
                         body_text=body_text,
-                        card_x=x_pos + x_sign * SIDE_X, ref_y=CARD_ANCHOR_Y + HEADER_H / 2,
+                        card_x=x_pos + SIDE_X + i * INFLUENCE_GAP, ref_y=ref_y,  # mesma altura, colunas lado a lado
                         card_cls=card_cls, id_prefix=f"card-inf-{safe_name}-{g_key}",
                         hdr_color=g_color, bdr_color=g_color
                     )
