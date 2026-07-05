@@ -226,7 +226,7 @@ export const TimelineApp = {
         this.setupHtmlCards();
 
         this.minZoom = this.computeMinZoom();
-        this.targetZoom = 1;
+        this.targetZoom = this.computeMinZoom();
         this._applyZoom(1, null);
 
         window.addEventListener('resize', () => {
@@ -243,7 +243,7 @@ export const TimelineApp = {
     },
 
     setZoom(zoom, anchorClientX, anchorClientY) {
-        this.targetZoom = Math.max(this.minZoom, Math.min(3, zoom));
+        this.targetZoom = Math.max(this.minZoom, Math.min(1.6, zoom));
         this._zoomAnchor = (anchorClientX !== undefined) ? { x: anchorClientX, y: anchorClientY } : null;
         if (!this.zoomAnimId) {
             this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
