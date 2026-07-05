@@ -2,13 +2,9 @@
 
 Esse projeto tem como objetivo construir uma rede de visualização das principais mentes que circundam o ramo da epistemologia, considerando relações entre elas, suas obras e períodos de tempo em que tiveram mais importância.
 
-## Instalação
-
-...
-
 ## Uso
 
-...
+Acesse o link diretamente no github pages: https://vitinholiv.github.io/FilosofiaDaCiencia/
 
 ## Alteração da Timeline
 
