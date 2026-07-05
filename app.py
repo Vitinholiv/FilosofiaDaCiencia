@@ -130,7 +130,7 @@ def visualization_data():
     ]
     
     philosophers = [
-        ("Rafael Luis Beraldo", "Futuro", 2035, 0, "static/img/Beraldo.jpg", [
+        ("Rafael Luis Beraldo", "Futuro", 2034, 0, "static/img/Beraldo.jpg", [
             ("Informações pessoais", "Linguista, professor e pesquisador brasileiro."),
             ("Vida e fatos", "É um dos primeiros professores da renomada instituição de ensino de matemática, IMPATech, sendo responsável pelas cadeiras de inglês e epistemologia da ciência."),
             ("Teorias/Ideias", [
