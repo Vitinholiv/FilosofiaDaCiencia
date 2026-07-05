@@ -243,7 +243,7 @@ export const TimelineApp = {
     },
 
     setZoom(zoom, anchorClientX, anchorClientY) {
-        this.targetZoom = Math.max(this.minZoom, Math.min(1.6, zoom));
+        this.targetZoom = Math.max(this.minZoom, Math.min(1, zoom));
         this._zoomAnchor = (anchorClientX !== undefined) ? { x: anchorClientX, y: anchorClientY } : null;
         if (!this.zoomAnimId) {
             this.zoomAnimId = requestAnimationFrame(() => this._stepZoom());
