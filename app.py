@@ -7,7 +7,6 @@ def visualization_data():
     philosophies = {
         "Raízes de Euclides": (1570, 1605, 0, "#00FF44"),
         "Futuro": (2031, 2056, 120, "#FF00E1"),
-
         "Empirismo": (1620, 1734, 220, "#88FF00"),
         "Empirismo Materialista": (1651, 1701, 170, "#AAFF00"),
         "Empirismo Moderado": (1670, 1838, 370, "#CCFF00"),
@@ -36,7 +35,6 @@ def visualization_data():
         "Anarquismo Epistemológico": (1982, 2026, 200, "#FF0026"),
         "Demarcação Comportamental": (1982, 2026, 50, "#FF2121"),
         "Empirismo Construtivo": (1980, 2026, 650, "#FF0048"),
-
         "Racionalismo": (1610, 1709, -220, "#00FFDD"),
         "Monismo Panteísta": (1677, 1727, -270, "#00EECC"),
         "Ocasionalismo": (1674, 1724, -320, "#00DDCC"),
@@ -132,7 +130,7 @@ def visualization_data():
     ]
     
     philosophers = [
-        ("Rafael Luis Beraldo", "Futuro", 2020, 0, "static/img/Beraldo.jpg", [
+        ("Rafael Luis Beraldo", "Futuro", 2035, 0, "static/img/Beraldo.jpg", [
             ("Informações pessoais", "Linguista, professor e pesquisador brasileiro."),
             ("Vida e fatos", "É um dos primeiros professores da renomada instituição de ensino de matemática, IMPATech, sendo responsável pelas cadeiras de inglês e epistemologia da ciência."),
             ("Teorias/Ideias", [
