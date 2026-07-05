@@ -3,7 +3,6 @@ import { TimelineApp } from './timeline.js';
 export function setup_scroll() {
     const scrollWrapper = document.querySelector('#scroll-wrapper');
 
-    // Roda do mouse: só zoom agora, não rola mais a página
     scrollWrapper.addEventListener('wheel', function(event) {
         event.preventDefault();
         const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;

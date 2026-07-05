@@ -15,7 +15,7 @@ export const TimelineApp = {
     sizerEl: null,
     contentEl: null,
     zoomLevel: 1,
-    minZoom: 0.1,
+    minZoom: 0.3,
     baseWidth: 0,
     baseHeight: 0,
     targetZoom: 1,
@@ -239,7 +239,7 @@ export const TimelineApp = {
 
     computeMinZoom() {
         const fitZoom = window.innerHeight / this.baseHeight;
-        return Math.min(1, Math.max(0.1, fitZoom));
+        return Math.min(1, Math.max(0.3, fitZoom));
     },
 
     setZoom(zoom, anchorClientX, anchorClientY) {
