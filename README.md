@@ -27,7 +27,8 @@ Para definir uma instância da timeline, precisamos definir cada um desses compo
     - [ ano (`int`), nome da época (`string`) ]
 
 - **Filósofos** - philosophers (`list - tuple`)
-    - [ nome (`string`), ano (`int`), offset (`int`), imagem (`src string`), resumo (`string`) ]
+    - [ nome (`string`), ano (`int`), offset (`int`), imagem (`src string`), resumo (`list - tuple`) ]
+        - resumo é uma lista de tópicos: (título (`string`), conteúdo (`string` para tópico simples, ou `list - string` para subtópicos))
 
 - **Obras** - works (`dict - string:(list - tuple)`)
     - Filósofo (`string`) $\rightarrow$ Obras (`list`)
