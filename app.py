@@ -811,7 +811,6 @@ def visualization_data():
         'David Chalmers': [('Daniel Dennett', 'Sustenta que o "problema difícil" resulta de uma confusão conceitual e pode ser explicado fisicamente.'), ('Patricia Churchland', 'Defende que os avanços da neurociência tornam desnecessário recorrer ao dualismo de propriedades.')],
     }
 
-
     events = [
         (1600, -34, "static/img/events/18.jpeg", "Execução de Giordano Bruno", "A execução de Giordano Bruno em 1600 expôs o conflito crescente entre a nova ciência e a autoridade religiosa.", "#88FF00"),
         (1605, 0, "static/img/events/19.jpg", "Leis Planetárias de Kepler", "As leis planetárias formuladas por Kepler em 1609 consolidaram a astronomia matemática, influenciando Descartes e mais tarde Kant.", "#00FFDD"),
