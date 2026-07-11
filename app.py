@@ -130,13 +130,13 @@ def visualization_data():
     ]
     
     philosophers = [
-        ("Paul Feyerabend", "Anarquismo epistemológico", 1982, 0, "static/img/paul-feyerabend.jpeg", [
+        ("Paul Feyerabend", "Anarquismo Epistemológico", 1989, 0, "static/img/paul-feyerabend.jpeg", [
             ("Informações pessoais", "Filósofo da ciência austríaco."),
             ("Vida e fatos", "Foi um dos principais críticos da ideia de um método científico universal, defendendo uma visão pluralista da ciência e debatendo intensamente com Popper, Kuhn e Lakatos."),
             ("Teorias/Ideias", [
-                "Anarquismo epistemológico: não existe um método científico universal capaz de explicar o progresso da ciência.",
-                "Pluralismo metodológico: diferentes métodos e teorias podem contribuir para o avanço científico.",
-                "Crítica ao cientificismo: a ciência não é a única forma válida de produzir conhecimento.",
+                "Anarquismo Epistemológico: não existe um método científico universal capaz de explicar o progresso da ciência.",
+                "Pluralismo Metodológico: diferentes métodos e teorias podem contribuir para o avanço científico.",
+                "Crítica ao Cientificismo: a ciência não é a única forma válida de produzir conhecimento.",
             ]),
         ]),
 
