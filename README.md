@@ -1,10 +1,22 @@
 # Visualização de Filosofia da Ciência
 
-Esse projeto tem como objetivo construir uma rede de visualização das principais mentes que circundam o ramo da epistemologia, considerando relações entre elas, suas obras e períodos de tempo em que tiveram mais importância.
+Esse projeto tem como objetivo construir uma rede de visualização das principais mentes que circundam o ramo da epistemologia, considerando relações entre elas, suas obras e períodos de tempo em que tiveram mais importância. O projeto foi desenvolvido pelos alunos do IMPA Tech:
+
+- Anderson Aquiles Batista de Souza
+- Erique Enrique Gomes da Silva
+- Felipe Giehl
+- Gustavo Sousa Cardoso
+- Leonardo Giboski Segheto
+- Letícia Aleixo Ferreira
+- Paulo Vitor Correia de Oliveira
 
 ## Uso
 
-Acesse o link diretamente no github pages: https://vitinholiv.github.io/FilosofiaDaCiencia/
+Acesse o link diretamente no github pages: https://vitinholiv.github.io/FilosofiaDaCiencia/. **Feito para computador**.
+
+- Se mova pelo ambiente usando o mouse, segurando e arrastando a tela.
+- Altere o zoom com o botão de scroll do mouse.
+- Clique nos filósofos, eventos e botões correspondente para interagir com as componentes e visualizar novas informações.
 
 ## Alteração da Timeline
 
@@ -27,7 +39,7 @@ Para definir uma instância da timeline, precisamos definir cada um desses compo
     - [ ano (`int`), nome da época (`string`) ]
 
 - **Filósofos** - philosophers (`list - tuple`)
-    - [ nome (`string`), ano (`int`), offset (`int`), imagem (`src string`), resumo (`list - tuple`) ]
+    - [ nome (`string`), corrente (`string`), ano (`int`), offset (`int`), imagem (`src string`), resumo (`list - tuple`) ]
         - resumo é uma lista de tópicos: (título (`string`), conteúdo (`string` para tópico simples, ou `list - string` para subtópicos))
 
 - **Obras** - works (`dict - string:(list - tuple)`)
