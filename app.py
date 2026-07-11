@@ -130,14 +130,15 @@ def visualization_data():
     ]
     
     philosophers = [
-        #("Rafael Luis Beraldo", "Futuro", 2034, 0, "static/img/Beraldo.jpg", [
-        #    ("Informações pessoais", "Linguista, professor e pesquisador brasileiro."),
-        #    ("Vida e fatos", "É um dos primeiros professores da renomada instituição de ensino de matemática, IMPATech, sendo responsável pelas cadeiras de inglês e epistemologia da ciência."),
-        #    ("Teorias/Ideias", [
-        #        "Fundou a linha de pensamento atualmente conhecida como Beraldismo.",
-        #        "Precursor do uso de fuinhas artificialmente geradas para melhora do desempenho acadêmico."
-        #    ]),
-        #]),
+        ("Paul Feyerabend", "Anarquismo epistemológico", 1982, 0, "static/img/paul-feyerabend.jpeg", [
+            ("Informações pessoais", "Filósofo da ciência austríaco."),
+            ("Vida e fatos", "Foi um dos principais críticos da ideia de um método científico universal, defendendo uma visão pluralista da ciência e debatendo intensamente com Popper, Kuhn e Lakatos."),
+            ("Teorias/Ideias", [
+                "Anarquismo epistemológico: não existe um método científico universal capaz de explicar o progresso da ciência.",
+                "Pluralismo metodológico: diferentes métodos e teorias podem contribuir para o avanço científico.",
+                "Crítica ao cientificismo: a ciência não é a única forma válida de produzir conhecimento.",
+            ]),
+        ]),
 
         ("Francis Bacon", "Empirismo", 1620, 0, "static/img/Francis_Bacon.jpg", [
             ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
