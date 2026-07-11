@@ -268,13 +268,13 @@ def visualization_data():
         ]),
 
         ("Thomas Kuhn", "Historicismo", 1968, 0, "static/img/thomas_kuhn.jpg", [
-                    ("Informações pessoais", "Físico, historiador e filósofo da ciência estadunidense."),
-                    ("Vida e fatos", "Foi o grande rival intelectual de Popper ao introduzir o historicismo."),
-                    ("Teorias/Ideias", [
-                        "Paradigma e Ciência Normal: a ciência avança resolvendo quebra-cabeças dentro de um paradigma.",
-                        "Revolução científica: ocorre pela substituição de paradigmas devido a anomalias.",
-                        "Incomensurabilidade: paradigmas diferentes não podem ser comparados diretamente.",
-                    ]),
+            ("Informações pessoais", "Físico, historiador e filósofo da ciência estadunidense."),
+            ("Vida e fatos", "Foi o grande rival intelectual de Popper ao introduzir o historicismo."),
+            ("Teorias/Ideias", [
+                "Paradigma e Ciência Normal: a ciência avança resolvendo quebra-cabeças dentro de um paradigma.",
+                "Revolução científica: ocorre pela substituição de paradigmas devido a anomalias.",
+                "Incomensurabilidade: paradigmas diferentes não podem ser comparados diretamente.",
+            ]),
         ]),
 
         ("Imre Lakatos", "Programas de Pesquisa", 1969, 0, "static/img/Imre_Lakatos.jpg", [
