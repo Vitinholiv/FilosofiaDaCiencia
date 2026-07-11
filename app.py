@@ -130,14 +130,14 @@ def visualization_data():
     ]
     
     philosophers = [
-        ("Rafael Luis Beraldo", "Futuro", 2034, 0, "static/img/Beraldo.jpg", [
-            ("Informações pessoais", "Linguista, professor e pesquisador brasileiro."),
-            ("Vida e fatos", "É um dos primeiros professores da renomada instituição de ensino de matemática, IMPATech, sendo responsável pelas cadeiras de inglês e epistemologia da ciência."),
-            ("Teorias/Ideias", [
-                "Fundou a linha de pensamento atualmente conhecida como Beraldismo.",
-                "Precursor do uso de fuinhas artificialmente geradas para melhora do desempenho acadêmico."
-            ]),
-        ]),
+        #("Rafael Luis Beraldo", "Futuro", 2034, 0, "static/img/Beraldo.jpg", [
+        #    ("Informações pessoais", "Linguista, professor e pesquisador brasileiro."),
+        #    ("Vida e fatos", "É um dos primeiros professores da renomada instituição de ensino de matemática, IMPATech, sendo responsável pelas cadeiras de inglês e epistemologia da ciência."),
+        #    ("Teorias/Ideias", [
+        #        "Fundou a linha de pensamento atualmente conhecida como Beraldismo.",
+        #        "Precursor do uso de fuinhas artificialmente geradas para melhora do desempenho acadêmico."
+        #    ]),
+        #]),
 
         ("Francis Bacon", "Empirismo", 1620, 0, "static/img/Francis_Bacon.jpg", [
             ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
@@ -599,10 +599,10 @@ def visualization_data():
     ]
 
     works = {
-        'Rafael Luis Beraldo': [
-            ('Computational models of acquisition: surveying the state of the art', '2020'),
-            ('Construindo um léxico sem palavras: por uma teoria de aquisição lexical baseada em morfemas', '2024'),
-        ],
+        #'Rafael Luis Beraldo': [
+        #    ('Computational models of acquisition: surveying the state of the art', '2020'),
+        #    ('Construindo um léxico sem palavras: por uma teoria de aquisição lexical baseada em morfemas', '2024'),
+        #],
         'Francis Bacon': [('Novum Organum', '1620')],
         'Thomas Hobbes': [('Leviatã', '1651'), ('De Corpore', '1655')],
         'John Locke': [('Ensaio Sobre o Entendimento Humano', '1690')],
@@ -655,7 +655,7 @@ def visualization_data():
     }
 
     influences = {
-        'Rafael Luis Beraldo': [('Paul Fuinhabend', 'Os alunos devem ler a bibliografia complementar', 'Concorda')],
+        #'Rafael Luis Beraldo': [('Paul Fuinhabend', 'Os alunos devem ler a bibliografia complementar', 'Concorda')],
         'Francis Bacon': [('Aristóteles', 'Bacon buscou substituir seu método.', 'Discorda')],
         'Thomas Hobbes': [('Francis Bacon', 'Hobbes manteve a base empirista de Bacon, mas a radicalizou no materialismo.', 'Discorda')],
         'John Locke': [('Francis Bacon', 'Locke deu continuidade ao empirismo iniciado por Bacon.', 'Concorda')],
@@ -705,7 +705,7 @@ def visualization_data():
     }
 
     adepts = {
-        'Rafael Luis Beraldo': [('Arthur Newlands Cavalcante', 'Monitor de Epistemiologia da Ciência'), ('Daniel da Silva', 'Monitor de Epistemiologia da Ciência')],
+        #'Rafael Luis Beraldo': [('Arthur Newlands Cavalcante', 'Monitor de Epistemiologia da Ciência'), ('Daniel da Silva', 'Monitor de Epistemiologia da Ciência')],
         'Paul Feyerabend': [('Thomas Kuhn', 'Compartilhava a crítica à existência de um método científico único, embora defendesse uma posição menos radical.'), ('David Bloor', 'Incorporou a ideia de que o conhecimento científico deve ser compreendido também em seu contexto social.'), ('Barry Barnes', 'Desenvolveu abordagens sociológicas da ciência inspiradas pela crítica ao objetivismo científico.')],
         'Francis Bacon': [('Thomas Hobbes', 'Adotou o empirismo como base do conhecimento, aplicando-o ao materialismo.'), ('John Locke', 'Desenvolveu o empirismo defendendo que toda ideia deriva da experiência.')],
         'Thomas Hobbes': [('John Locke', 'Manteve a ideia de que todo conhecimento começa na experiência, embora rejeitasse o materialismo de Hobbes.')],
@@ -757,7 +757,7 @@ def visualization_data():
     }
 
     oppositions = {
-        'Rafael Luis Beraldo': [('Sem Registro', 'O Beraldismo é mundialmente aceito.')],
+        #'Rafael Luis Beraldo': [('Sem Registro', 'O Beraldismo é mundialmente aceito.')],
         'Paul Feyerabend': [('Karl Popper', 'Criticava o abandono de critérios racionais para distinguir ciência de pseudociência.'), ('Imre Lakatos', 'Discordava do anarquismo metodológico e defendia regras racionais para comparar programas de pesquisa.'), ('Larry Laudan', 'Rejeitava seu relativismo metodológico, defendendo critérios objetivos de progresso científico.')],
         'Francis Bacon': [('Rene Descartes', 'Defendia que a razão e as ideias claras são o fundamento do conhecimento, enquanto Bacon privilegiava a observação e a indução.')],
         'Thomas Hobbes': [('Rene Descartes', 'Rejeitava a redução da mente à matéria proposta por Hobbes, defendendo o dualismo mente-corpo.')],
