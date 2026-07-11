@@ -138,6 +138,16 @@ def visualization_data():
                 "Precursor do uso de fuinhas artificialmente geradas para melhora do desempenho acadêmico."
             ]),
         ]),
+        
+        ("Paul Feyerabend", "Anarquismo epistemológico", 1982, 0, "static/img/paul-feyerabend.jpeg", [
+            ("Informações pessoais", "Filósofo da ciência austríaco."),
+            ("Vida e fatos", "Foi um dos principais críticos da ideia de um método científico universal, defendendo uma visão pluralista da ciência e debatendo intensamente com Popper, Kuhn e Lakatos."),
+            ("Teorias/Ideias", [
+                "Anarquismo epistemológico: não existe um método científico universal capaz de explicar o progresso da ciência.",
+                "Pluralismo metodológico: diferentes métodos e teorias podem contribuir para o avanço científico.",
+                "Crítica ao cientificismo: a ciência não é a única forma válida de produzir conhecimento.",
+            ]),
+        ]),
 
         ("Francis Bacon", "Empirismo", 1620, 0, "static/img/Francis_Bacon.jpg", [
             ("Informações pessoais", "Político, filósofo empirista, cientista e ensaísta inglês."),
@@ -258,13 +268,13 @@ def visualization_data():
         ]),
 
         ("Thomas Kuhn", "Historicismo", 1968, 0, "static/img/thomas_kuhn.jpg", [
-            ("Informações pessoais", "Físico, historiador e filósofo da ciência estadunidense."),
-            ("Vida e fatos", "Foi o grande rival intelectual de Popper ao introduzir o historicismo."),
-            ("Teorias/Ideias", [
-                "Paradigma e Ciência Normal: a ciência avança resolvendo quebra-cabeças dentro de um paradigma.",
-                "Revolução científica: ocorre pela substituição de paradigmas devido a anomalias.",
-                "Incomensurabilidade: paradigmas diferentes não podem ser comparados diretamente.",
-            ]),
+                    ("Informações pessoais", "Físico, historiador e filósofo da ciência estadunidense."),
+                    ("Vida e fatos", "Foi o grande rival intelectual de Popper ao introduzir o historicismo."),
+                    ("Teorias/Ideias", [
+                        "Paradigma e Ciência Normal: a ciência avança resolvendo quebra-cabeças dentro de um paradigma.",
+                        "Revolução científica: ocorre pela substituição de paradigmas devido a anomalias.",
+                        "Incomensurabilidade: paradigmas diferentes não podem ser comparados diretamente.",
+                    ]),
         ]),
 
         ("Imre Lakatos", "Programas de Pesquisa", 1969, 0, "static/img/Imre_Lakatos.jpg", [
